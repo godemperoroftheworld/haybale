@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "tlib",
+  "version": "0.1.0-alpha.1",
+  "name": "Tenzin Lib",
+  "description": "Library mod for Tenzin's mods!",
+  "authors": [
+    "t2pellet"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/tlib-reborn",
+    "sources": "https://github.com/t2pellet/tlib"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/tlib/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.t2pellet.tlib.QuirkFabric"
+    ],
+    "client": [
+      "com.t2pellet.tlib.QuirkFabric"
+    ],
+    "modmenu": [
+      "com.t2pellet.tlib.client.compat.ClothConfigCompat"
+    ]
+  },
+  "mixins": [
+    "tlib.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13",
+    "fabric": ">=0.54.0",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "custom": {
+    "waila:plugins": {
+      "id": "tlib",
+      "initializer": "com.t2pellet.tlib.client.compat.CompatHwyla"
+    }
+  }
+}
+  

@@ -2,23 +2,27 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.registry.IModEntityModels;
 import com.t2pellet.tlib.client.registry.IModParticleFactories;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class ClientRegistrar {
+class ClientRegistrar {
 
     public static void register(String modid, IModEntityModels models) {
         for (Field field : models.getClass().getDeclaredFields()) {
-            IModEntityModels.IIEntityModel modelInfo = field.getDeclaredAnnotation(IModEntityModels.IIEntityModel.class);
+            IModEntityModels.IEntityModel modelInfo = field.getDeclaredAnnotation(IModEntityModels.IEntityModel.class);
             if (modelInfo != null && field.getType().equals(IModEntityModels.TLibEntityModel.class)) {
                 try {
                     IModEntityModels.TLibEntityModel<? extends Entity> model = (IModEntityModels.TLibEntityModel<? extends Entity>) field.get(null);
+                    ModelLayerLocation loc = new ModelLayerLocation(new ResourceLocation(modid, modelInfo.value()), "main");
+                    Services.CLIENT_REGISTRY.registerEntityRenderer(modid, modelInfo.value(), fixType(model._type), model._renderProvider, loc, model._modelData);
                     Field result = model.getClass().getDeclaredField("MODEL");
-                    setField(result, model, Services.CLIENT_REGISTRY.registerEntityRenderer(modid, modelInfo.value(), fixType(model._type), model._renderProvider, model._modelProvider, model._modelData));
+                    setField(result, model, loc);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -29,14 +29,12 @@ public class ForgeClientRegistry implements IClientRegistry {
     }
 
     @Override
-    public <T extends Entity> ModelLayerLocation registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, Supplier<ModelLayerLocation> model, LayerDefinition modelData) {
+    public <T extends Entity> void registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterRenderers>) event -> {
             event.registerEntityRenderer(type, renderSupplier);
         });
-        ModelLayerLocation location = model.get();
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
-            event.registerLayerDefinition(location, () -> modelData);
+            event.registerLayerDefinition(modelLayerLocation, () -> modelData);
         });
-        return location;
     }
 }

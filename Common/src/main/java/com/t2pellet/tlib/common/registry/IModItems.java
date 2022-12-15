@@ -15,7 +15,7 @@ public interface IModItems {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface IItem {
-        String name();
+        String value();
     }
 
     class TLibItem {

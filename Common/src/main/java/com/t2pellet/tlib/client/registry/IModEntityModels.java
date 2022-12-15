@@ -16,20 +16,18 @@ public interface IModEntityModels {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    @interface IIEntityModel {
+    @interface IEntityModel {
         String value();
     }
 
     class TLibEntityModel<T extends Entity> {
-        public final Supplier<ModelLayerLocation> MODEL = null;
+        public final ModelLayerLocation MODEL = null;
         public final EntityType<T> _type;
-        public final Supplier<ModelLayerLocation> _modelProvider;
         public final EntityRendererProvider<T> _renderProvider;
         public final LayerDefinition _modelData;
 
-        public TLibEntityModel(EntityType<T> type, Supplier<ModelLayerLocation> modelProvider, EntityRendererProvider<T> renderProvider, LayerDefinition modelData) {
+        public TLibEntityModel(EntityType<T> type, EntityRendererProvider<T> renderProvider, LayerDefinition modelData) {
             this._type = type;
-            this._modelProvider = modelProvider;
             this._renderProvider = renderProvider;
             this._modelData = modelData;
         }

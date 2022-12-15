@@ -35,10 +35,8 @@ public class FabricCommonRegistry implements ICommonRegistry {
     }
 
     @Override
-    public Supplier<SoundEvent> registerSound(String modid, String name) {
-        SoundEvent sound = new SoundEvent(new ResourceLocation(modid, name));
-        Registry.register(Registry.SOUND_EVENT, modid, sound);
-        return () -> sound;
+    public void registerSound(SoundEvent sound) {
+        Registry.register(Registry.SOUND_EVENT, sound.getLocation(), sound);
     }
 
     @Override

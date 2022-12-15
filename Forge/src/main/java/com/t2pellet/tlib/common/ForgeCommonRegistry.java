@@ -4,7 +4,6 @@ import com.t2pellet.tlib.TLibForgeMod;
 import com.t2pellet.tlib.TenzinLibForge;
 import com.t2pellet.tlib.common.registry.ICommonRegistry;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,10 +37,9 @@ public class ForgeCommonRegistry implements ICommonRegistry {
     }
 
     @Override
-    public Supplier<SoundEvent> registerSound(String modid, String name) {
-        TLibForgeMod forgeMod = TenzinLibForge.getInstance().get(modid);
-        SoundEvent sound = new SoundEvent(new ResourceLocation(modid, name));
-        return forgeMod.SOUNDS.register(name, () -> sound);
+    public void registerSound(SoundEvent sound) {
+        TLibForgeMod forgeMod = TenzinLibForge.getInstance().get(sound.getLocation().getNamespace());
+        forgeMod.SOUNDS.register(sound.getLocation().getPath(), () -> sound);
     }
 
     @Override

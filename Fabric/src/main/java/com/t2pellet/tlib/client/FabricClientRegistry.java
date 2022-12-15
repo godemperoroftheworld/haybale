@@ -15,20 +15,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class FabricClientRegistry implements IClientRegistry {
+
     @Override
     public <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
         ParticleFactoryRegistry.getInstance().register(type, aNew::apply);
     }
 
     @Override
-    public <T extends Entity> ModelLayerLocation registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, Supplier<ModelLayerLocation> model, LayerDefinition modelData) {
+    public <T extends Entity> void registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
         registerRenderer(type, renderSupplier);
-        ModelLayerLocation location = model.get();
-        EntityModelLayerRegistry.registerModelLayer(location, () -> modelData);
-        return location;
+        EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, () -> modelData);
     }
 
     private <T extends Entity> void registerRenderer(EntityType<? extends T> type, EntityRendererProvider<T> supplier) {

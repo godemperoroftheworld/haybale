@@ -10,13 +10,7 @@ import java.lang.annotation.Target;
 
 public abstract class Packet<T extends Packet<T>> {
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    public @interface IPacket {
-        String value();
-    }
-
-    CompoundTag tag;
+    protected CompoundTag tag;
 
     public Packet(FriendlyByteBuf byteBuf) {
         this.tag = byteBuf.readNbt();

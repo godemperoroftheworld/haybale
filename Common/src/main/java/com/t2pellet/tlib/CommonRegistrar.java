@@ -2,6 +2,9 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.common.network.Packet;
 import com.t2pellet.tlib.common.registry.*;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.lang.reflect.Field;
@@ -34,7 +37,7 @@ class CommonRegistrar {
                 try {
                     IModItems.TLibItem item = (IModItems.TLibItem) field.get(null);
                     Field result = item.getClass().getDeclaredField("ITEM");
-                    setField(result, item, Services.COMMON_REGISTRY.registerItem(modid, itemInfo.name(), item._properties));
+                    setField(result, item, Services.COMMON_REGISTRY.registerItem(modid, itemInfo.value(), item._properties));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -60,15 +63,14 @@ class CommonRegistrar {
     public static void register(String modid, IModSounds sounds) {
         for (Field field : sounds.getClass().getDeclaredFields()) {
             IModSounds.ISound soundInfo = field.getAnnotation(IModSounds.ISound.class);
-            if (soundInfo != null && field.getType().equals(IModSounds.TLibSound.class)) {
+            if (soundInfo != null && field.getType().equals(SoundEvent.class)) {
                 try {
-                    IModSounds.TLibSound sound = (IModSounds.TLibSound) field.get(null);
-                    Field result = sound.getClass().getDeclaredField("SOUND");
-                    setField(result, sound, Services.COMMON_REGISTRY.registerSound(modid, soundInfo.value()));
+                    SoundEvent sound = new SoundEvent(new ResourceLocation(modid, soundInfo.value()));
+                    Services.COMMON_REGISTRY.registerSound(sound);
+                    setField(field, null, sound);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }
     }

@@ -1,14 +1,12 @@
 package com.t2pellet.tlib.common.registry;
 
-import com.t2pellet.tlib.Services;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 public interface IModParticles {
@@ -19,7 +17,7 @@ public interface IModParticles {
         String value();
     }
 
-    class TLibParticle {
-        public final Supplier<SimpleParticleType> PARTICLE = null;
+    class TLibParticle<T extends ParticleOptions> {
+        public final Supplier<ParticleType<T>> PARTICLE = null;
     }
 }

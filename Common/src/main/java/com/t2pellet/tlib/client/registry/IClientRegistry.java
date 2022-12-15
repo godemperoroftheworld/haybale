@@ -11,17 +11,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface IClientRegistry {
 
     <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew);
 
-    <T extends Entity> ModelLayerLocation registerEntityRenderer(String modid,
+    <T extends Entity> void registerEntityRenderer(String modid,
                                                    String name,
                                                    EntityType<T> type,
                                                    EntityRendererProvider<T> renderSupplier,
-                                                   Supplier<ModelLayerLocation> model,
+                                                   ModelLayerLocation modelLayerLocation,
                                                    LayerDefinition modelData);
 
 }

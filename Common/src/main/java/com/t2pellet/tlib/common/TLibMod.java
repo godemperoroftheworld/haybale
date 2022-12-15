@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 public abstract class TLibMod {
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
+    @Target(ElementType.TYPE)
     public @interface IMod {
         String value();
     }

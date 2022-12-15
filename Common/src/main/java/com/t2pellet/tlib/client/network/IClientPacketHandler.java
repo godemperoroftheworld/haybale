@@ -4,6 +4,7 @@ import com.t2pellet.tlib.common.network.Packet;
 
 public interface IClientPacketHandler {
 
-    <T extends Packet<T>> void registerPacket(String id, Class<T> packetClass);
+    <T extends Packet<T>> void registerPacket(String modid, String name, Class<T> packetClass);
 
+    <T extends Packet<T>> void sendToServer(Packet<T> packet);
 }

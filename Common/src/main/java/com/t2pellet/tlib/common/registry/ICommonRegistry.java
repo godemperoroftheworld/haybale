@@ -16,7 +16,7 @@ public interface ICommonRegistry {
 
     <T extends LivingEntity> Supplier<EntityType<T>> registerEntity(String modid, String name, EntityType.EntityFactory<T> factory, MobCategory category, float width, float height, AttributeSupplier.Builder builder);
 
-    SoundEvent registerSound(String modid, String name);
+    Supplier<SoundEvent> registerSound(String modid, String name);
 
     Supplier<Item> registerItem(String modid, String name, Item.Properties properties);
 

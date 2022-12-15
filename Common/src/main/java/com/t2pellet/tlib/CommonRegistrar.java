@@ -80,9 +80,9 @@ class CommonRegistrar {
                 try {
                     IModPackets.TLibPacket<? extends Packet<?>> packet = (IModPackets.TLibPacket<? extends Packet<?>>) field.get(null);
                     if (packetInfo.client()) {
-                        Services.CLIENT_PACKETS.registerPacket(modid, packet.PACKET);
+                        Services.PACKET_HANDLER.registerClientPacket(modid, packetInfo.name(), packet.PACKET);
                     } else {
-                        Services.COMMON_PACKETS.registerPacket(modid, packet.PACKET);
+                        Services.PACKET_HANDLER.registerServerPacket(modid, packetInfo.name(), packet.PACKET);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

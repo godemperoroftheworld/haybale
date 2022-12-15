@@ -12,8 +12,8 @@ import java.util.Map;
 public class TenzinLib {
 
     public static final TenzinLib INSTANCE = new TenzinLib();
-    static final String MODID = "tlib";
-    static final Logger LOG = LogManager.getLogger(MODID);
+    public static final String MODID = "tlib";
+    public static final Logger LOG = LogManager.getLogger(MODID);
 
     private final Map<String, TLibMod> modMap = new HashMap<>();
     private final Map<String, TLibModClient> clientModMap = new HashMap<>();

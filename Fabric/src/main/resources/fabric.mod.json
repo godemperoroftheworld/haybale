@@ -16,29 +16,19 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.t2pellet.tlib.QuirkFabric"
+      "com.t2pellet.tlib.TenzinLibFabric"
     ],
     "client": [
-      "com.t2pellet.tlib.QuirkFabric"
-    ],
-    "modmenu": [
-      "com.t2pellet.tlib.client.compat.ClothConfigCompat"
+      "com.t2pellet.tlib.TenzinLibFabric"
     ]
   },
   "mixins": [
-    "tlib.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.13",
     "fabric": ">=0.54.0",
     "minecraft": "1.18.x",
     "java": ">=17"
-  },
-  "custom": {
-    "waila:plugins": {
-      "id": "tlib",
-      "initializer": "com.t2pellet.tlib.client.compat.CompatHwyla"
-    }
   }
 }
   

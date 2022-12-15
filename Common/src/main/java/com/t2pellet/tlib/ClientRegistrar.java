@@ -31,12 +31,16 @@ public class ClientRegistrar {
             if (particleFactoryInfo != null && field.getType().equals(IModParticleFactories.TLibParticleFactory.class)) {
                 try {
                     IModParticleFactories.TLibParticleFactory<? extends ParticleOptions> particleFactory = (IModParticleFactories.TLibParticleFactory<? extends ParticleOptions>) field.get(null);
-                    Services.CLIENT_REGISTRY.registerParticleFactory(particleFactory._supplier, particleFactory._provider);
+                    registerParticleFactory(particleFactory);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private static <T extends ParticleOptions> void registerParticleFactory(IModParticleFactories.TLibParticleFactory<T> particleFactory) {
+        Services.CLIENT_REGISTRY.registerParticleFactory(particleFactory._particle, particleFactory._provider);
     }
 
     private static void setField(Field field, Object object, Object value) {

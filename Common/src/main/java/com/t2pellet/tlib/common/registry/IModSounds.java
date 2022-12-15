@@ -6,6 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Supplier;
 
 public interface IModSounds {
 
@@ -16,6 +17,6 @@ public interface IModSounds {
     }
 
     class TLibSound {
-        public final SoundEvent SOUND = null;
+        public final Supplier<SoundEvent> SOUND = null;
     }
 }

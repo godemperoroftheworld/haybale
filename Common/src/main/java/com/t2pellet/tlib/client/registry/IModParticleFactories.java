@@ -21,11 +21,12 @@ public interface IModParticleFactories {
     }
 
     class TLibParticleFactory<T extends ParticleOptions> {
-        public final Supplier<SimpleParticleType> _supplier;
+
+        public final ParticleType<T> _particle;
         public final Function<SpriteSet, ParticleProvider<T>> _provider;
 
-        public TLibParticleFactory(Supplier<SimpleParticleType> supplier, Function<SpriteSet, ParticleProvider<T>> provider) {
-            this._supplier = supplier;
+        public TLibParticleFactory(Supplier<ParticleType<T>> supplier, Function<SpriteSet, ParticleProvider<T>> provider) {
+            this._particle = supplier.get();
             this._provider = provider;
         }
     }

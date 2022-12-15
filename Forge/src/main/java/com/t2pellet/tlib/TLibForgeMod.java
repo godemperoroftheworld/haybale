@@ -1,7 +1,9 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
+import com.t2pellet.tlib.client.compat.ForgeConfigMenu;
 import com.t2pellet.tlib.common.TLibMod;
+import com.t2pellet.tlib.config.ConfigRegistrar;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -53,13 +55,25 @@ public abstract class TLibForgeMod {
         SOUNDS.register(bus);
     }
 
+    protected ForgeConfigMenu configMenu() {
+        return null;
+    }
+
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        CommonRegistrar.register(modid, commonMod.particles());
+        CommonRegistrar.register(modid, commonMod.packets());
+        CommonRegistrar.register(modid, commonMod.capabilities());
+        ConfigRegistrar.INSTANCE.register(modid, commonMod.config());
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
         ClientRegistrar.register(modid, clientMod.entityModels());
         ClientRegistrar.register(modid, clientMod.particleFactories());
+        if (Services.PLATFORM.isModLoaded("cloth_config")) {
+            ForgeConfigMenu menu = configMenu();
+            if (menu != null) {
+                menu.registerConfigMenu();
+            }
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
 import com.t2pellet.tlib.common.TLibMod;
+import com.t2pellet.tlib.config.ConfigRegistrar;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
@@ -31,5 +32,7 @@ public abstract class TLibFabricMod implements ModInitializer, ClientModInitiali
         CommonRegistrar.register(modid, commonMod.particles());
         CommonRegistrar.register(modid, commonMod.sounds());
         CommonRegistrar.register(modid, commonMod.packets());
+        CommonRegistrar.register(modid, commonMod.capabilities());
+        ConfigRegistrar.INSTANCE.register(modid, commonMod.config());
     }
 }

@@ -4,6 +4,7 @@ import com.t2pellet.tlib.client.registry.IModEntityModels;
 import com.t2pellet.tlib.client.registry.IModParticleFactories;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,12 +18,17 @@ public class ClientRegistrar {
                 try {
                     IModEntityModels.TLibEntityModel<? extends Entity> model = (IModEntityModels.TLibEntityModel<? extends Entity>) field.get(null);
                     Field result = model.getClass().getDeclaredField("MODEL");
-                    setField(result, model, Services.CLIENT_REGISTRY.registerEntityRenderer(modid, modelInfo.value(), model._renderProvider, model._modelProvider, model._modelData));
+                    setField(result, model, Services.CLIENT_REGISTRY.registerEntityRenderer(modid, modelInfo.value(), fixType(model._type), model._renderProvider, model._modelProvider, model._modelData));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Entity> EntityType<T> fixType(EntityType<? extends Entity> type) {
+        return (EntityType<T>) type;
     }
 
     public static void register(String modid, IModParticleFactories particleFactories) {

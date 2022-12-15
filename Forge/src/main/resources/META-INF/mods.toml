@@ -21,7 +21,7 @@ modId = "tlib" #mandatory
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version = "0.1.0-alpha.1" #mandatory
 # A display name for the mod
-displayName = "Quirk" #mandatory
+displayName = "Tenzin's Lib" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -34,7 +34,7 @@ credits = "me, myself & I" #optional
 authors = "t2pellet" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-Quirk! It's not Quark!
+A library mod for Tenzin's mods!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.multiloader]] #optional

@@ -1,6 +1,5 @@
 package com.t2pellet.tlib;
 
-import com.mojang.datafixers.util.Pair;
 import com.t2pellet.tlib.client.TLibModClient;
 import com.t2pellet.tlib.common.TLibMod;
 import org.apache.logging.log4j.LogManager;

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -16,9 +17,10 @@ public interface IClientRegistry {
 
     <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew);
 
-    ModelLayerLocation registerEntityRenderer(String modid,
+    <T extends Entity> ModelLayerLocation registerEntityRenderer(String modid,
                                                    String name,
-                                                   EntityRendererProvider<? extends Entity> renderSupplier,
+                                                   EntityType<T> type,
+                                                   EntityRendererProvider<T> renderSupplier,
                                                    Supplier<ModelLayerLocation> model,
                                                    LayerDefinition modelData);
 

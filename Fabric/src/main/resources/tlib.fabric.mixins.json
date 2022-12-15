@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.t2pellet.tlib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "EntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+

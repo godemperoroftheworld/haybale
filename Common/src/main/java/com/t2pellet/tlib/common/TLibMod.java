@@ -1,6 +1,8 @@
 package com.t2pellet.tlib.common;
 
 import com.t2pellet.tlib.TenzinLib;
+import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
+import com.t2pellet.tlib.common.network.IModPackets;
 import com.t2pellet.tlib.common.registry.*;
 
 import java.lang.annotation.ElementType;
@@ -28,5 +30,6 @@ public abstract class TLibMod {
     public abstract IModParticles particles();
     public abstract IModSounds sounds();
     public abstract IModPackets packets();
+    public abstract IModCapabilities capabilities();
 
 }

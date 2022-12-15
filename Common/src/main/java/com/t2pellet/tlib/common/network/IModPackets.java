@@ -1,6 +1,4 @@
-package com.t2pellet.tlib.common.registry;
-
-import com.t2pellet.tlib.common.network.Packet;
+package com.t2pellet.tlib.common.network;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

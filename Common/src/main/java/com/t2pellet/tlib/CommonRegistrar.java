@@ -1,8 +1,14 @@
 package com.t2pellet.tlib;
 
+import com.t2pellet.tlib.common.entity.capability.Capability;
+import com.t2pellet.tlib.common.entity.capability.CapabilityRegistrar;
+import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
+import com.t2pellet.tlib.common.network.IModPackets;
 import com.t2pellet.tlib.common.network.Packet;
-import com.t2pellet.tlib.common.registry.*;
-import net.minecraft.client.model.geom.ModelLayerLocation;
+import com.t2pellet.tlib.common.registry.IModEntities;
+import com.t2pellet.tlib.common.registry.IModItems;
+import com.t2pellet.tlib.common.registry.IModParticles;
+import com.t2pellet.tlib.common.registry.IModSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,6 +97,24 @@ class CommonRegistrar {
                 }
             }
         }
+    }
+
+    public static void register(String modid, IModCapabilities capabilities) {
+        for (Field field : capabilities.getClass().getDeclaredFields()) {
+            IModCapabilities.ICapability capabilityInfo = field.getAnnotation(IModCapabilities.ICapability.class);
+            if (capabilityInfo != null && field.getType().equals(IModCapabilities.TLibCapability.class)) {
+                try {
+                    IModCapabilities.TLibCapability<? extends Capability> capability = (IModCapabilities.TLibCapability<? extends Capability>) field.get(null);
+                    registerCapability(capability);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static <T extends Capability> void registerCapability(IModCapabilities.TLibCapability<T> tLibCapability) {
+        CapabilityRegistrar.INSTANCE.register(tLibCapability.clazz, tLibCapability::get);
     }
 
     private static void setField(Field field, Object object, Object value) {

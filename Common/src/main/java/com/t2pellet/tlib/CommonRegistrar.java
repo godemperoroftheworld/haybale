@@ -1,9 +1,7 @@
 package com.t2pellet.tlib;
 
-import com.t2pellet.tlib.common.registry.IModEntities;
-import com.t2pellet.tlib.common.registry.IModItems;
-import com.t2pellet.tlib.common.registry.IModParticles;
-import com.t2pellet.tlib.common.registry.IModSounds;
+import com.t2pellet.tlib.common.network.Packet;
+import com.t2pellet.tlib.common.registry.*;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.lang.reflect.Field;
@@ -11,6 +9,8 @@ import java.lang.reflect.Modifier;
 
 class CommonRegistrar {
 
+    private CommonRegistrar() {
+    }
 
     public static void register(String modid, IModEntities entities) {
         for (Field field : entities.getClass().getDeclaredFields()) {
@@ -69,6 +69,24 @@ class CommonRegistrar {
                     e.printStackTrace();
                 }
 
+            }
+        }
+    }
+
+    public static void register(String modid, IModPackets packets) {
+        for (Field field : packets.getClass().getDeclaredFields()) {
+            IModPackets.IPacket packetInfo = field.getAnnotation(IModPackets.IPacket.class);
+            if (packetInfo != null && field.getType().equals(IModPackets.TLibPacket.class)) {
+                try {
+                    IModPackets.TLibPacket<? extends Packet<?>> packet = (IModPackets.TLibPacket<? extends Packet<?>>) field.get(null);
+                    if (packetInfo.client()) {
+                        Services.CLIENT_PACKETS.registerPacket(modid, packet.PACKET);
+                    } else {
+                        Services.COMMON_PACKETS.registerPacket(modid, packet.PACKET);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

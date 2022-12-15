@@ -1,21 +1,20 @@
 package com.t2pellet.tlib.client;
 
+import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.client.registry.IModEntityModels;
 import com.t2pellet.tlib.client.registry.IModParticleFactories;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.SimpleParticleType;
+import com.t2pellet.tlib.common.TLibMod;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.Function;
+public abstract class TLibModClient {
 
-public interface TLibModClient {
+    public TLibModClient() {
+        TLibMod.IMod modInfo = getClass().getAnnotation(TLibMod.IMod.class);
+        if (modInfo != null) {
+            TenzinLib.INSTANCE.register(modInfo.value(), this);
+        }
+    }
 
-    // Client
-    IModEntityModels entityModels();
-    IModParticleFactories particleFactories();
+    public abstract IModEntityModels entityModels();
+    public abstract IModParticleFactories particleFactories();
 
 }

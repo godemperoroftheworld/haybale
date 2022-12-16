@@ -1,0 +1,94 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'Release Type'
+        required: true
+        default: 'alpha'
+      versionRange:
+        description: 'Game Versions'
+        required: true
+        default: '1.18:1.18.2'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with: { fetch-depth: 0 }
+      - name: "Setup JDK 17"
+        uses: actions/setup-java@v2
+        with: { distribution: "adopt", java-version: "17" }
+      - name: "Build with Gradle"
+        id: build
+        run: "chmod +x gradlew && ./gradlew build"
+      - name: "Create Tag"
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "v${{steps.build.outputs.version}}-${{steps.build.outputs.gameVersion}}"
+      - name: Get changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: changelog
+        env:
+          REPO: ${{ github.repository }}
+      - name: "Create Release"
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          tag_name: "v${{ steps.build.outputs.version }}-${{steps.build.outputs.gameVersion}}"
+          release_name: "tlib-${{steps.build.outputs.gameVersion}}-${{ steps.build.outputs.version }}"
+          body: |
+            ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: "${{ inputs.releaseType != 'release' }}"
+      - name: "Upload Fabric Release Assets"
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          release_id: "${{ steps.create_release.outputs.id }}"
+          assets_path: "Fabric/build/libs"
+      - name: "Upload Forge Release Assets"
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          release_id: "${{ steps.create_release.outputs.id }}"
+          assets_path: "Forge/build/libs"
+      - name: "Upload Fabric to CurseForge"
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: "Fabric/build/libs/tlib-fabric-${{ steps.build.outputs.gameVersion }}-${{ steps.build.outputs.version }}.jar"
+          game_endpoint: "minecraft"
+          display_name: "tlib-${{steps.build.outputs.gameVersion}}-${{steps.build.outputs.version}}"
+          changelog: |
+            ${{ steps.changelog.outputs.changelog }}
+          relations: "fabric-api:requiredDependency"
+          game_versions: "Minecraft ${{inputs.versionRange}},Java 17,Fabric"
+          release_type: "${{ inputs.releaseType }}"
+          project_id: "738680"
+          token: "${{ secrets.CF_API_TOKEN }}"
+      - name: "Upload Forge to CurseForge"
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: "Forge/build/libs/tlib-forge-${{ steps.build.outputs.gameVersion }}-${{ steps.build.outputs.version }}.jar"
+          game_endpoint: "minecraft"
+          display_name: "tlib-${{steps.build.outputs.gameVersion}}-${{steps.build.outputs.version}}"
+          changelog: |
+            ${{ steps.changelog.outputs.changelog }}
+          game_versions: "Minecraft ${{inputs.versionRange}},Java 17,Forge"
+          release_type: "${{ inputs.releaseType }}"
+          project_id: "738680"
+          token: "${{ secrets.CF_API_TOKEN }}"

@@ -26,12 +26,12 @@ public abstract class TLibMod {
         }
     }
 
-    public abstract IModEntities entities();
-    public abstract IModItems items();
-    public abstract IModParticles particles();
-    public abstract IModSounds sounds();
-    public abstract IModPackets packets();
-    public abstract IModCapabilities capabilities();
-    public abstract Config config();
+    public IModEntities entities() { return null; }
+    public IModItems items() { return null; }
+    public IModParticles particles() { return null; }
+    public IModSounds sounds() { return null; }
+    public IModPackets packets() { return null; }
+    public IModCapabilities capabilities() { return null; }
+    public Config config() { return null; }
 
 }

@@ -11,15 +11,13 @@ public interface IModCapabilities {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface ICapability {
-        String value();
+        Class<? extends Capability> value();
     }
 
     class TLibCapability<T extends Capability> {
-        public final Class<T> clazz;
         Supplier<T> supplier;
 
-        public TLibCapability(Class<T> clazz, Supplier<T> supplier) {
-            this.clazz = clazz;
+        public TLibCapability(Supplier<T> supplier) {
             this.supplier = supplier;
         }
 

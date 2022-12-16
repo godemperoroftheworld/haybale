@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
 
 class CommonRegistrar {
 
@@ -105,7 +106,7 @@ class CommonRegistrar {
             if (capabilityInfo != null && field.getType().equals(IModCapabilities.TLibCapability.class)) {
                 try {
                     IModCapabilities.TLibCapability<? extends Capability> capability = (IModCapabilities.TLibCapability<? extends Capability>) field.get(null);
-                    registerCapability(capability);
+                    registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -113,8 +114,9 @@ class CommonRegistrar {
         }
     }
 
-    private static <T extends Capability> void registerCapability(IModCapabilities.TLibCapability<T> tLibCapability) {
-        CapabilityRegistrar.INSTANCE.register(tLibCapability.clazz, tLibCapability::get);
+    @SuppressWarnings("unchecked")
+    private static <T extends Capability> void registerCapability(Class<? extends Capability> clazz, Supplier<T> supplier) {
+        CapabilityRegistrar.INSTANCE.register((Class<T>) clazz, supplier);
     }
 
     private static void setField(Field field, Object object, Object value) {

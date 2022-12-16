@@ -14,7 +14,7 @@ public abstract class TLibModClient {
         }
     }
 
-    public abstract IModEntityModels entityModels();
-    public abstract IModParticleFactories particleFactories();
+    public IModEntityModels entityModels() { return null; }
+    public IModParticleFactories particleFactories() { return null; }
 
 }

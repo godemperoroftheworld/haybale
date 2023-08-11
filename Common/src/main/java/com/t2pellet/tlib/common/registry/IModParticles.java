@@ -18,6 +18,10 @@ public interface IModParticles {
     }
 
     class TLibParticle<T extends ParticleOptions> {
-        public final Supplier<ParticleType<T>> PARTICLE = null;
+        private Supplier<ParticleType<T>> particle = null;
+
+        public ParticleType<T> getParticle() {
+            return particle.get();
+        }
     }
 }

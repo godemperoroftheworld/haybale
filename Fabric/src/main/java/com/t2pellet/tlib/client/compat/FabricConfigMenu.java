@@ -8,10 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry;
 import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -19,8 +16,8 @@ import java.util.function.Consumer;
 
 public class FabricConfigMenu extends ConfigMenu implements ModMenuApi {
 
-    private interface IBuilderFactory<T, R extends TooltipListEntry<T>> {
-        FieldBuilder<T, R> create(Component component, T value);
+    private interface IBuilderFactory<T, R extends TooltipListEntry<T>, S extends FieldBuilder<T, R, S>> {
+        FieldBuilder<T, R, S> create(Component component, T value);
     }
 
     private interface IFieldBuilder<T, R extends TooltipListEntry<T>> {
@@ -43,7 +40,7 @@ public class FabricConfigMenu extends ConfigMenu implements ModMenuApi {
     }
 
     private ConfigBuilder configBuilder() throws IllegalAccessException {
-        ConfigBuilder builder = ConfigBuilder.create().setTitle(new TranslatableComponent("title." + modid + ".config"));
+        ConfigBuilder builder = ConfigBuilder.create().setTitle(Component.translatable("title." + modid + ".config"));
         for (Class<?> clazz : config.getClass().getDeclaredClasses()) {
             Config.Section section = clazz.getAnnotation(Config.Section.class);
             if (section != null) {
@@ -54,7 +51,7 @@ public class FabricConfigMenu extends ConfigMenu implements ModMenuApi {
     }
 
     private void addSection(ConfigBuilder configBuilder, Class<?> clazz, String name) throws IllegalAccessException {
-        ConfigCategory category = configBuilder.getOrCreateCategory(new TextComponent(name));
+        ConfigCategory category = configBuilder.getOrCreateCategory(Component.literal(name));
         ConfigEntryBuilder builder = ConfigEntryBuilder.create();
         for (Field field : clazz.getDeclaredFields()) {
             Class<?> type = field.getType();
@@ -74,12 +71,12 @@ public class FabricConfigMenu extends ConfigMenu implements ModMenuApi {
     }
 
     @SuppressWarnings("unchecked")
-    private <T, R extends TooltipListEntry<T>> R addField(IBuilderFactory<T, R> builderFactory, Field field) throws IllegalAccessException {
+    private <T, R extends TooltipListEntry<T>, S extends FieldBuilder<T, R, S>> R addField(IBuilderFactory<T, R, S> builderFactory, Field field) throws IllegalAccessException {
         T value = (T) field.get(null);
-        IFieldBuilder<T, R> fixedBuilder = (IFieldBuilder<T, R>) builderFactory.create(new TextComponent(field.getName()), value);
+        IFieldBuilder<T, R> fixedBuilder = (IFieldBuilder<T, R>) builderFactory.create(Component.literal(field.getName()), value);
         fixedBuilder.setDefaultValue(value).setSaveConsumer(s -> setField(field, s));
         Config.Section.Comment comment = field.getAnnotation(Config.Section.Comment.class);
-        if (comment != null) fixedBuilder.setTooltip(new TextComponent(comment.value()));
+        if (comment != null) fixedBuilder.setTooltip(Component.literal(comment.value()));
         return fixedBuilder.build();
     }
 }

@@ -12,29 +12,32 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ForgeClientRegistry implements IClientRegistry {
 
     @Override
-    public <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<ParticleFactoryRegisterEvent>) particleFactoryRegisterEvent -> {
+    public <T extends ParticleOptions> void registerParticleProvider(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
             Minecraft.getInstance().particleEngine.register(type, aNew::apply);
         });
     }
 
     @Override
-    public <T extends Entity> void registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterRenderers>) event -> {
-            event.registerEntityRenderer(type, renderSupplier);
-        });
+    public void registerModelLayer(ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
             event.registerLayerDefinition(modelLayerLocation, () -> modelData);
+        });
+    }
+
+    @Override
+    public <T extends Entity> void registerEntityRenderer(EntityType<T> type, EntityRendererProvider<T> renderSupplier) {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterRenderers>) event -> {
+            event.registerEntityRenderer(type, renderSupplier);
         });
     }
 }

@@ -30,8 +30,8 @@ public abstract class TLibForgeMod {
 
     public TLibForgeMod() {
         TLibMod.IMod modAnnotation = getClass().getAnnotation(TLibMod.IMod.class);
-        commonMod = TenzinLib.INSTANCE.get(modAnnotation.value());
-        clientMod = TenzinLib.INSTANCE.getClient(modAnnotation.value());
+        commonMod = getCommonMod();
+        clientMod = getClientMod();
         modid = modAnnotation.value();
 
         // Setup stages
@@ -39,7 +39,7 @@ public abstract class TLibForgeMod {
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         // Create deferred registers
-        ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, modid);
+        ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, modid);
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
         PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, modid);
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modid);
@@ -55,6 +55,9 @@ public abstract class TLibForgeMod {
         SOUNDS.register(bus);
     }
 
+    protected abstract TLibMod getCommonMod();
+    protected abstract TLibModClient getClientMod();
+
     protected ForgeConfigMenu configMenu() {
         return null;
     }
@@ -62,11 +65,12 @@ public abstract class TLibForgeMod {
     private void onCommonSetup(FMLCommonSetupEvent event) {
         CommonRegistrar.register(modid, commonMod.packets());
         CommonRegistrar.register(modid, commonMod.capabilities());
-        ConfigRegistrar.INSTANCE.register(modid, commonMod.config());
+        ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
         ClientRegistrar.register(modid, clientMod.entityModels());
+        ClientRegistrar.register(modid, clientMod.entityRenderers());
         ClientRegistrar.register(modid, clientMod.particleFactories());
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
             ForgeConfigMenu menu = configMenu();

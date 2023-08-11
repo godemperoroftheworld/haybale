@@ -23,9 +23,13 @@ public interface IModEntities {
     }
 
     class TLibEntity<T extends LivingEntity> {
-        public final Supplier<EntityType<T>> TYPE = null;
+        private Supplier<EntityType<T>> type;
         public final EntityType.EntityFactory<T> _factory;
         public  final AttributeSupplier.Builder _attributes;
+
+        public EntityType<T> getType() {
+            return type.get();
+        }
 
         public TLibEntity(EntityType.EntityFactory<T> factory, AttributeSupplier.Builder attributes) {
             this._factory = factory;

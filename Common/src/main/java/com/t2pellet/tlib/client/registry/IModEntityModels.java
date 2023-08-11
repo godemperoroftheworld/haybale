@@ -21,14 +21,14 @@ public interface IModEntityModels {
     }
 
     class TLibEntityModel<T extends Entity> {
-        public final ModelLayerLocation MODEL = null;
-        public final EntityType<T> _type;
-        public final EntityRendererProvider<T> _renderProvider;
+        private ModelLayerLocation model = null;
         public final LayerDefinition _modelData;
 
-        public TLibEntityModel(EntityType<T> type, EntityRendererProvider<T> renderProvider, LayerDefinition modelData) {
-            this._type = type;
-            this._renderProvider = renderProvider;
+        public ModelLayerLocation getModel() {
+            return model;
+        }
+
+        public TLibEntityModel(LayerDefinition modelData) {
             this._modelData = modelData;
         }
     }

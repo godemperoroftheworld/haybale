@@ -19,13 +19,17 @@ import java.util.function.Function;
 public class FabricClientRegistry implements IClientRegistry {
 
     @Override
-    public <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
+    public <T extends ParticleOptions> void registerParticleProvider(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
         ParticleFactoryRegistry.getInstance().register(type, aNew::apply);
     }
 
     @Override
-    public <T extends Entity> void registerEntityRenderer(String modid, String name, EntityType<T> type, EntityRendererProvider<T> renderSupplier, ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
+    public <T extends Entity> void registerEntityRenderer(EntityType<T> type, EntityRendererProvider<T> renderSupplier) {
         registerRenderer(type, renderSupplier);
+    }
+
+    @Override
+    public void registerModelLayer(ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
         EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, () -> modelData);
     }
 

@@ -1,20 +1,14 @@
 package com.t2pellet.tlib.config;
 
+import java.io.IOException;
+import java.util.function.Supplier;
+
 public interface ConfigRegistrar {
 
-    ConfigRegistrar INSTANCE = new ConfigRegistrar() {
-        @Override
-        public void register(String modid, Config config) {
-        }
+    ConfigRegistrar INSTANCE = new ConfigRegistrarImpl();
 
-        @Override
-        public Config get(String modid) {
-            return null;
-        }
-    };
+    <T extends Config> void register(String modid, Supplier<T> configSupplier);
 
-    void register(String modid, Config config);
-
-    Config get(String modid);
+    <T extends Config> T get(String modid);
 
 }

@@ -14,14 +14,18 @@ public abstract class TLibFabricMod implements ModInitializer, ClientModInitiali
 
     public TLibFabricMod() {
         TLibMod.IMod modAnnotation = getClass().getAnnotation(TLibMod.IMod.class);
-        commonMod = TenzinLib.INSTANCE.get(modAnnotation.value());
-        clientMod = TenzinLib.INSTANCE.getClient(modAnnotation.value());
+        commonMod = getCommonMod();
+        clientMod = getClientMod();
         modid = modAnnotation.value();
     }
+
+    protected abstract TLibMod getCommonMod();
+    protected abstract TLibModClient getClientMod();
 
     @Override
     public void onInitializeClient() {
         ClientRegistrar.register(modid, clientMod.entityModels());
+        ClientRegistrar.register(modid, clientMod.entityRenderers());
         ClientRegistrar.register(modid, clientMod.particleFactories());
     }
 
@@ -33,6 +37,6 @@ public abstract class TLibFabricMod implements ModInitializer, ClientModInitiali
         CommonRegistrar.register(modid, commonMod.sounds());
         CommonRegistrar.register(modid, commonMod.packets());
         CommonRegistrar.register(modid, commonMod.capabilities());
-        ConfigRegistrar.INSTANCE.register(modid, commonMod.config());
+        ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
     }
 }

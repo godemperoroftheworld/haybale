@@ -14,13 +14,11 @@ import java.util.function.Function;
 
 public interface IClientRegistry {
 
-    <T extends ParticleOptions> void registerParticleFactory(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew);
+    <T extends ParticleOptions> void registerParticleProvider(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew);
 
-    <T extends Entity> void registerEntityRenderer(String modid,
-                                                   String name,
-                                                   EntityType<T> type,
-                                                   EntityRendererProvider<T> renderSupplier,
-                                                   ModelLayerLocation modelLayerLocation,
-                                                   LayerDefinition modelData);
+    void registerModelLayer(ModelLayerLocation modelLayerLocation, LayerDefinition modelData);
+
+    <T extends Entity> void registerEntityRenderer(EntityType<T> type,
+                                                   EntityRendererProvider<T> renderSupplier);
 
 }

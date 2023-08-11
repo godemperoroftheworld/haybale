@@ -1,6 +1,5 @@
 package com.t2pellet.tlib.common;
 
-import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
 import com.t2pellet.tlib.common.network.IModPackets;
 import com.t2pellet.tlib.common.registry.*;
@@ -17,13 +16,6 @@ public abstract class TLibMod {
     @Target(ElementType.TYPE)
     public @interface IMod {
         String value();
-    }
-
-    public TLibMod() {
-        IMod modInfo = getClass().getAnnotation(IMod.class);
-        if (modInfo != null) {
-            TenzinLib.INSTANCE.register(modInfo.value(), this);
-        }
     }
 
     public IModEntities entities() { return null; }

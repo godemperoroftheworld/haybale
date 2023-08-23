@@ -1,9 +1,18 @@
 package com.t2pellet.tlib.common.entity.capability;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.entity.EntityAccess;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface CapabilityRegistrar {
+
+    @FunctionalInterface
+    interface CapabilityFactory<T extends Capability, E extends ICapabilityHaver & EntityAccess> {
+        T get(E entity);
+    }
 
     /**
      * The capability handler instance. Use this to register and instantiate your capabilities
@@ -17,7 +26,7 @@ public interface CapabilityRegistrar {
      * @param factory : the capability factory
      * @param <T>     the capability parameter
      */
-    <T extends Capability> void register(Class<T> cap, Supplier<T> factory);
+    <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T, E> factory);
 
     /**
      * Instantiates the given capability, if registered

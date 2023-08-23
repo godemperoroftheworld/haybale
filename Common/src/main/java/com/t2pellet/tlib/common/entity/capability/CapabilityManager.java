@@ -16,7 +16,7 @@ public interface CapabilityManager {
      *
      * @param capabilityClass the class of the capablity to instantiate and add
      */
-    <T extends Capability> void addCapability(Class<T> capabilityClass);
+    <T extends Capability> T addCapability(Class<T> capabilityClass);
 
     /**
      * Get the capability instance for the given class

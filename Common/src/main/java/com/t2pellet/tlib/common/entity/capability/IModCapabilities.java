@@ -1,5 +1,7 @@
 package com.t2pellet.tlib.common.entity.capability;
 
+import net.minecraft.world.level.entity.EntityAccess;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -14,15 +16,15 @@ public interface IModCapabilities {
         Class<? extends Capability> value();
     }
 
-    class TLibCapability<T extends Capability> {
-        Supplier<T> supplier;
+    class TLibCapability<T extends Capability, E extends ICapabilityHaver & EntityAccess> {
+        CapabilityRegistrar.CapabilityFactory<T, E> supplier;
 
-        public TLibCapability(Supplier<T> supplier) {
+        public TLibCapability(CapabilityRegistrar.CapabilityFactory<T, E> supplier) {
             this.supplier = supplier;
         }
 
-        public T get() {
-            return supplier.get();
+        public T get(E entity) {
+            return supplier.get(entity);
         }
     }
 

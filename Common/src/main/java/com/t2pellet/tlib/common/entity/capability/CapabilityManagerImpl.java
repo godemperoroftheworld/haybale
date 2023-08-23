@@ -16,10 +16,11 @@ public class CapabilityManagerImpl implements CapabilityManager {
     }
 
     @Override
-    public <T extends Capability> void addCapability(Class<T> capabilityClass) {
+    public <T extends Capability> T addCapability(Class<T> capabilityClass) {
         T capability = CapabilityRegistrar.INSTANCE.get(capabilityClass)
                 .orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + capabilityClass.getSimpleName()));
         map.put(capabilityClass, capability);
+        return capability;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.common.entity.capability.Capability;
 import com.t2pellet.tlib.common.entity.capability.CapabilityRegistrar;
+import com.t2pellet.tlib.common.entity.capability.ICapabilityHaver;
 import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
 import com.t2pellet.tlib.common.network.IModPackets;
 import com.t2pellet.tlib.common.network.Packet;
@@ -12,10 +13,9 @@ import com.t2pellet.tlib.common.registry.IModSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.entity.EntityAccess;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.function.Supplier;
 
 class CommonRegistrar {
 
@@ -123,7 +123,7 @@ class CommonRegistrar {
             IModCapabilities.ICapability capabilityInfo = field.getAnnotation(IModCapabilities.ICapability.class);
             if (capabilityInfo != null && field.getType().equals(IModCapabilities.TLibCapability.class)) {
                 try {
-                    IModCapabilities.TLibCapability<? extends Capability> capability = (IModCapabilities.TLibCapability<? extends Capability>) field.get(null);
+                    IModCapabilities.TLibCapability<? extends Capability, ? extends ICapabilityHaver> capability = (IModCapabilities.TLibCapability<? extends Capability, ? extends ICapabilityHaver>) field.get(null);
                     registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -133,7 +133,7 @@ class CommonRegistrar {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Capability> void registerCapability(Class<? extends Capability> clazz, Supplier<T> supplier) {
+    private static <T extends Capability, E extends ICapabilityHaver & EntityAccess> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T, E> supplier) {
         CapabilityRegistrar.INSTANCE.register((Class<T>) clazz, supplier);
     }
 

@@ -4,7 +4,6 @@ import com.t2pellet.tlib.client.registry.IModEntityModels;
 import com.t2pellet.tlib.client.registry.IModEntityRenderers;
 import com.t2pellet.tlib.client.registry.IModParticleFactories;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -40,7 +39,7 @@ class ClientRegistrar {
 
         TenzinLib.LOG.debug("Registering entity renderers for mod: " + modid);
         for (Field field : renderers.getClass().getDeclaredFields()) {
-            if (field.getType().equals(EntityRendererProvider.class)) {
+            if (field.getType().equals(IModEntityRenderers.TLibEntityRenderer.class)) {
                 try {
                     IModEntityRenderers.TLibEntityRenderer<? extends Entity> renderer = (IModEntityRenderers.TLibEntityRenderer<? extends Entity>) field.get(null);
                     Services.CLIENT_REGISTRY.registerEntityRenderer(fixType(renderer._type), renderer._renderProvider);

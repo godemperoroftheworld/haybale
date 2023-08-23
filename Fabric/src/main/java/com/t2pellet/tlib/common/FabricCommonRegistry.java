@@ -9,7 +9,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
@@ -24,13 +26,13 @@ public class FabricCommonRegistry implements ICommonRegistry {
 
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> registerEntity(String modid, String name, EntityType.EntityFactory<T> factory, MobCategory category, float width, float height, AttributeSupplier.Builder builder) {
-        var type = Registry.register(
+        EntityType<T> type = Registry.register(
                 Registry.ENTITY_TYPE,
                 new ResourceLocation(modid, name),
                 EntityType.Builder.of(factory, MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(width, height)
                         .build(name));
-        FabricDefaultAttributeRegistry.register(type, builder);
+        FabricDefaultAttributeRegistry.register(type, builder.build());
         return () -> type;
     }
 

@@ -18,10 +18,10 @@ class CapabilityRegistrarImpl implements CapabilityRegistrar {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Capability> Optional<T> get(Class<T> cap) {
-        Supplier<T> factory = (Supplier<T>) capabilityFactoryMap.get(cap);
+    public <T extends Capability, E extends ICapabilityHaver & EntityAccess> Optional<T> get(Class<T> cap, E entity) {
+        CapabilityFactory<T, E> factory = (CapabilityFactory<T, E>) capabilityFactoryMap.get(cap);
         if (factory != null) {
-            return Optional.of(factory.get());
+            return Optional.of(factory.get(entity));
         }
         return Optional.empty();
     }

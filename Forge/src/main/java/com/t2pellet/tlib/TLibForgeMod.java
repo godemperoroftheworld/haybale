@@ -53,6 +53,8 @@ public abstract class TLibForgeMod {
         ITEMS.register(bus);
         PARTICLES.register(bus);
         SOUNDS.register(bus);
+        // Events
+        registerEvents();
     }
 
     protected abstract TLibMod getCommonMod();
@@ -61,6 +63,8 @@ public abstract class TLibForgeMod {
     protected ForgeConfigMenu configMenu() {
         return null;
     }
+
+    protected void registerEvents() {}
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         CommonRegistrar.register(modid, commonMod.packets());

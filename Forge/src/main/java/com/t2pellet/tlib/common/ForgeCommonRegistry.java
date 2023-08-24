@@ -47,8 +47,4 @@ public class ForgeCommonRegistry implements ICommonRegistry {
         TLibForgeMod forgeMod = TenzinLibForge.getInstance().get(modid);
         return forgeMod.ITEMS.register(name, () -> new Item(properties));
     }
-
-    @Override
-    public void registerEvents() {
-    }
 }

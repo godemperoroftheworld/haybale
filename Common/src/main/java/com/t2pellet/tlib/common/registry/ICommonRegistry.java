@@ -20,6 +20,4 @@ public interface ICommonRegistry {
 
     Supplier<Item> registerItem(String modid, String name, Item.Properties properties);
 
-    void registerEvents();
-
 }

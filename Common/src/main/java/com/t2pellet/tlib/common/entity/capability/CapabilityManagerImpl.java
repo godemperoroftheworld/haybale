@@ -4,20 +4,24 @@ import com.t2pellet.tlib.TenzinLib;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.entity.EntityAccess;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CapabilityManagerImpl implements CapabilityManager {
+public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> implements CapabilityManager {
+
 
     private final Map<Class<? extends Capability>, Capability> map = new HashMap<>();
+    private final E entity;
 
-    CapabilityManagerImpl() {
+    CapabilityManagerImpl(E entity) {
+        this.entity = entity;
     }
 
     @Override
     public <T extends Capability> T addCapability(Class<T> capabilityClass) {
-        T capability = CapabilityRegistrar.INSTANCE.get(capabilityClass)
+        T capability = CapabilityRegistrar.INSTANCE.get(capabilityClass, entity)
                 .orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + capabilityClass.getSimpleName()));
         map.put(capabilityClass, capability);
         return capability;
@@ -63,7 +67,7 @@ public class CapabilityManagerImpl implements CapabilityManager {
     }
 
     private <T extends Capability> T fromTag(Class<T> aClass, Tag tag) {
-        T capability = CapabilityRegistrar.INSTANCE.get(aClass)
+        T capability = CapabilityRegistrar.INSTANCE.get(aClass, entity)
                 .orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + aClass.getSimpleName()));
         capability.readTag(tag);
         return capability;

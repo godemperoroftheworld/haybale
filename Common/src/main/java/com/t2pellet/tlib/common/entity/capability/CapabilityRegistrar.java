@@ -35,6 +35,6 @@ public interface CapabilityRegistrar {
      * @param <T> the capability parameter
      * @return an optional for the instance of the capability. Optional is empty if the capability is not registered
      */
-    <T extends Capability> Optional<T> get(Class<T> cap);
+    <T extends Capability, E extends ICapabilityHaver & EntityAccess> Optional<T> get(Class<T> cap, E entity);
 
 }

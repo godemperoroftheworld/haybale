@@ -46,8 +46,4 @@ public class FabricCommonRegistry implements ICommonRegistry {
         Item item = Registry.register(Registry.ITEM, new ResourceLocation(modid, name), new Item(properties));
         return () -> item;
     }
-
-    @Override
-    public void registerEvents() {
-    }
 }

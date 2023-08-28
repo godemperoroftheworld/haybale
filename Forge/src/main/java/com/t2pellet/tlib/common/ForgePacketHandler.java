@@ -6,6 +6,7 @@ import com.t2pellet.tlib.common.network.IPacketHandler;
 import com.t2pellet.tlib.common.network.Packet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -78,13 +79,13 @@ public class ForgePacketHandler implements IPacketHandler {
 
     @Override
     public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
-        AABB box = new AABB(e.blockPosition());
-        box.inflate(range);
+        AABB box = new AABB(e.blockPosition()).inflate(range);
         sendInArea(packet, e.getLevel(), box);
     }
 
     @Override
     public <T extends Packet> void sendInArea(T packet, Level world, AABB area) {
-
+        ServerPlayer[] players = ((ServerLevel) world).players().stream().filter((p) -> area.contains(p.position())).toArray(ServerPlayer[]::new);
+        sendTo(packet, players);
     }
 }

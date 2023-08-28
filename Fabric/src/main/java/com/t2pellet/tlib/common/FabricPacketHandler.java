@@ -12,9 +12,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -22,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FabricPacketHandler implements IPacketHandler {
 
@@ -91,15 +95,14 @@ public class FabricPacketHandler implements IPacketHandler {
 
     @Override
     public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
-        AABB box = new AABB(e.blockPosition());
-        box.inflate(range);
+        AABB box = new AABB(e.blockPosition()).inflate(range);
         sendInArea(packet, e.getLevel(), box);
     }
 
     @Override
     public <T extends Packet> void sendInArea(T packet, Level world, AABB area) {
-        List<ServerPlayer> nearbyPlayers = world.getEntitiesOfClass(ServerPlayer.class, area, p -> true);
-        sendTo(packet, nearbyPlayers.toArray(new ServerPlayer[0]));
+        ServerPlayer[] players = ((ServerLevel) world).players().stream().filter((p) -> area.contains(p.position())).toArray(ServerPlayer[]::new);
+        sendTo(packet, players);
     }
 
 }

@@ -22,10 +22,8 @@ public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> im
 
     @Override
     public <T extends Capability> T addCapability(Class<T> capabilityClass) {
-        T capability = CapabilityRegistrar.INSTANCE.get(capabilityClass, entity)
-                .orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + capabilityClass.getSimpleName()));
-        map.put(capabilityClass, capability);
-        return capability;
+        instantiateCapability(capabilityClass);
+        return (T) map.get(capabilityClass);
     }
 
     @Override
@@ -64,18 +62,15 @@ public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> im
             CompoundTag compoundTag = (CompoundTag) tagInList;
             try {
                 Class<? extends Capability> aClass = (Class<? extends Capability>) Class.forName(compoundTag.getString("className"));
-                Capability capability = fromTag(aClass, compoundTag.get("capability"));
-                map.put(aClass, capability);
+                if (!map.containsKey(aClass)) instantiateCapability(aClass);
+                map.get(aClass).readTag(compoundTag.get("capability"));
             } catch (ClassNotFoundException e) {
                 TenzinLib.LOG.error("Failed to instantiate capability from NBT", e);
             }
         });
     }
 
-    private <T extends Capability> T fromTag(Class<T> aClass, Tag tag) {
-        T capability = CapabilityRegistrar.INSTANCE.get(aClass, entity)
-                .orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + aClass.getSimpleName()));
-        capability.readTag(tag);
-        return capability;
+    private <T extends Capability> void instantiateCapability(Class<T> aClass) {
+        map.put(aClass, CapabilityRegistrar.INSTANCE.get(aClass, entity).orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + aClass.getSimpleName())));
     }
 }

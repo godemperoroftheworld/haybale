@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tlib",
-  "version": "0.1.7-alpha",
+  "version": "0.2.10-alpha",
   "name": "Tenzin Lib",
   "description": "Library mod for Tenzin's mods!",
   "authors": [
@@ -20,6 +20,8 @@
     ]
   },
   "mixins": [
+    "tlib.mixins.json",
+    "tlib.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.13",

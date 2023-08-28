@@ -14,11 +14,16 @@ public interface IModPackets {
         boolean client();
     }
 
-     class TLibPacket<T extends Packet<T>> {
-        public final Class<T> PACKET;
+    class TLibPacket {
 
-        public TLibPacket(Class<T> packet) {
-            PACKET = packet;
+        private final Class<? extends Packet> packetClass;
+
+        public TLibPacket(Class<? extends Packet> packetClass) {
+            this.packetClass = packetClass;
+        }
+
+        public Class<? extends Packet> getPacketClass() {
+            return packetClass;
         }
     }
 }

@@ -1,11 +1,8 @@
 package com.t2pellet.tlib.common.entity.capability;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.entity.EntityAccess;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public interface CapabilityRegistrar {
 

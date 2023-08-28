@@ -1,5 +1,6 @@
 package com.t2pellet.tlib.common.registry;
 
+import com.t2pellet.tlib.common.network.Packet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -19,5 +20,8 @@ public interface ICommonRegistry {
     void registerSound(SoundEvent event);
 
     Supplier<Item> registerItem(String modid, String name, Item.Properties properties);
+
+    void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass);
+    void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass);
 
 }

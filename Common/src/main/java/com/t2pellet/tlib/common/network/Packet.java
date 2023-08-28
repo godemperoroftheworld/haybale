@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public abstract class Packet<T extends Packet<T>> {
+public abstract class Packet {
 
     protected CompoundTag tag;
 

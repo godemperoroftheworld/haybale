@@ -1,6 +1,10 @@
 package com.t2pellet.tlib.common;
 
+import com.t2pellet.tlib.Services;
+import com.t2pellet.tlib.common.network.Packet;
 import com.t2pellet.tlib.common.registry.ICommonRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -45,5 +49,17 @@ public class FabricCommonRegistry implements ICommonRegistry {
     public Supplier<Item> registerItem(String modid, String name, Item.Properties properties) {
         Item item = Registry.register(Registry.ITEM, new ResourceLocation(modid, name), new Item(properties));
         return () -> item;
+    }
+
+    @Override
+    public void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass) {
+        FabricPacketHandler packetHandler = (FabricPacketHandler) Services.PACKET_HANDLER;
+        packetHandler.registerServerPacket(modid, name, packetClass);
+    }
+
+    @Override
+    public void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass) {
+        FabricPacketHandler packetHandler = (FabricPacketHandler) Services.PACKET_HANDLER;
+        packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }

@@ -5,7 +5,6 @@ import net.minecraft.world.level.entity.EntityAccess;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 class CapabilityRegistrarImpl implements CapabilityRegistrar {
 

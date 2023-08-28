@@ -1,10 +1,12 @@
 package com.t2pellet.tlib.mixin;
 
+import com.t2pellet.tlib.common.entity.capability.AbstractCapability;
 import com.t2pellet.tlib.common.entity.capability.ICapabilityHaver;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import org.lwjgl.system.CallbackI;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

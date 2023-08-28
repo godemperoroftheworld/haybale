@@ -5,7 +5,6 @@ import com.t2pellet.tlib.common.entity.capability.CapabilityRegistrar;
 import com.t2pellet.tlib.common.entity.capability.ICapabilityHaver;
 import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
 import com.t2pellet.tlib.common.network.IModPackets;
-import com.t2pellet.tlib.common.network.Packet;
 import com.t2pellet.tlib.common.registry.IModEntities;
 import com.t2pellet.tlib.common.registry.IModItems;
 import com.t2pellet.tlib.common.registry.IModParticles;
@@ -102,11 +101,11 @@ class CommonRegistrar {
             IModPackets.IPacket packetInfo = field.getAnnotation(IModPackets.IPacket.class);
             if (packetInfo != null && field.getType().equals(IModPackets.TLibPacket.class)) {
                 try {
-                    IModPackets.TLibPacket<? extends Packet<?>> packet = (IModPackets.TLibPacket<? extends Packet<?>>) field.get(null);
+                    IModPackets.TLibPacket packet = (IModPackets.TLibPacket) field.get(null);
                     if (packetInfo.client()) {
-                        Services.PACKET_HANDLER.registerClientPacket(modid, packetInfo.name(), packet.PACKET);
+                        Services.COMMON_REGISTRY.registerClientPacket(modid, packetInfo.name(), packet.getPacketClass());
                     } else {
-                        Services.PACKET_HANDLER.registerServerPacket(modid, packetInfo.name(), packet.PACKET);
+                        Services.COMMON_REGISTRY.registerServerPacket(modid, packetInfo.name(), packet.getPacketClass());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -123,7 +122,7 @@ class CommonRegistrar {
             IModCapabilities.ICapability capabilityInfo = field.getAnnotation(IModCapabilities.ICapability.class);
             if (capabilityInfo != null && field.getType().equals(IModCapabilities.TLibCapability.class)) {
                 try {
-                    IModCapabilities.TLibCapability<? extends Capability, ? extends ICapabilityHaver> capability = (IModCapabilities.TLibCapability<? extends Capability, ? extends ICapabilityHaver>) field.get(null);
+                    IModCapabilities.TLibCapability<?, ?> capability = (IModCapabilities.TLibCapability<?, ?>) field.get(null);
                     registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
                     e.printStackTrace();

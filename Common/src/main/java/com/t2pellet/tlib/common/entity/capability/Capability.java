@@ -17,5 +17,4 @@ public interface Capability {
      * @param tag the data tag
      */
     void readTag(Tag tag);
-
 }

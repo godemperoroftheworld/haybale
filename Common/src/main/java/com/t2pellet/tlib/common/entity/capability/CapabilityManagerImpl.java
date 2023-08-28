@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.entity.EntityAccess;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> implements CapabilityManager {
@@ -31,6 +32,11 @@ public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> im
     @SuppressWarnings("unchecked")
     public <T extends Capability> T getCapability(Class<T> capabilityClass) {
         return (T) map.get(capabilityClass);
+    }
+
+    @Override
+    public List<Capability> getCapabilities() {
+        return map.values().stream().toList();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.t2pellet.tlib;
 
+import com.t2pellet.tlib.client.TLibModClient;
+import com.t2pellet.tlib.common.TLibMod;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Mod(TenzinLib.MODID)
-public class TenzinLibForge {
+@TLibMod.IMod(TenzinLib.MODID)
+public class TenzinLibForge extends TLibForgeMod {
 
     private static TenzinLibForge instance = null;
     public static TenzinLibForge getInstance() {
@@ -17,6 +20,16 @@ public class TenzinLibForge {
 
     public TenzinLibForge() {
         TenzinLibForge.instance = this;
+    }
+
+    @Override
+    protected TLibMod getCommonMod() {
+        return TenzinLib.INSTANCE;
+    }
+
+    @Override
+    protected TLibModClient getClientMod() {
+        return null;
     }
 
     public void register(String id, TLibForgeMod mod) {

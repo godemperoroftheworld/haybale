@@ -14,6 +14,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -24,14 +25,13 @@ import java.util.Map;
 
 public class FabricPacketHandler implements IPacketHandler {
 
-    private final Map<Class<? extends Packet<?>>, ResourceLocation> idMap;
+    private final Map<Class<? extends Packet>, ResourceLocation> idMap;
 
     public FabricPacketHandler() {
         idMap = new HashMap<>();
     }
 
-    @Override
-    public <T extends Packet<T>> void registerServerPacket(String modid, String name, Class<T> packetClass) {
+    public <T extends Packet> void registerServerPacket(String modid, String name, Class<T> packetClass) {
         ResourceLocation loc = new ResourceLocation(modid, name);
         idMap.put(packetClass, loc);
         ServerPlayNetworking.registerGlobalReceiver(loc, (minecraftServer, serverPlayer, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
@@ -46,8 +46,7 @@ public class FabricPacketHandler implements IPacketHandler {
 
     }
 
-    @Override
-    public <T extends Packet<T>> void registerClientPacket(String modid, String name, Class<T> packetClass) {
+    public <T extends Packet> void registerClientPacket(String modid, String name, Class<T> packetClass) {
         ResourceLocation loc = new ResourceLocation(modid, name);
         idMap.put(packetClass, loc);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -56,7 +55,7 @@ public class FabricPacketHandler implements IPacketHandler {
     }
 
     @Environment(EnvType.CLIENT)
-    private <T extends Packet<T>> void _registerClientPacket(ResourceLocation id, Class<T> packetClass) {
+    private <T extends Packet> void _registerClientPacket(ResourceLocation id, Class<T> packetClass) {
         ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, responseSender) -> {
             try {
                 T packet = packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(buf);
@@ -69,21 +68,21 @@ public class FabricPacketHandler implements IPacketHandler {
     }
 
     @Override
-    public <T extends Packet<T>> void sendToServer(Packet<T> packet) {
+    public <T extends Packet> void sendToServer(T packet) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         packet.encode(data);
         ClientPlayNetworking.send(idMap.get(packet.getClass()), data);
     }
 
     @Override
-    public <T extends Packet<T>> void sendTo(Packet<T> packet, ServerPlayer player) {
+    public <T extends Packet> void sendTo(T packet, ServerPlayer player) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         packet.encode(data);
         ServerPlayNetworking.send(player, idMap.get(packet.getClass()), data);
     }
 
     @Override
-    public <T extends Packet<T>> void sendTo(Packet<T> packet, ServerPlayer... players) {
+    public <T extends Packet> void sendTo(T packet, ServerPlayer... players) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         ResourceLocation id = idMap.get(packet.getClass());
         packet.encode(data);
@@ -91,14 +90,14 @@ public class FabricPacketHandler implements IPacketHandler {
     }
 
     @Override
-    public <T extends Packet<T>> void sendInRange(Packet<T> packet, Entity e, float range) {
+    public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
         AABB box = new AABB(e.blockPosition());
         box.inflate(range);
         sendInArea(packet, e.getLevel(), box);
     }
 
     @Override
-    public <T extends Packet<T>> void sendInArea(Packet<T> packet, Level world, AABB area) {
+    public <T extends Packet> void sendInArea(T packet, Level world, AABB area) {
         List<ServerPlayer> nearbyPlayers = world.getEntitiesOfClass(ServerPlayer.class, area, p -> true);
         sendTo(packet, nearbyPlayers.toArray(new ServerPlayer[0]));
     }

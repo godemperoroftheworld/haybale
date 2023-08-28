@@ -33,6 +33,7 @@ public abstract class TLibForgeMod {
         commonMod = getCommonMod();
         clientMod = getClientMod();
         modid = modAnnotation.value();
+        TenzinLibForge.getInstance().register(modid, this);
 
         // Setup stages
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -44,10 +45,12 @@ public abstract class TLibForgeMod {
         PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, modid);
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modid);
         // Pre-init
-        CommonRegistrar.register(modid, commonMod.entities());
-        CommonRegistrar.register(modid, commonMod.items());
-        CommonRegistrar.register(modid, commonMod.particles());
-        CommonRegistrar.register(modid, commonMod.sounds());
+        if (commonMod != null) {
+            CommonRegistrar.register(modid, commonMod.entities());
+            CommonRegistrar.register(modid, commonMod.items());
+            CommonRegistrar.register(modid, commonMod.particles());
+            CommonRegistrar.register(modid, commonMod.sounds());
+        }
         // Register into deferred registers
         ENTITIES.register(bus);
         ITEMS.register(bus);
@@ -67,15 +70,19 @@ public abstract class TLibForgeMod {
     protected void registerEvents() {}
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        CommonRegistrar.register(modid, commonMod.packets());
-        CommonRegistrar.register(modid, commonMod.capabilities());
-        ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
+        if (commonMod != null) {
+            CommonRegistrar.register(modid, commonMod.packets());
+            CommonRegistrar.register(modid, commonMod.capabilities());
+            ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
+        }
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
-        ClientRegistrar.register(modid, clientMod.entityModels());
-        ClientRegistrar.register(modid, clientMod.entityRenderers());
-        ClientRegistrar.register(modid, clientMod.particleFactories());
+        if (clientMod != null) {
+            ClientRegistrar.register(modid, clientMod.entityModels());
+            ClientRegistrar.register(modid, clientMod.entityRenderers());
+            ClientRegistrar.register(modid, clientMod.particleFactories());
+        }
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
             ForgeConfigMenu menu = configMenu();
             if (menu != null) {

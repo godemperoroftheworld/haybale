@@ -3,13 +3,15 @@ package com.t2pellet.tlib.common.entity.capability;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.entity.EntityAccess;
 
+import java.util.List;
+
 public interface CapabilityManager {
 
     /**
      * @return new CapabilityManager instance
      */
     static <E extends ICapabilityHaver & EntityAccess> CapabilityManager newInstance(E entity) {
-        return new CapabilityManagerImpl(entity);
+        return new CapabilityManagerImpl<>(entity);
     }
 
     /**
@@ -26,6 +28,8 @@ public interface CapabilityManager {
      * @return the instance for that class in this CapabilityManager
      */
     <T extends Capability> T getCapability(Class<T> capabilityClass);
+
+    <T extends Capability> List<T> getCapabilities();
 
     /**
      * Update the capability instance for the given class

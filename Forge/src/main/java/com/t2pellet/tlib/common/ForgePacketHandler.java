@@ -29,20 +29,17 @@ public class ForgePacketHandler implements IPacketHandler {
             PROTOCOL_VERSION::equals
     );
 
-
-    @Override
-    public <T extends Packet<T>> void registerServerPacket(String modid, String name, Class<T> packetClass) {
+    public void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass) {
         idMap.put(new ResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
-    @Override
-    public <T extends Packet<T>> void registerClientPacket(String modid, String name, Class<T> packetClass) {
+    public void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass) {
         idMap.put(new ResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
-    private <T extends Packet<T>> void registerPacket(String modid, String name, Class<T> packetClass) {
+    private <T extends Packet> void registerPacket(String modid, String name, Class<T> packetClass) {
         ResourceLocation id = new ResourceLocation(modid, name);
         INSTANCE.registerMessage(idMap.get(id), packetClass, Packet::encode, friendlyByteBuf -> {
             try {
@@ -63,31 +60,31 @@ public class ForgePacketHandler implements IPacketHandler {
     }
 
     @Override
-    public <T extends Packet<T>> void sendToServer(Packet<T> packet) {
+    public <T extends Packet> void sendToServer(T packet) {
         INSTANCE.sendToServer(packet);
     }
 
     @Override
-    public <T extends Packet<T>> void sendTo(Packet<T> packet, ServerPlayer player) {
+    public <T extends Packet> void sendTo(T packet, ServerPlayer player) {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 
     @Override
-    public <T extends Packet<T>> void sendTo(Packet<T> packet, ServerPlayer... players) {
+    public <T extends Packet> void sendTo(T packet, ServerPlayer... players) {
         for (ServerPlayer player : players) {
             sendTo(packet, player);
         }
     }
 
     @Override
-    public <T extends Packet<T>> void sendInRange(Packet<T> packet, Entity e, float range) {
+    public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
         AABB box = new AABB(e.blockPosition());
         box.inflate(range);
         sendInArea(packet, e.getLevel(), box);
     }
 
     @Override
-    public <T extends Packet<T>> void sendInArea(Packet<T> packet, Level world, AABB area) {
+    public <T extends Packet> void sendInArea(T packet, Level world, AABB area) {
 
     }
 }

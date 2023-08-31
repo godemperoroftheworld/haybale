@@ -6,4 +6,6 @@ public interface ISidedExecutor {
 
     void scheduleServer(Runnable runnable);
 
+    void scheduleServer(int ticks, Runnable runnable);
+
 }

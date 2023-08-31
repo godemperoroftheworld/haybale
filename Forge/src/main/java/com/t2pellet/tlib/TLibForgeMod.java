@@ -67,7 +67,8 @@ public abstract class TLibForgeMod {
         return null;
     }
 
-    protected void registerEvents() {}
+    protected void registerEvents() {
+    }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         if (commonMod != null) {

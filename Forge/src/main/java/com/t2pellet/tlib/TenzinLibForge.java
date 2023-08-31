@@ -2,6 +2,8 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
 import com.t2pellet.tlib.common.TLibMod;
+import com.t2pellet.tlib.services.ForgeSidedExecutor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
@@ -40,4 +42,8 @@ public class TenzinLibForge extends TLibForgeMod {
         return modMap.get(modid);
     }
 
+    @Override
+    protected void registerEvents() {
+        MinecraftForge.EVENT_BUS.addListener(((ForgeSidedExecutor) Services.SIDE)::onServerTick);
+    }
 }

@@ -7,8 +7,8 @@ import java.util.Optional;
 public interface CapabilityRegistrar {
 
     @FunctionalInterface
-    interface CapabilityFactory<T extends Capability, E extends ICapabilityHaver & EntityAccess> {
-        T get(E entity);
+    interface CapabilityFactory<T extends Capability> {
+        <E extends ICapabilityHaver & EntityAccess> T get(E entity);
     }
 
     /**
@@ -23,7 +23,7 @@ public interface CapabilityRegistrar {
      * @param factory : the capability factory
      * @param <T>     the capability parameter
      */
-    <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T, E> factory);
+    <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T> factory);
 
     /**
      * Instantiates the given capability, if registered

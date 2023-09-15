@@ -48,7 +48,7 @@ public class FabricSidedExecutor implements ISidedExecutor {
     public void onServerTick(MinecraftServer server) {
         ++tick;
         PQEntry top = pq.peek();
-        if (top != null && top.tick >= tick) {
+        if (top != null && top.tick < tick) {
             pq.poll();
             server.execute(top.runnable);
         }

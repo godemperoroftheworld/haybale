@@ -8,17 +8,17 @@ import java.util.Optional;
 
 class CapabilityRegistrarImpl implements CapabilityRegistrar {
 
-    private final Map<Class<?>, CapabilityFactory<?, ?>> capabilityFactoryMap = new HashMap<>();
+    private final Map<Class<?>, CapabilityFactory<?>> capabilityFactoryMap = new HashMap<>();
 
     @Override
-    public <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T, E> factory) {
+    public <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T> factory) {
         capabilityFactoryMap.put(cap, factory);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Capability, E extends ICapabilityHaver & EntityAccess> Optional<T> get(Class<T> cap, E entity) {
-        CapabilityFactory<T, E> factory = (CapabilityFactory<T, E>) capabilityFactoryMap.get(cap);
+        CapabilityFactory<T> factory = (CapabilityFactory<T>) capabilityFactoryMap.get(cap);
         if (factory != null) {
             return Optional.of(factory.get(entity));
         }

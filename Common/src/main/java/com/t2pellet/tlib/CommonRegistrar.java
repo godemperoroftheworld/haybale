@@ -122,7 +122,7 @@ class CommonRegistrar {
             IModCapabilities.ICapability capabilityInfo = field.getAnnotation(IModCapabilities.ICapability.class);
             if (capabilityInfo != null && field.getType().equals(IModCapabilities.TLibCapability.class)) {
                 try {
-                    IModCapabilities.TLibCapability<?, ?> capability = (IModCapabilities.TLibCapability<?, ?>) field.get(null);
+                    IModCapabilities.TLibCapability<?> capability = (IModCapabilities.TLibCapability<?>) field.get(null);
                     registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -132,7 +132,7 @@ class CommonRegistrar {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Capability, E extends ICapabilityHaver & EntityAccess> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T, E> supplier) {
+    private static <T extends Capability, E extends ICapabilityHaver & EntityAccess> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T> supplier) {
         CapabilityRegistrar.INSTANCE.register((Class<T>) clazz, supplier);
     }
 

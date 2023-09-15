@@ -15,14 +15,14 @@ public interface IModCapabilities {
         Class<? extends Capability> value();
     }
 
-    class TLibCapability<T extends Capability, E extends ICapabilityHaver & EntityAccess> {
-        CapabilityRegistrar.CapabilityFactory<T, E> supplier;
+    class TLibCapability<T extends Capability> {
+        CapabilityRegistrar.CapabilityFactory<T> supplier;
 
-        public TLibCapability(CapabilityRegistrar.CapabilityFactory<T, E> supplier) {
+        public TLibCapability(CapabilityRegistrar.CapabilityFactory<T> supplier) {
             this.supplier = supplier;
         }
 
-        public T get(E entity) {
+        public <E extends EntityAccess & ICapabilityHaver> T get(E entity) {
             return supplier.get(entity);
         }
     }

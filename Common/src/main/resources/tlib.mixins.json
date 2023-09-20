@@ -5,12 +5,12 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ServerEntityMixin"
+    "ServerEntityMixin",
+    "EntityMixin"
   ],
   "client": [
   ],
   "server": [
-    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

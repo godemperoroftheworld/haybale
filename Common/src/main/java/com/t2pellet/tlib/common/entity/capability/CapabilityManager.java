@@ -1,7 +1,7 @@
 package com.t2pellet.tlib.common.entity.capability;
 
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface CapabilityManager {
     /**
      * @return new CapabilityManager instance
      */
-    static <E extends ICapabilityHaver & EntityAccess> CapabilityManager newInstance(E entity) {
+    static <E extends Entity & ICapabilityHaver> CapabilityManager newInstance(E entity) {
         return new CapabilityManagerImpl<>(entity);
     }
 

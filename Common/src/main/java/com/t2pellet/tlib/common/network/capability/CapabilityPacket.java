@@ -6,9 +6,9 @@ import com.t2pellet.tlib.common.network.Packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.entity.Entity;
 
-public class CapabilityPacket<E extends ICapabilityHaver & EntityAccess> extends Packet {
+public class CapabilityPacket<E extends Entity & ICapabilityHaver> extends Packet {
 
     private E capabilityHaver;
     private final Class<? extends Capability> clazz;

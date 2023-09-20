@@ -4,28 +4,26 @@ import com.t2pellet.tlib.Services;
 import com.t2pellet.tlib.common.network.capability.CapabilityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.entity.EntityAccess;
 
-public abstract class AbstractCapability<E extends ICapabilityHaver & EntityAccess> implements Capability {
+public abstract class AbstractCapability<E extends Entity & ICapabilityHaver> implements Capability {
 
-    protected E e;
+    protected E entity;
 
-    protected AbstractCapability(E e) {
-        this.e = e;
+    protected AbstractCapability(E entity) {
+        this.entity = entity;
     }
 
     public void synchronize() {
-        Entity entity = (Entity) e;
+        Entity entity = this.entity;
         if (!entity.level.isClientSide) {
-            CapabilityPacket<E> packet = new CapabilityPacket<>(e, getClass());
-            Services.PACKET_HANDLER.sendInRange(packet, (Entity) e, 128);
+            CapabilityPacket<E> packet = new CapabilityPacket<>(this.entity, getClass());
+            Services.PACKET_HANDLER.sendInRange(packet, this.entity, 128);
         }
     }
 
     public void synchronizeTo(ServerPlayer player) {
-        Entity entity = (Entity) e;
         if (!entity.level.isClientSide) {
-            CapabilityPacket<E> packet = new CapabilityPacket<>(e, getClass());
+            CapabilityPacket<E> packet = new CapabilityPacket<>(entity, getClass());
             Services.PACKET_HANDLER.sendTo(packet, player);
         }
     }

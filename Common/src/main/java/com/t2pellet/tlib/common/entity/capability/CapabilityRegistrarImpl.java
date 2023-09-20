@@ -1,6 +1,6 @@
 package com.t2pellet.tlib.common.entity.capability;
 
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,13 +11,13 @@ class CapabilityRegistrarImpl implements CapabilityRegistrar {
     private final Map<Class<?>, CapabilityFactory<?>> capabilityFactoryMap = new HashMap<>();
 
     @Override
-    public <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T> factory) {
+    public <T extends Capability> void register(Class<T> cap, CapabilityFactory<T> factory) {
         capabilityFactoryMap.put(cap, factory);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Capability, E extends ICapabilityHaver & EntityAccess> Optional<T> get(Class<T> cap, E entity) {
+    public <T extends Capability, E extends Entity & ICapabilityHaver> Optional<T> get(Class<T> cap, E entity) {
         CapabilityFactory<T> factory = (CapabilityFactory<T>) capabilityFactoryMap.get(cap);
         if (factory != null) {
             return Optional.of(factory.get(entity));

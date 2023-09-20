@@ -4,13 +4,13 @@ import com.t2pellet.tlib.TenzinLib;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CapabilityManagerImpl<E extends ICapabilityHaver & EntityAccess> implements CapabilityManager {
+public class CapabilityManagerImpl<E extends Entity & ICapabilityHaver > implements CapabilityManager {
 
 
     private final Map<Class<? extends Capability>, Capability> map = new HashMap<>();

@@ -12,7 +12,6 @@ import com.t2pellet.tlib.common.registry.IModSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.entity.EntityAccess;
 
 import java.lang.reflect.Field;
 
@@ -132,7 +131,7 @@ class CommonRegistrar {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Capability, E extends ICapabilityHaver & EntityAccess> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T> supplier) {
+    private static <T extends Capability> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T> supplier) {
         CapabilityRegistrar.INSTANCE.register((Class<T>) clazz, supplier);
     }
 

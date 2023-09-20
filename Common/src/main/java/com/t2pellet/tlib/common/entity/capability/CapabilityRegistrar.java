@@ -1,6 +1,6 @@
 package com.t2pellet.tlib.common.entity.capability;
 
-import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.entity.Entity;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ public interface CapabilityRegistrar {
 
     @FunctionalInterface
     interface CapabilityFactory<T extends Capability> {
-        <E extends ICapabilityHaver & EntityAccess> T get(E entity);
+        <E extends Entity & ICapabilityHaver> T get(E entity);
     }
 
     /**
@@ -23,7 +23,7 @@ public interface CapabilityRegistrar {
      * @param factory : the capability factory
      * @param <T>     the capability parameter
      */
-    <T extends Capability, E extends ICapabilityHaver & EntityAccess> void register(Class<T> cap, CapabilityFactory<T> factory);
+    <T extends Capability> void register(Class<T> cap, CapabilityFactory<T> factory);
 
     /**
      * Instantiates the given capability, if registered
@@ -32,6 +32,6 @@ public interface CapabilityRegistrar {
      * @param <T> the capability parameter
      * @return an optional for the instance of the capability. Optional is empty if the capability is not registered
      */
-    <T extends Capability, E extends ICapabilityHaver & EntityAccess> Optional<T> get(Class<T> cap, E entity);
+    <T extends Capability, E extends Entity & ICapabilityHaver> Optional<T> get(Class<T> cap, E entity);
 
 }

@@ -1,23 +1,24 @@
 {
   "schemaVersion": 1,
   "id": "tlib",
-  "version": "0.2.12-alpha",
+  "version": "${version}",
   "name": "Tenzin Lib",
   "description": "Library mod for Tenzin's mods!",
   "authors": [
-    "t2pellet"
+    "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/tlib-reborn",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/tlib",
     "sources": "https://github.com/t2pellet/tlib"
   },
-  "license": "All Rights Reserved",
+  "license": "AGPLv3",
   "icon": "assets/tlib/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "com.t2pellet.tlib.TenzinLibFabric"
-    ]
+    ],
+    "modmenu": [ "com.t2pellet.tlib.client.compat.FabricModMenuCompat"]
   },
   "mixins": [
     "tlib.mixins.json",

@@ -1,7 +1,10 @@
 package com.t2pellet.tlib.config;
 
 import com.t2pellet.tlib.Services;
-import com.t2pellet.tlib.io.IniFile;
+import com.t2pellet.tlib.TenzinLib;
+import com.t2pellet.tlib.config.property.*;
+import org.ini4j.Ini;
+import org.ini4j.Profile;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,22 +13,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
 
 public class Config {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    public @interface Section {
-        String value();
+    public @interface ModConfig {
+        String comment();
+    }
 
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target(ElementType.FIELD)
-        @interface Comment {
-            String value();
-        }
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Section {
+        String name();
+        String description();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface Entry {
+        String comment();
     }
 
     private static final String CONFIG_DIR = Services.PLATFORM.getGameDir() + "/config/";
@@ -34,6 +41,13 @@ public class Config {
 
     protected Config(String modid) {
         this.file = new File(CONFIG_DIR + modid + ".ini");
+        try {
+            if (!file.exists()) file.createNewFile();
+            if (file.length() == 0) save();
+        } catch (Exception ex) {
+            TenzinLib.LOG.error("Failed to create config file");
+            TenzinLib.LOG.error(ex.getStackTrace());
+        }
     }
 
     /**
@@ -43,22 +57,31 @@ public class Config {
      * @throws IllegalAccessException if there is an error accessing config elements
      */
     public void save() throws IOException, IllegalAccessException {
-        IniFile iniFile = IniFile.newInstance();
+        Ini ini = new Ini(file);
+        if (this.getClass().isAnnotationPresent(ModConfig.class)) {
+            ModConfig modConfig = this.getClass().getAnnotation(ModConfig.class);
+            ini.setComment(modConfig.comment());
+        }
         for (Class<?> aClass : this.getClass().getDeclaredClasses()) {
             if (aClass.isAnnotationPresent(Section.class)) {
-                Section section = aClass.getAnnotation(Section.class);
-                IniFile.Section s = iniFile.addSection(section.value());
+                Section sectionAnnotation = aClass.getAnnotation(Section.class);
+                ini.putComment(sectionAnnotation.name(), sectionAnnotation.description());
+                Profile.Section section = ini.add(sectionAnnotation.name());
                 for (Field declaredField : aClass.getDeclaredFields()) {
-                    declaredField.setAccessible(true);
-                    s.add(declaredField.getName(), declaredField.get(null));
-                    if (declaredField.isAnnotationPresent(Section.Comment.class)) {
-                        Section.Comment comment = declaredField.getAnnotation(Section.Comment.class);
-                        s.comment(declaredField.getName(), comment.value());
+                    if (declaredField.isAnnotationPresent(Entry.class)) {
+                        Entry entryAnnotation = declaredField.getAnnotation(Entry.class);
+                        Object fieldValue = declaredField.get(null);
+                        declaredField.setAccessible(true);
+                        if (fieldValue instanceof ConfigProperty<?> property) {
+                            Object value = property.getValue();
+                            section.put(declaredField.getName(), value);
+                            section.putComment(declaredField.getName(), entryAnnotation.comment());
+                        }
                     }
                 }
             }
         }
-        iniFile.store(file);
+        ini.store();
     }
 
     /**
@@ -68,38 +91,38 @@ public class Config {
      * @throws IllegalAccessException if there is an error accessing config elements
      */
     public void load() throws IOException, IllegalAccessException {
-        if (file.createNewFile()) {
+        Ini ini = new Ini(file);
+        // Skip load for first time, set up file.
+        if (ini.isEmpty()) {
             save();
+            return;
         }
-        IniFile iniFile = IniFile.newInstance();
-        iniFile.load(file);
         Class<?>[] declaredClasses = this.getClass().getDeclaredClasses();
         for (Class<?> declaredClass : declaredClasses) {
             if (declaredClass.isAnnotationPresent(Section.class)) {
                 Section section = declaredClass.getAnnotation(Section.class);
-                IniFile.Section s = iniFile.getSection(section.value());
-                if (s != null) {
-                    for (Field declaredField : declaredClass.getDeclaredFields()) {
-                        Object value;
-                        if (List.class.isAssignableFrom(declaredField.getType())) {
-                            Type listType = declaredField.getGenericType();
-                            if (listType instanceof ParameterizedType) {
-                                Class<?> type = (Class<?>) ((ParameterizedType) listType).getActualTypeArguments()[0];
-                                value = s.getAll(declaredField.getName(), type);
-                            } else throw new IllegalArgumentException("Invalid list type: " + listType);
-                        } else value = s.get(declaredField.getName(), declaredField.getType());
-                        if (value != null) {
-                            setField(declaredField, value);
+                for (Field declaredField : declaredClass.getDeclaredFields()) {
+                    Object fieldValue = declaredField.get(null);
+                    if (fieldValue instanceof ConfigProperty<?> property) {
+                        if (property instanceof IntProperty intProperty) {
+                            int value = ini.get(section.name(), declaredField.getName(), Integer.class);
+                            intProperty.setValue(value);
+                        } else if (property instanceof FloatProperty floatProperty) {
+                            float value = ini.get(section.name(), declaredField.getName(), Float.class);
+                            floatProperty.setValue(value);
+                        } else if (property instanceof BoolProperty boolProperty) {
+                            boolean value = ini.get(section.name(), declaredField.getName(), Boolean.class);
+                            boolProperty.setValue(value);
+                        } else if (property instanceof StringProperty stringProperty) {
+                            String value = ini.get(section.name(), declaredField.getName());
+                            stringProperty.setValue(value);
+                        } else if (property instanceof ListProperty<?> listProperty) {
+                            String strValue = ini.get(section.name(), declaredField.getName(), String.class);
+                            listProperty.setValue(strValue);
                         }
                     }
                 }
             }
         }
-        save();
-    }
-
-    private static void setField(Field field, Object value) throws IllegalAccessException {
-        field.setAccessible(true);
-        field.set(null, value);
     }
 }

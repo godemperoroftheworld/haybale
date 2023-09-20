@@ -14,6 +14,8 @@ mixin {
     config("${mod_id}.forge.mixins.json")
 }
 
+jarJar.enable()
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
@@ -76,8 +78,11 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":Common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.3.103")
-    runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.3.103")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_version}")
+    minecraftLibrary 'org.ini4j:ini4j:0.5.4'
+    jarJar(group: 'org.ini4j', name: 'ini4j', version: '[0.5.0,0.6.0)') {
+        jarJar.pin(it, '0.5.4')
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -94,7 +99,14 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
-jar.finalizedBy('reobfJar')
+jar {
+    archiveClassifier = 'slim'
+    finalizedBy 'reobfJar'
+}
+
+tasks.named('jarJar') {
+    archiveClassifier = ''
+}
 
 publishing {
     publications {

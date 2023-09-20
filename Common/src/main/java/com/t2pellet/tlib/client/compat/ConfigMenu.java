@@ -1,51 +1,106 @@
 package com.t2pellet.tlib.client.compat;
 
+import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.config.Config;
+import com.t2pellet.tlib.config.ConfigProperty;
 import com.t2pellet.tlib.config.ConfigRegistrar;
+import com.t2pellet.tlib.config.property.*;
+import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry;
+import me.shedaniel.clothconfig2.impl.builders.AbstractFieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
-public abstract class ConfigMenu {
+public class ConfigMenu {
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface IConfigMenu {
-        String modid();
+    interface IBuilderFactory<T, R extends TooltipListEntry<T>, S extends FieldBuilder<T, R, S>> {
+        FieldBuilder<T, R, S> create(Component component, T value);
     }
 
     final String modid;
     final Config config;
 
     // needs to be public for fabric ModMenu integration
-    public ConfigMenu() {
-        IConfigMenu menuInfo = getClass().getAnnotation(IConfigMenu.class);
-        this.modid = menuInfo.modid();
+    public ConfigMenu(String modid) {
+        this.modid = modid;
         this.config = ConfigRegistrar.INSTANCE.get(this.modid);
     }
 
-    void setField(Field field, Object value) {
+    public Screen buildConfigScreen() {
         try {
-            field.set(null, value);
+            return configBuilder().build();
+        } catch (IllegalAccessException ex) {
+            TenzinLib.LOG.error("Failed to build config screen for mod: " + modid);
+            TenzinLib.LOG.error(ex);
+        }
+        return null;
+    }
+
+    private ConfigBuilder configBuilder() throws IllegalAccessException {
+        ConfigBuilder builder = ConfigBuilder.create().setTitle(Component.translatable("title." + modid + ".config"));
+        for (Class<?> clazz : config.getClass().getDeclaredClasses()) {
+            Config.Section section = clazz.getAnnotation(Config.Section.class);
+            if (section != null) {
+                addSection(builder, clazz, section);
+            }
+        }
+        return builder;
+    }
+
+    private void addSection(ConfigBuilder configBuilder, Class<?> clazz, Config.Section section) throws IllegalAccessException {
+        ConfigCategory category = configBuilder.getOrCreateCategory(Component.literal(section.name()));
+        category.setDescription(new FormattedText[]{FormattedText.of(section.description())});
+        ConfigEntryBuilder builder = configBuilder.entryBuilder();
+        for (Field field : clazz.getDeclaredFields()) {
+            Class<?> type = field.getType();
+            field.setAccessible(true);
+            if (StringProperty.class.isAssignableFrom(type)) {
+                category.addEntry(addField(builder::startStrField, field));
+            } else if (IntProperty.class.isAssignableFrom(type)) {
+                category.addEntry(addField(builder::startIntField, field));
+            } else if (BoolProperty.class.isAssignableFrom(type)) {
+                category.addEntry(addField(builder::startBooleanToggle, field));
+            } else if (FloatProperty.class.isAssignableFrom(type)) {
+                category.addEntry(addField(builder::startFloatField, field));
+            } else if (ListProperty.class.isAssignableFrom(type)) {
+                ListProperty<?> property = (ListProperty<?>) field.get(null);
+                if (property.getType() == PropertyType.INT) {
+                    category.addEntry(addField(builder::startIntList, field));
+                } else if (property.getType() == PropertyType.FLOAT) {
+                    category.addEntry(addField(builder::startFloatList, field));
+                } else category.addEntry(addField(builder::startStrList, field));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, R extends TooltipListEntry<T>, S extends FieldBuilder<T, R, S>> R addField(IBuilderFactory<T, R, S> builderFactory, Field field) throws IllegalAccessException {
+        ConfigProperty<T> property = (ConfigProperty<T>) field.get(null);
+        T value = property.getValue();
+        Config.Entry comment = field.getAnnotation(Config.Entry.class);
+        FieldBuilder<T, R, S> fieldBuilder = builderFactory.create(Component.literal(field.getName()), value);
+        if (fieldBuilder instanceof AbstractFieldBuilder<T,R,S> betterFieldBuilder) {
+            betterFieldBuilder.setDefaultValue(property.getDefault());
+            betterFieldBuilder.setSaveConsumer(s -> updateProperty(property, s));
+            if (comment != null) betterFieldBuilder.setTooltip(Component.literal(comment.comment()));
+        }
+        return fieldBuilder.build();
+    }
+
+    private <T> void updateProperty(ConfigProperty<T> property, T value) {
+        try {
+            property.setValue(value);
             config.save();
         } catch (IllegalAccessException | IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    boolean isStringList(Field field) {
-        Type listType = field.getGenericType();
-        if (listType instanceof ParameterizedType parameterizedType) {
-            Class<?> type = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-            return String.class.isAssignableFrom(type);
-        }
-        return false;
     }
 
 }

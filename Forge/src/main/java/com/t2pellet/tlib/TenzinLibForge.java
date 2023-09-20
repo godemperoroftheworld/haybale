@@ -18,10 +18,12 @@ public class TenzinLibForge extends TLibForgeMod {
         return instance;
     }
 
-    private final Map<String, TLibForgeMod> modMap = new HashMap<>();
+    private Map<String, TLibForgeMod> modMap;
 
-    public TenzinLibForge() {
-        TenzinLibForge.instance = this;
+    @Override
+    protected void initialSetup() {
+        instance = this;
+        modMap = new HashMap<>();
     }
 
     @Override
@@ -34,16 +36,16 @@ public class TenzinLibForge extends TLibForgeMod {
         return null;
     }
 
+    @Override
+    protected void registerEvents() {
+        MinecraftForge.EVENT_BUS.addListener(((ForgeSidedExecutor) Services.SIDE)::onServerTick);
+    }
+
     public void register(String id, TLibForgeMod mod) {
         modMap.put(id, mod);
     }
 
     public TLibForgeMod get(String modid) {
         return modMap.get(modid);
-    }
-
-    @Override
-    protected void registerEvents() {
-        MinecraftForge.EVENT_BUS.addListener(((ForgeSidedExecutor) Services.SIDE)::onServerTick);
     }
 }

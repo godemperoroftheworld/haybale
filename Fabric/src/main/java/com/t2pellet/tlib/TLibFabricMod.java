@@ -32,13 +32,13 @@ public abstract class TLibFabricMod implements ModInitializer, ClientModInitiali
 
     @Override
     public void onInitialize() {
+        ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
         CommonRegistrar.register(modid, commonMod.entities());
         CommonRegistrar.register(modid, commonMod.items());
         CommonRegistrar.register(modid, commonMod.particles());
         CommonRegistrar.register(modid, commonMod.sounds());
         CommonRegistrar.register(modid, commonMod.packets());
         CommonRegistrar.register(modid, commonMod.capabilities());
-        ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
         registerEvents();
     }
 

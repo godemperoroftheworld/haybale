@@ -3,10 +3,16 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'fabric-loom'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 base {
     archivesName = "${mod_name}-fabric-${minecraft_version}"
 }
+
+configurations {
+    shade
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
@@ -14,13 +20,13 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
-    modApi("me.shedaniel.cloth:cloth-config-fabric:8.3.103") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modApi("maven.modrinth:modmenu:4.1.2")
-    modApi("com.terraformersmc:modmenu:3.2.2") {
+    modApi("com.terraformersmc:modmenu:${project.modmenu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    shadow(implementation('org.ini4j:ini4j:0.5.4'))
 }
 
 loom {
@@ -58,6 +64,16 @@ tasks.named("sourcesJar", Jar) {
 
 processResources {
     from project(":Common").sourceSets.main.resources
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    archiveClassifier.set("dev")
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    inputFile = tasks.shadowJar.archiveFile
 }
 
 publishing {

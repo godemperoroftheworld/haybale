@@ -1,10 +1,14 @@
 package com.t2pellet.tlib.config;
 
+import com.google.common.collect.ImmutableMap;
 import com.t2pellet.tlib.TenzinLib;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 class ConfigRegistrarImpl implements ConfigRegistrar {
@@ -23,7 +27,7 @@ class ConfigRegistrarImpl implements ConfigRegistrar {
             config.load();
         } catch (Exception e) {
             TenzinLib.LOG.error("Failed to register config for mod: " + modid);
-            TenzinLib.LOG.error(e.toString());
+            TenzinLib.LOG.error(e.getCause());
         }
         configMap.put(modid, config);
     }
@@ -32,5 +36,10 @@ class ConfigRegistrarImpl implements ConfigRegistrar {
     @SuppressWarnings("unchecked")
     public <T extends Config> T get(String modid) {
         return (T) configMap.get(modid);
+    }
+
+    @Override
+    public Set<String> getAllRegistered() {
+        return configMap.keySet();
     }
 }

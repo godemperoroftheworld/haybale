@@ -1,14 +1,16 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
-import com.t2pellet.tlib.client.compat.ForgeConfigMenu;
+import com.t2pellet.tlib.client.compat.ConfigMenu;
 import com.t2pellet.tlib.common.TLibMod;
 import com.t2pellet.tlib.config.ConfigRegistrar;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,6 +31,7 @@ public abstract class TLibForgeMod {
     public final DeferredRegister<Item> ITEMS;
 
     public TLibForgeMod() {
+        initialSetup();
         TLibMod.IMod modAnnotation = getClass().getAnnotation(TLibMod.IMod.class);
         commonMod = getCommonMod();
         clientMod = getClientMod();
@@ -60,12 +63,11 @@ public abstract class TLibForgeMod {
         registerEvents();
     }
 
+    // If you want to call any custom logic in your mod BEFORE any TLib stuff
+    protected void initialSetup() {}
+
     protected abstract TLibMod getCommonMod();
     protected abstract TLibModClient getClientMod();
-
-    protected ForgeConfigMenu configMenu() {
-        return null;
-    }
 
     protected void registerEvents() {
     }
@@ -85,10 +87,8 @@ public abstract class TLibForgeMod {
             ClientRegistrar.register(modid, clientMod.particleFactories());
         }
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
-            ForgeConfigMenu menu = configMenu();
-            if (menu != null) {
-                menu.registerConfigMenu();
-            }
+            ConfigMenu configMenu = new ConfigMenu(modid);
+            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
         }
     }
 

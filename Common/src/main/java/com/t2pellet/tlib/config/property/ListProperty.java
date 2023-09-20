@@ -9,6 +9,13 @@ import java.util.List;
 public class ListProperty<T> extends ConfigProperty<List<T>> {
 
     private final PropertyType<T> type;
+    private StringProperty.Validator validator;
+
+    public static ListProperty<String> of(List<String> initialValue, StringProperty.Validator validator) {
+        ListProperty<String> stringListProperty = new ListProperty<>(PropertyType.STRING, new ArrayList<>(initialValue));
+        stringListProperty.validator = validator;
+        return stringListProperty;
+    }
 
     public static <R> ListProperty<R> of(PropertyType<R> type, List<R> initialValue) {
         if (type == PropertyType.BOOL) throw new IllegalArgumentException("No support for bool lists. Sorry");
@@ -22,6 +29,14 @@ public class ListProperty<T> extends ConfigProperty<List<T>> {
     private ListProperty(PropertyType<T> type, List<T> value) {
         super(value);
         this.type = type;
+    }
+
+    @Override
+    public void setValue(List<T> value) {
+        if (type == PropertyType.STRING) {
+            if (validator != null && value.stream().anyMatch((val) -> !validator.validate((String) val))) return;
+        }
+        super.setValue(value);
     }
 
     public void setValue(String value) {

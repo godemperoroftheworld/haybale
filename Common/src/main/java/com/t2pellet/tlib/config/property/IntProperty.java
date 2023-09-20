@@ -1,9 +1,6 @@
 package com.t2pellet.tlib.config.property;
 
-import com.t2pellet.tlib.config.ConfigProperty;
-
 public class IntProperty extends ConfigProperty<Integer> {
-
     private final int minValue;
     private final int maxValue;
 
@@ -20,9 +17,9 @@ public class IntProperty extends ConfigProperty<Integer> {
     }
 
     @Override
-    public void setValue(Integer value) {
+    public void set(Integer value) {
         if (minValue <= value && value <= maxValue) {
-            super.setValue(value);
+            super.set(value);
         }
     }
 }

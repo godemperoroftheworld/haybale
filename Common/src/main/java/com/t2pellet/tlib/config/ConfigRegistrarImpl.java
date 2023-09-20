@@ -21,15 +21,16 @@ class ConfigRegistrarImpl implements ConfigRegistrar {
 
 
     @Override
-    public <T extends Config> void register(String modid, Supplier<T> configSupplier) {
-        T config = configSupplier.get();
+    public <T extends Config> void register(String modid, ConfigSupplier<T> configSupplier) {
         try {
+            T config = configSupplier.get();
             config.load();
+            config.save();
+            configMap.put(modid, config);
         } catch (Exception e) {
             TenzinLib.LOG.error("Failed to register config for mod: " + modid);
-            TenzinLib.LOG.error(e.getCause());
+            TenzinLib.LOG.error(e);
         }
-        configMap.put(modid, config);
     }
 
     @Override

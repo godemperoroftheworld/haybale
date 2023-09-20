@@ -8,9 +8,14 @@ import java.util.function.Supplier;
 
 public interface ConfigRegistrar {
 
+    @FunctionalInterface
+    interface ConfigSupplier<T extends Config> {
+        T get() throws IOException, IllegalAccessException;
+    }
+
     ConfigRegistrar INSTANCE = new ConfigRegistrarImpl();
 
-    <T extends Config> void register(String modid, Supplier<T> configSupplier);
+    <T extends Config> void register(String modid, ConfigSupplier<T> configSupplier);
 
     <T extends Config> T get(String modid);
 

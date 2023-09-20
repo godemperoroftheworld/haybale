@@ -5,6 +5,7 @@ import com.t2pellet.tlib.common.network.IModPackets;
 import com.t2pellet.tlib.common.registry.*;
 import com.t2pellet.tlib.config.Config;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,6 +25,6 @@ public abstract class TLibMod {
     public IModSounds sounds() { return null; }
     public IModPackets packets() { return null; }
     public IModCapabilities capabilities() { return null; }
-    public Config config() { return null; }
+    public Config config() throws IOException, IllegalAccessException { return null; }
 
 }

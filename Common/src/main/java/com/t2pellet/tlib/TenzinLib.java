@@ -8,6 +8,8 @@ import com.t2pellet.tlib.config.ExampleConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @TLibMod.IMod(TenzinLib.MODID)
 public class TenzinLib extends TLibMod {
 
@@ -19,8 +21,8 @@ public class TenzinLib extends TLibMod {
     }
 
     @Override
-    public Config config() {
-        return ExampleConfig.INSTANCE;
+    public Config config() throws IOException, IllegalAccessException {
+        return new ExampleConfig();
     }
 
     @Override

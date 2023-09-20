@@ -1,7 +1,5 @@
 package com.t2pellet.tlib.config.property;
 
-import com.t2pellet.tlib.config.ConfigProperty;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,17 +30,17 @@ public class ListProperty<T> extends ConfigProperty<List<T>> {
     }
 
     @Override
-    public void setValue(List<T> value) {
-        if (type == PropertyType.STRING) {
-            if (validator != null && value.stream().anyMatch((val) -> !validator.validate((String) val))) return;
-        }
-        super.setValue(value);
+    public void set(List<T> value) {
+        if (validator != null) {
+            List<T> filteredList = value.stream().filter(val -> validator.validate((String) val)).toList();
+            super.set(filteredList);
+        } else super.set(value);
     }
 
     public void setValue(String value) {
         List<String> stringList = Arrays.asList(value.replaceAll("[\\[\\] \" ]", "" ).split("\\s*,\\s*"));
         List<T> typeList = stringList.stream().map(this::convertFromStr).toList();
-        setValue(typeList);
+        set(typeList);
     }
 
     @SuppressWarnings("unchecked")

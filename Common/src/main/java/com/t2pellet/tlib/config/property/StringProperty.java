@@ -1,9 +1,6 @@
 package com.t2pellet.tlib.config.property;
 
-import com.t2pellet.tlib.config.ConfigProperty;
-
 public class StringProperty extends ConfigProperty<String> {
-
     @FunctionalInterface
     public interface Validator {
         boolean validate(String value);
@@ -22,9 +19,9 @@ public class StringProperty extends ConfigProperty<String> {
     }
 
     @Override
-    public void setValue(String value) {
+    public void set(String value) {
         if (validator == null || validator.validate(value)) {
-            super.setValue(value);
+            super.set(value);
         }
     }
 }

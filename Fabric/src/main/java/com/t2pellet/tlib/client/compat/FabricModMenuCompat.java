@@ -1,5 +1,6 @@
 package com.t2pellet.tlib.client.compat;
 
+import com.t2pellet.tlib.Services;
 import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.config.ConfigRegistrar;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
@@ -15,6 +16,10 @@ public class FabricModMenuCompat implements ModMenuApi {
 
     public FabricModMenuCompat() {
         map = new HashMap<>();
+        if (!Services.PLATFORM.isModLoaded("cloth-config")) {
+            TenzinLib.LOG.debug("No cloth config");
+            return;
+        }
         for (String modid : ConfigRegistrar.INSTANCE.getAllRegistered()) {
             ConfigMenu menu = new ConfigMenu(modid);
             map.put(modid, screen -> menu.buildConfigScreen());

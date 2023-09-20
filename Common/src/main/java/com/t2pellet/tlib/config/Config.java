@@ -1,10 +1,10 @@
 package com.t2pellet.tlib.config;
 
 import com.t2pellet.tlib.Services;
-import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.config.property.*;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,18 +36,13 @@ public class Config {
     }
 
     private static final String CONFIG_DIR = Services.PLATFORM.getGameDir() + "/config/";
-
     private final File file;
+    private final Ini ini;
 
-    protected Config(String modid) {
+    protected Config(String modid) throws IOException, IllegalAccessException {
         this.file = new File(CONFIG_DIR + modid + ".ini");
-        try {
-            if (!file.exists()) file.createNewFile();
-            if (file.length() == 0) save();
-        } catch (Exception ex) {
-            TenzinLib.LOG.error("Failed to create config file");
-            TenzinLib.LOG.error(ex.getStackTrace());
-        }
+        if (!file.exists()) file.createNewFile();
+        this.ini = new Ini(file);
     }
 
     /**
@@ -57,7 +52,8 @@ public class Config {
      * @throws IllegalAccessException if there is an error accessing config elements
      */
     public void save() throws IOException, IllegalAccessException {
-        Ini ini = new Ini(file);
+        if (!ini.getFile().exists()) ini.getFile().createNewFile();
+        ini.clear();
         if (this.getClass().isAnnotationPresent(ModConfig.class)) {
             ModConfig modConfig = this.getClass().getAnnotation(ModConfig.class);
             ini.setComment(modConfig.comment());
@@ -73,8 +69,8 @@ public class Config {
                         Object fieldValue = declaredField.get(null);
                         declaredField.setAccessible(true);
                         if (fieldValue instanceof ConfigProperty<?> property) {
-                            Object value = property.getValue();
-                            section.put(declaredField.getName(), value);
+                            Object value = property.get();
+                            section.add(declaredField.getName(), value);
                             section.putComment(declaredField.getName(), entryAnnotation.comment());
                         }
                     }
@@ -87,40 +83,43 @@ public class Config {
     /**
      * Loads the Config from disk
      *
-     * @throws IOException            if there is an error reading from disk
-     * @throws IllegalAccessException if there is an error accessing config elements
+     * @throws IllegalAccessException if there is an error loading the config
      */
-    public void load() throws IOException, IllegalAccessException {
-        Ini ini = new Ini(file);
-        // Skip load for first time, set up file.
-        if (ini.isEmpty()) {
-            save();
+    public void load() throws IllegalAccessException {
+        // Skip load for first time
+        if (ini.isEmpty() || ini.getFile().length() == 0) {
             return;
         }
         Class<?>[] declaredClasses = this.getClass().getDeclaredClasses();
         for (Class<?> declaredClass : declaredClasses) {
             if (declaredClass.isAnnotationPresent(Section.class)) {
-                Section section = declaredClass.getAnnotation(Section.class);
-                for (Field declaredField : declaredClass.getDeclaredFields()) {
-                    Object fieldValue = declaredField.get(null);
-                    if (fieldValue instanceof ConfigProperty<?> property) {
-                        if (property instanceof IntProperty intProperty) {
-                            int value = ini.get(section.name(), declaredField.getName(), Integer.class);
-                            intProperty.setValue(value);
-                        } else if (property instanceof FloatProperty floatProperty) {
-                            float value = ini.get(section.name(), declaredField.getName(), Float.class);
-                            floatProperty.setValue(value);
-                        } else if (property instanceof BoolProperty boolProperty) {
-                            boolean value = ini.get(section.name(), declaredField.getName(), Boolean.class);
-                            boolProperty.setValue(value);
-                        } else if (property instanceof StringProperty stringProperty) {
-                            String value = ini.get(section.name(), declaredField.getName());
-                            stringProperty.setValue(value);
-                        } else if (property instanceof ListProperty<?> listProperty) {
-                            String strValue = ini.get(section.name(), declaredField.getName(), String.class);
-                            listProperty.setValue(strValue);
-                        }
-                    }
+                Section sectionAnnotation = declaredClass.getAnnotation(Section.class);
+                Profile.Section section = ini.get(sectionAnnotation.name());
+                if (section != null) loadSection(declaredClass, section);
+            }
+        }
+    }
+
+    private void loadSection(Class<?> sectionClass, @NotNull Profile.Section section) throws IllegalAccessException {
+        for (Field declaredField : sectionClass.getDeclaredFields()) {
+            Object fieldValue = declaredField.get(null);
+            if (fieldValue instanceof ConfigProperty<?> property) {
+                if (!section.containsKey(declaredField.getName())) continue;
+                if (property instanceof IntProperty intProperty) {
+                    int value = section.get(declaredField.getName(), Integer.class);
+                    intProperty.set(value);
+                } else if (property instanceof FloatProperty floatProperty) {
+                    float value = section.get(declaredField.getName(), Float.class);
+                    floatProperty.set(value);
+                } else if (property instanceof BoolProperty boolProperty) {
+                    boolean value = section.get(declaredField.getName(), Boolean.class);
+                    boolProperty.set(value);
+                } else if (property instanceof StringProperty stringProperty) {
+                    String value = section.get(declaredField.getName());
+                    stringProperty.set(value);
+                } else if (property instanceof ListProperty<?> listProperty) {
+                    String strValue = section.get(declaredField.getName(), String.class);
+                    listProperty.setValue(strValue);
                 }
             }
         }

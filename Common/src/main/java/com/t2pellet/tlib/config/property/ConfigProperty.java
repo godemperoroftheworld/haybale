@@ -1,4 +1,4 @@
-package com.t2pellet.tlib.config;
+package com.t2pellet.tlib.config.property;
 
 
 public abstract class ConfigProperty<T> {
@@ -14,11 +14,11 @@ public abstract class ConfigProperty<T> {
         return initialValue;
     }
 
-    public T getValue() {
+    public T get() {
         return value;
     }
     
-    public void setValue(T value) {
+    public void set(T value) {
         this.value = value;
     }
 

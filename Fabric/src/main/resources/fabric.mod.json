@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tlib",
-  "version": "${version}",
+  "version": "${project.version}",
   "name": "Tenzin Lib",
   "description": "Library mod for Tenzin's mods!",
   "authors": [

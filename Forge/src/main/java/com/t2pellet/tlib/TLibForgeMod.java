@@ -86,7 +86,7 @@ public abstract class TLibForgeMod {
             ClientRegistrar.register(modid, clientMod.entityRenderers());
             ClientRegistrar.register(modid, clientMod.particleFactories());
         }
-        if (Services.PLATFORM.isModLoaded("cloth_config")) {
+        if (Services.PLATFORM.isModLoaded("cloth-config")) {
             ConfigMenu configMenu = new ConfigMenu(modid);
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
         }

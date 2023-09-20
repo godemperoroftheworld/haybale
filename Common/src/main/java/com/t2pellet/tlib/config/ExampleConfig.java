@@ -3,14 +3,13 @@ package com.t2pellet.tlib.config;
 import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.config.property.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Config.ModConfig(comment = "This is a config")
 public class ExampleConfig extends Config {
 
-    public static final ExampleConfig INSTANCE = new ExampleConfig();
-
-    private ExampleConfig() {
+    public ExampleConfig() throws IOException, IllegalAccessException {
         super(TenzinLib.MODID);
     }
 
@@ -30,5 +29,7 @@ public class ExampleConfig extends Config {
         public static final StringProperty testString = new StringProperty("asdf");
         @Entry(comment = "A list. i hope this works")
         public static final ListProperty<Float> testFloatList = ListProperty.of(PropertyType.FLOAT, List.of(4.2F, 3.6F));
+        @Entry(comment = "A string list. You can add things in double quotes but it will revert to a state like this one. Note the escape character for :")
+        public static final ListProperty<String> testStringList = ListProperty.of(PropertyType.STRING, List.of("asdf", "efg", "weirD:chara!cters"));
     }
 }

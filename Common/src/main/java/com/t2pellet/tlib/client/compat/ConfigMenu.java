@@ -2,7 +2,7 @@ package com.t2pellet.tlib.client.compat;
 
 import com.t2pellet.tlib.TenzinLib;
 import com.t2pellet.tlib.config.Config;
-import com.t2pellet.tlib.config.ConfigProperty;
+import com.t2pellet.tlib.config.property.ConfigProperty;
 import com.t2pellet.tlib.config.ConfigRegistrar;
 import com.t2pellet.tlib.config.property.*;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -83,7 +83,7 @@ public class ConfigMenu {
     @SuppressWarnings("unchecked")
     private <T, R extends TooltipListEntry<T>, S extends FieldBuilder<T, R, S>> R addField(IBuilderFactory<T, R, S> builderFactory, Field field) throws IllegalAccessException {
         ConfigProperty<T> property = (ConfigProperty<T>) field.get(null);
-        T value = property.getValue();
+        T value = property.get();
         Config.Entry comment = field.getAnnotation(Config.Entry.class);
         FieldBuilder<T, R, S> fieldBuilder = builderFactory.create(Component.literal(field.getName()), value);
         if (fieldBuilder instanceof AbstractFieldBuilder<T,R,S> betterFieldBuilder) {
@@ -96,7 +96,7 @@ public class ConfigMenu {
 
     private <T> void updateProperty(ConfigProperty<T> property, T value) {
         try {
-            property.setValue(value);
+            property.set(value);
             config.save();
         } catch (IllegalAccessException | IOException e) {
             throw new RuntimeException(e);

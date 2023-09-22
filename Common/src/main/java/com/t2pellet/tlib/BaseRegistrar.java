@@ -21,7 +21,7 @@ public abstract class BaseRegistrar {
                 for (Field declaredField : registerClass.getDeclaredFields()) {
                     Class<?> fieldType = declaredField.getType();
                     // Fields need a ICommonEntry annotation, ignored otherwise. Must be child of EntryType.
-                    if (declaredField.isAnnotationPresent(RegistryClass.ICommonEntry.class) && EntryType.class.isAssignableFrom(fieldType)) {
+                    if (declaredField.isAnnotationPresent(RegistryClass.IRegistryEntry.class) && EntryType.class.isAssignableFrom(fieldType)) {
                         try {
                             doGenericRegistration(modid, registryType, declaredField);
                         } catch (IllegalAccessException ex) {

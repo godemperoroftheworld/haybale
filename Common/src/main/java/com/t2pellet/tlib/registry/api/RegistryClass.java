@@ -16,6 +16,6 @@ public interface RegistryClass {
     // For entries in a IRegistryClass annotated class
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface ICommonEntry {
+    @interface IRegistryEntry {
     }
 }

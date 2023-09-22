@@ -12,7 +12,7 @@ public class ParticleFactoryEntryType<T extends ParticleOptions> extends EntryTy
 
     private final Function<SpriteSet, ParticleProvider<T>> providerFunction;
 
-    protected ParticleFactoryEntryType(Function<SpriteSet, ParticleProvider<T>> providerFunction) {
+    public ParticleFactoryEntryType(Function<SpriteSet, ParticleProvider<T>> providerFunction) {
         super(ParticleType.class);
         this.providerFunction = providerFunction;
     }

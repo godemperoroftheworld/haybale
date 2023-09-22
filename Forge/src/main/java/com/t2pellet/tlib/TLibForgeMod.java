@@ -2,7 +2,6 @@ package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
 import com.t2pellet.tlib.client.compat.ConfigMenu;
-import com.t2pellet.tlib.common.TLibMod;
 import com.t2pellet.tlib.config.ConfigRegistrar;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
@@ -49,10 +48,10 @@ public abstract class TLibForgeMod {
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modid);
         // Pre-init
         if (commonMod != null) {
-            CommonRegistrar.register(modid, commonMod.entities());
-            CommonRegistrar.register(modid, commonMod.items());
-            CommonRegistrar.register(modid, commonMod.particles());
-            CommonRegistrar.register(modid, commonMod.sounds());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.entities());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.items());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.particles());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.sounds());
         }
         // Register into deferred registers
         ENTITIES.register(bus);
@@ -74,17 +73,17 @@ public abstract class TLibForgeMod {
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         if (commonMod != null) {
-            CommonRegistrar.register(modid, commonMod.packets());
-            CommonRegistrar.register(modid, commonMod.capabilities());
+            CommonRegistrar.INSTANCE.registerPackets(modid, commonMod.packets());
+            CommonRegistrar.INSTANCE.registerCapabilities(modid, commonMod.capabilities());
             ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
         }
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
         if (clientMod != null) {
-            ClientRegistrar.register(modid, clientMod.entityModels());
-            ClientRegistrar.register(modid, clientMod.entityRenderers());
-            ClientRegistrar.register(modid, clientMod.particleFactories());
+            ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityModels());
+            ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityRenderers());
+            ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.particleFactories());
         }
         if (Services.PLATFORM.isModLoaded("cloth-config")) {
             ConfigMenu configMenu = new ConfigMenu(modid);

@@ -1,11 +1,10 @@
 package com.t2pellet.tlib.mixin;
 
-import com.t2pellet.tlib.common.entity.capability.AbstractCapability;
-import com.t2pellet.tlib.common.entity.capability.ICapabilityHaver;
+import com.t2pellet.tlib.entity.capability.api.AbstractCapability;
+import com.t2pellet.tlib.entity.capability.api.ICapabilityHaver;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.LevelAccessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

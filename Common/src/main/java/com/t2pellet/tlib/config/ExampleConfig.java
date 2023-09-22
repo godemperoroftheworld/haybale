@@ -1,7 +1,8 @@
 package com.t2pellet.tlib.config;
 
 import com.t2pellet.tlib.TenzinLib;
-import com.t2pellet.tlib.config.property.*;
+import com.t2pellet.tlib.config.api.Config;
+import com.t2pellet.tlib.config.api.property.*;
 
 import java.io.IOException;
 import java.util.List;

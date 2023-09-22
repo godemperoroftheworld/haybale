@@ -1,6 +1,9 @@
 package com.t2pellet.tlib.client;
 
 import com.t2pellet.tlib.client.registry.IClientRegistry;
+import com.t2pellet.tlib.client.registry.api.EntityModelEntryType;
+import com.t2pellet.tlib.client.registry.api.EntityRendererEntryType;
+import com.t2pellet.tlib.client.registry.api.ParticleFactoryEntryType;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -11,31 +14,32 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FabricClientRegistry implements IClientRegistry {
 
     @Override
-    public <T extends ParticleOptions> void registerParticleProvider(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew) {
-        ParticleFactoryRegistry.getInstance().register(type, aNew::apply);
+    @SuppressWarnings("unchecked")
+    public <T extends ParticleOptions> Supplier<ParticleType<T>> register(String modid, ParticleFactoryEntryType<T> particleFactoryEntry) {
+        ParticleFactoryRegistry.getInstance().register(particleFactoryEntry.get(), particleFactoryEntry.getProviderFunction()::apply);
+        return particleFactoryEntry::get;
     }
 
     @Override
-    public <T extends Entity> void registerEntityRenderer(EntityType<T> type, EntityRendererProvider<T> renderSupplier) {
-        registerRenderer(type, renderSupplier);
+    public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
+        ModelLayerLocation loc = new ModelLayerLocation(new ResourceLocation(modid, modelEntry.getName()), "main");
+        EntityModelLayerRegistry.registerModelLayer(loc, modelEntry::getLayerDefinition);
+        return () -> loc;
     }
 
     @Override
-    public void registerModelLayer(ModelLayerLocation modelLayerLocation, LayerDefinition modelData) {
-        EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, () -> modelData);
+    public <T extends Entity> Supplier<EntityRendererProvider<T>> register(String modid, EntityRendererEntryType<T> rendererEntry) {
+        EntityRendererRegistry.register(rendererEntry.getEntityType(), rendererEntry.getRendererProvider());
+        return rendererEntry::getRendererProvider;
     }
-
-    private <T extends Entity> void registerRenderer(EntityType<? extends T> type, EntityRendererProvider<T> supplier) {
-        EntityRendererRegistry.register(type, supplier);
-    }
-
-
 }

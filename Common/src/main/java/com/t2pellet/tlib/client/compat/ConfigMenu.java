@@ -1,10 +1,10 @@
 package com.t2pellet.tlib.client.compat;
 
 import com.t2pellet.tlib.TenzinLib;
-import com.t2pellet.tlib.config.Config;
-import com.t2pellet.tlib.config.property.ConfigProperty;
+import com.t2pellet.tlib.config.api.Config;
+import com.t2pellet.tlib.config.api.property.ConfigProperty;
 import com.t2pellet.tlib.config.ConfigRegistrar;
-import com.t2pellet.tlib.config.property.*;
+import com.t2pellet.tlib.config.api.property.*;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;

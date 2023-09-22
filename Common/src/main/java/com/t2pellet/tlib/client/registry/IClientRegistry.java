@@ -1,5 +1,8 @@
 package com.t2pellet.tlib.client.registry;
 
+import com.t2pellet.tlib.client.registry.api.EntityModelEntryType;
+import com.t2pellet.tlib.client.registry.api.EntityRendererEntryType;
+import com.t2pellet.tlib.client.registry.api.ParticleFactoryEntryType;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.ParticleProvider;
@@ -11,14 +14,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface IClientRegistry {
 
-    <T extends ParticleOptions> void registerParticleProvider(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> aNew);
-
-    void registerModelLayer(ModelLayerLocation modelLayerLocation, LayerDefinition modelData);
-
-    <T extends Entity> void registerEntityRenderer(EntityType<T> type,
-                                                   EntityRendererProvider<T> renderSupplier);
+    <T extends ParticleOptions> Supplier<ParticleType<T>> register(String modid, ParticleFactoryEntryType<T> particleFactoryEntry);
+    Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry);
+    <T extends Entity> Supplier<EntityRendererProvider<T>> register(String modid, EntityRendererEntryType<T> rendererEntry);
 
 }

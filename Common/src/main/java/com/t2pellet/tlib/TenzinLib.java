@@ -1,9 +1,8 @@
 package com.t2pellet.tlib;
 
-import com.t2pellet.tlib.common.TLibMod;
-import com.t2pellet.tlib.common.network.IModPackets;
-import com.t2pellet.tlib.common.network.TLibPackets;
-import com.t2pellet.tlib.config.Config;
+import com.t2pellet.tlib.network.api.registry.IModPackets;
+import com.t2pellet.tlib.network.TLibPackets;
+import com.t2pellet.tlib.config.api.Config;
 import com.t2pellet.tlib.config.ExampleConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

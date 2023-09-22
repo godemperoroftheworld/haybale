@@ -1,8 +1,8 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.registry.IClientRegistry;
-import com.t2pellet.tlib.common.network.IPacketHandler;
-import com.t2pellet.tlib.common.registry.ICommonRegistry;
+import com.t2pellet.tlib.network.IPacketHandler;
+import com.t2pellet.tlib.registry.ICommonRegistry;
 import com.t2pellet.tlib.services.IPlatformHelper;
 import com.t2pellet.tlib.services.IServerHelper;
 import com.t2pellet.tlib.services.ISidedExecutor;

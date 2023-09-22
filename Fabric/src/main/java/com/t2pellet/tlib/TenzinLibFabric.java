@@ -1,10 +1,7 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
-import com.t2pellet.tlib.common.TLibMod;
 import com.t2pellet.tlib.services.FabricSidedExecutor;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;

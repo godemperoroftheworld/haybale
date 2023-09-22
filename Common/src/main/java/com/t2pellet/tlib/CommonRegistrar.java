@@ -1,98 +1,50 @@
 package com.t2pellet.tlib;
 
-import com.t2pellet.tlib.common.entity.capability.Capability;
-import com.t2pellet.tlib.common.entity.capability.CapabilityRegistrar;
-import com.t2pellet.tlib.common.entity.capability.ICapabilityHaver;
-import com.t2pellet.tlib.common.entity.capability.IModCapabilities;
-import com.t2pellet.tlib.common.network.IModPackets;
-import com.t2pellet.tlib.common.registry.IModEntities;
-import com.t2pellet.tlib.common.registry.IModItems;
-import com.t2pellet.tlib.common.registry.IModParticles;
-import com.t2pellet.tlib.common.registry.IModSounds;
-import net.minecraft.resources.ResourceLocation;
+import com.t2pellet.tlib.entity.capability.api.Capability;
+import com.t2pellet.tlib.entity.capability.registry.CapabilityRegistrar;
+import com.t2pellet.tlib.entity.capability.api.registry.IModCapabilities;
+import com.t2pellet.tlib.network.api.registry.IModPackets;
+import com.t2pellet.tlib.registry.api.*;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 
 import java.lang.reflect.Field;
 
-class CommonRegistrar {
+class CommonRegistrar extends BaseRegistrar {
 
-    private CommonRegistrar() {
+    public static final CommonRegistrar INSTANCE = new CommonRegistrar();
+
+    private CommonRegistrar() {}
+
+    @Override
+    protected boolean checkIsValid(Class<?> type) {
+        return type.isAssignableFrom(SimpleParticleType.class)
+                || type.isAssignableFrom(EntityType.class)
+                || type.isAssignableFrom(SoundEvent.class)
+                || type.isAssignableFrom(Item.class);
     }
 
-    public static void register(String modid, IModEntities entities) {
-        if (entities == null) return;
-
-        TenzinLib.LOG.debug("Registering entities for modid: " + modid);
-        for (Field field : entities.getClass().getDeclaredFields()) {
-            IModEntities.IEntity entityInfo = field.getDeclaredAnnotation(IModEntities.IEntity.class);
-            if (entityInfo != null && field.getType().equals(IModEntities.TLibEntity.class)) {
-                try {
-                    IModEntities.TLibEntity<? extends LivingEntity> entity = (IModEntities.TLibEntity<? extends LivingEntity>) field.get(null);
-                    Field result = entity.getClass().getDeclaredField("type");
-                    setField(result, entity, Services.COMMON_REGISTRY.registerEntity(modid, entityInfo.name(), entity._factory, entityInfo.category(), entityInfo.width(), entityInfo.height(), entity._attributes));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+    @Override
+    protected void doGenericRegistration(String modid, Class<?> registryType, Field declaredField) throws IllegalAccessException {
+        // Get EntryType and register accordingly based on its subclass
+        // This is one of two places where we have to do this if / elif block. The other is in EntryType::isValid
+        EntryType<?> entryType = (EntryType<?>) declaredField.get(null);
+        if (registryType.isAssignableFrom(entryType.type)) {
+            Object result;
+            if (entryType instanceof ParticleEntryType) result = Services.COMMON_REGISTRY.register(modid, (ParticleEntryType) entryType);
+            else if (entryType instanceof EntityEntryType<?>) result = Services.COMMON_REGISTRY.register(modid, (EntityEntryType<? extends LivingEntity>) entryType);
+            else if (entryType instanceof SoundEntryType) result = Services.COMMON_REGISTRY.register(modid, (SoundEntryType) entryType);
+            else if (entryType instanceof ItemEntryType) result = Services.COMMON_REGISTRY.register(modid, (ItemEntryType) entryType);
+            else result = null;
+            setField("value", entryType, result);
         }
     }
 
-    public static void register(String modid, IModItems items) {
-        if (items == null) return;
 
-        TenzinLib.LOG.debug("Registering items for modid: " + modid);
-        for (Field field : items.getClass().getDeclaredFields()) {
-            IModItems.IItem itemInfo = field.getDeclaredAnnotation(IModItems.IItem.class);
-            if (itemInfo != null && field.getType().equals(IModItems.TLibItem.class)) {
-                try {
-                    IModItems.TLibItem item = (IModItems.TLibItem) field.get(null);
-                    Field result = item.getClass().getDeclaredField("item");
-                    setField(result, item, Services.COMMON_REGISTRY.registerItem(modid, itemInfo.value(), item._properties));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void register(String modid, IModParticles particles) {
-        if (particles == null) return;
-
-        TenzinLib.LOG.debug("Registering particles for modid: " + modid);
-        for (Field field : particles.getClass().getDeclaredFields()) {
-            IModParticles.IParticle particleInfo = field.getAnnotation(IModParticles.IParticle.class);
-            if (particleInfo != null && field.getType().equals(IModParticles.TLibParticle.class)) {
-                try {
-                    IModParticles.TLibParticle particle = (IModParticles.TLibParticle) field.get(null);
-                    Field result = particle.getClass().getDeclaredField("particle");
-                    setField(result, particle, Services.COMMON_REGISTRY.registerParticle(modid, particleInfo.value()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void register(String modid, IModSounds sounds) {
-        if (sounds == null) return;
-
-        TenzinLib.LOG.debug("Registering sounds for modid: " + modid);
-        for (Field field : sounds.getClass().getDeclaredFields()) {
-            IModSounds.ISound soundInfo = field.getAnnotation(IModSounds.ISound.class);
-            if (soundInfo != null && field.getType().equals(SoundEvent.class)) {
-                try {
-                    SoundEvent sound = new SoundEvent(new ResourceLocation(modid, soundInfo.value()));
-                    Services.COMMON_REGISTRY.registerSound(sound);
-                    setField(field, null, sound);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void register(String modid, IModPackets packets) {
+    void registerPackets(String modid, IModPackets packets) {
         if (packets == null) return;
 
         TenzinLib.LOG.debug("Registering packets for modid: " + modid);
@@ -107,13 +59,14 @@ class CommonRegistrar {
                         Services.COMMON_REGISTRY.registerServerPacket(modid, packetInfo.name(), packet.getPacketClass());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    TenzinLib.LOG.error("Failed to register packets for " + modid);
+                    TenzinLib.LOG.error(e);
                 }
             }
         }
     }
 
-    public static void register(String modid, IModCapabilities capabilities) {
+    void registerCapabilities(String modid, IModCapabilities capabilities) {
         if (capabilities == null) return;
 
         TenzinLib.LOG.debug("Registering capabilities for modid: " + modid);
@@ -124,7 +77,8 @@ class CommonRegistrar {
                     IModCapabilities.TLibCapability<?> capability = (IModCapabilities.TLibCapability<?>) field.get(null);
                     registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    TenzinLib.LOG.error("Failed to register capabilities for " + modid);
+                    TenzinLib.LOG.error(e);
                 }
             }
         }
@@ -133,14 +87,5 @@ class CommonRegistrar {
     @SuppressWarnings("unchecked")
     private static <T extends Capability> void registerCapability(Class<? extends Capability> clazz, CapabilityRegistrar.CapabilityFactory<T> supplier) {
         CapabilityRegistrar.INSTANCE.register((Class<T>) clazz, supplier);
-    }
-
-    private static void setField(Field field, Object object, Object value) {
-        try {
-            field.setAccessible(true);
-            field.set(object, value);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

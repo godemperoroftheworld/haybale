@@ -1,10 +1,9 @@
 package com.t2pellet.tlib.config;
 
+import com.t2pellet.tlib.config.api.Config;
+
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public interface ConfigRegistrar {
 

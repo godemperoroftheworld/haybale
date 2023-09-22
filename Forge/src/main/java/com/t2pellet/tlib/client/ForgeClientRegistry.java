@@ -7,11 +7,13 @@ import com.t2pellet.tlib.client.registry.api.ParticleFactoryEntryType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -28,9 +30,9 @@ public class ForgeClientRegistry implements IClientRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends ParticleOptions> Supplier<ParticleType<T>> register(String modid, ParticleFactoryEntryType<T> particleFactoryEntry) {
+    public Supplier<ParticleType<SimpleParticleType>> register(String modid, ParticleFactoryEntryType particleFactoryEntry) {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
-            Minecraft.getInstance().particleEngine.register(particleFactoryEntry.get(), particleFactoryEntry.getProviderFunction()::apply);
+            particleFactoryRegisterEvent.register(particleFactoryEntry.get(), spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet));
         });
         return particleFactoryEntry::get;
     }

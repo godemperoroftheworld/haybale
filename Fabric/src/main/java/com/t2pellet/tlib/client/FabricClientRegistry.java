@@ -15,6 +15,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -26,7 +27,7 @@ public class FabricClientRegistry implements IClientRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends ParticleOptions> Supplier<ParticleType<T>> register(String modid, ParticleFactoryEntryType<T> particleFactoryEntry) {
+    public Supplier<ParticleType<SimpleParticleType>> register(String modid, ParticleFactoryEntryType particleFactoryEntry) {
         ClientSpriteRegistryCallback.registerBlockAtlas((atlasTexture, registry) -> {
             registry.register(new ResourceLocation(modid, "particle/" + particleFactoryEntry.getName()));
         });

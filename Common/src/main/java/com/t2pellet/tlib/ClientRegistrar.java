@@ -34,7 +34,7 @@ class ClientRegistrar extends BaseRegistrar {
                 result = Services.CLIENT_REGISTRY.register(modid, modelEntryType);
             } else if (entryType instanceof EntityRendererEntryType<?> rendererEntryType) {
                 result = Services.CLIENT_REGISTRY.register(modid, rendererEntryType);
-            } else if (entryType instanceof ParticleFactoryEntryType<?> particleFactoryEntryType) {
+            } else if (entryType instanceof ParticleFactoryEntryType particleFactoryEntryType) {
                 result = Services.CLIENT_REGISTRY.register(modid, particleFactoryEntryType);
             } else result = null;
             setField("supplier", entryType, result);

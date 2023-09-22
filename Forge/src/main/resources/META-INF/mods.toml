@@ -15,13 +15,13 @@ description = '''
 A library mod for Tenzin's mods!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.multiloader]] #optional
+[[dependencies.tlib]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory
 versionRange = "[43,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
-[[dependencies.multiloader]]
+[[dependencies.tlib]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.19,1.19.2]"

@@ -34,7 +34,7 @@ public class FabricCommonRegistry implements ICommonRegistry {
                 EntityType.Builder.of(entityEntryType.getFactory(), MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                         .build(entityEntryType.getName()));
-        FabricDefaultAttributeRegistry.register(type, entityEntryType.getBuilder().build());
+        FabricDefaultAttributeRegistry.register(type, entityEntryType.buildAttributes());
         return () -> type;
     }
 

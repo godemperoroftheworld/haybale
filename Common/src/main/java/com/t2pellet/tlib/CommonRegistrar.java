@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 
 import java.lang.reflect.Field;
+import java.util.function.Supplier;
 
 class CommonRegistrar extends BaseRegistrar {
 
@@ -33,13 +34,13 @@ class CommonRegistrar extends BaseRegistrar {
         // This is one of two places where we have to do this if / elif block. The other is in EntryType::isValid
         EntryType<?> entryType = (EntryType<?>) declaredField.get(null);
         if (registryType.isAssignableFrom(entryType.type)) {
-            Object result;
+            Supplier<?> result;
             if (entryType instanceof ParticleEntryType) result = Services.COMMON_REGISTRY.register(modid, (ParticleEntryType) entryType);
             else if (entryType instanceof EntityEntryType<?>) result = Services.COMMON_REGISTRY.register(modid, (EntityEntryType<? extends LivingEntity>) entryType);
             else if (entryType instanceof SoundEntryType) result = Services.COMMON_REGISTRY.register(modid, (SoundEntryType) entryType);
             else if (entryType instanceof ItemEntryType) result = Services.COMMON_REGISTRY.register(modid, (ItemEntryType) entryType);
             else result = null;
-            setField("value", entryType, result);
+            setField("supplier", entryType, result);
         }
     }
 

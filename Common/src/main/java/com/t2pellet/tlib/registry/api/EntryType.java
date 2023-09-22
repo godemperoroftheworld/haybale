@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 public class EntryType<T> implements Supplier<T> {
 
     public final Class<T> type;
-    private T value;
+    private Supplier<T> supplier;
 
     protected EntryType(Class<T> type) {
         this.type = type;
@@ -13,6 +13,6 @@ public class EntryType<T> implements Supplier<T> {
 
     @Override
     public T get() {
-        return value;
+        return supplier.get();
     }
 }

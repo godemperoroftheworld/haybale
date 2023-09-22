@@ -1,5 +1,6 @@
 package com.t2pellet.tlib.registry.api;
 
+import com.google.common.reflect.TypeToken;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -26,6 +27,12 @@ public class EntityEntryType<T extends LivingEntity> extends EntryType<EntityTyp
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public EntityType<T> get() {
+        return super.get();
     }
 
     public EntityType.EntityFactory<T> getFactory() {

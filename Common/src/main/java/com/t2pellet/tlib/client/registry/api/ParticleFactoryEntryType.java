@@ -10,11 +10,18 @@ import java.util.function.Function;
 
 public class ParticleFactoryEntryType<T extends ParticleOptions> extends EntryType<ParticleType> {
 
+    private final ParticleType<T> particleType;
     private final Function<SpriteSet, ParticleProvider<T>> providerFunction;
 
-    public ParticleFactoryEntryType(Function<SpriteSet, ParticleProvider<T>> providerFunction) {
+    public ParticleFactoryEntryType(ParticleType<T> particleType, Function<SpriteSet, ParticleProvider<T>> providerFunction) {
         super(ParticleType.class);
+        this.particleType = particleType;
         this.providerFunction = providerFunction;
+    }
+
+    @Override
+    public ParticleType<T> get() {
+        return particleType;
     }
 
     public Function<SpriteSet, ParticleProvider<T>> getProviderFunction() {

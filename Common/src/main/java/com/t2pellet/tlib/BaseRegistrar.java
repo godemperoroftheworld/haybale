@@ -40,7 +40,7 @@ public abstract class BaseRegistrar {
 
     protected void setField(String name, Object object, Object value) {
         try {
-            Field field = object.getClass().getField(name);
+            Field field = object.getClass().getSuperclass().getDeclaredField(name);
             field.setAccessible(true);
             field.set(object, value);
         } catch (Exception e) {

@@ -22,12 +22,9 @@ public class ServerEntityMixin {
     @Inject(method = "addPairing", at = @At("TAIL"))
     public void addPairing(ServerPlayer player, CallbackInfo ci) {
         if (entity instanceof ICapabilityHaver capabilityHaver) {
-            System.out.println("Capability haver");
             capabilityHaver.getCapabilityManager().getCapabilities().forEach(c -> {
-                System.out.println("Synchronizing capability: " + c.getClass().getName());
                 if (c instanceof AbstractCapability<?> abstractCapability) {
                     abstractCapability.synchronizeTo(player);
-                    System.out.println("Synchronized capability: " + abstractCapability.getClass().getName());
                 }
             });
         }

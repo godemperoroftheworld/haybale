@@ -18,7 +18,6 @@ public class EntityMixin {
         Entity e = (Entity) (Object) this;
         if (e instanceof ICapabilityHaver capabilityHaver && tag.contains("capabilities")) {
             capabilityHaver.getCapabilityManager().readTag(tag.get("capabilities"));
-            System.out.println("Read capabilities: " + tag.get("capabilities"));
         }
     }
 
@@ -28,7 +27,6 @@ public class EntityMixin {
         if (e instanceof ICapabilityHaver capabilityHaver) {
             Tag capabilityTag = capabilityHaver.getCapabilityManager().writeTag();
             tag.put("capabilities", capabilityTag);
-            System.out.println("Wrote capabilities: " + capabilityTag);
         }
     }
 

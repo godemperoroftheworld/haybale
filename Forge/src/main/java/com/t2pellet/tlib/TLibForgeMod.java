@@ -89,6 +89,7 @@ public abstract class TLibForgeMod {
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityRenderers());
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.particleFactories());
         }
+        // I have no idea why their modid is different in forge
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
             System.out.println("CLOTH LOADED");
             ConfigMenu configMenu = new ConfigMenu(modid);

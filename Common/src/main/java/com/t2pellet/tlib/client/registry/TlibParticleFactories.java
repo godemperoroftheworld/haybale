@@ -1,5 +1,6 @@
-package com.t2pellet.tlib.client.particle;
+package com.t2pellet.tlib.client.registry;
 
+import com.t2pellet.tlib.client.particle.TestParticle;
 import com.t2pellet.tlib.client.registry.api.ParticleFactoryEntryType;
 import com.t2pellet.tlib.registry.TlibParticles;
 import com.t2pellet.tlib.registry.api.RegistryClass;

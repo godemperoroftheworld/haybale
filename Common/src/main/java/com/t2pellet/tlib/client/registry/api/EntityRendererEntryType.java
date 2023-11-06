@@ -5,19 +5,21 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.function.Supplier;
+
 public class EntityRendererEntryType<T extends Entity> extends EntryType<EntityRendererProvider> {
 
-    private final EntityType<T> entityType;
+    private final Supplier<EntityType<T>> entityType;
     private final EntityRendererProvider<T> rendererProvider;
 
-    public EntityRendererEntryType(EntityType<T> entityType, EntityRendererProvider<T> rendererProvider) {
+    public EntityRendererEntryType(Supplier<EntityType<T>> entityType, EntityRendererProvider<T> rendererProvider) {
         super(EntityRendererProvider.class);
         this.entityType = entityType;
         this.rendererProvider = rendererProvider;
     }
 
     public EntityType<T> getEntityType() {
-        return entityType;
+        return entityType.get();
     }
 
     public EntityRendererProvider<T> getRendererProvider() {

@@ -1,6 +1,7 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
+import com.t2pellet.tlib.client.TenzinLibClient;
 import com.t2pellet.tlib.services.ForgeSidedExecutor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -32,7 +33,7 @@ public class TenzinLibForge extends TLibForgeMod {
 
     @Override
     protected TLibModClient getClientMod() {
-        return null;
+        return TenzinLibClient.INSTANCE;
     }
 
     @Override

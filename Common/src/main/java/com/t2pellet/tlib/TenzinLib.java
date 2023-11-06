@@ -1,9 +1,11 @@
 package com.t2pellet.tlib;
 
-import com.t2pellet.tlib.network.api.registry.IModPackets;
-import com.t2pellet.tlib.network.TLibPackets;
-import com.t2pellet.tlib.config.api.Config;
 import com.t2pellet.tlib.config.ExampleConfig;
+import com.t2pellet.tlib.config.api.Config;
+import com.t2pellet.tlib.network.TLibPackets;
+import com.t2pellet.tlib.network.api.registry.IModPackets;
+import com.t2pellet.tlib.registry.TlibParticles;
+import com.t2pellet.tlib.registry.api.RegistryClass;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,5 +29,10 @@ public class TenzinLib extends TLibMod {
     @Override
     public IModPackets packets() {
         return new TLibPackets();
+    }
+
+    @Override
+    public Class<? extends RegistryClass> particles() {
+        return TlibParticles.class;
     }
 }

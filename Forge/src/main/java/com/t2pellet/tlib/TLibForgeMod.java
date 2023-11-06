@@ -7,7 +7,11 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -15,6 +19,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Consumer;
 
 public abstract class TLibForgeMod {
 
@@ -36,24 +42,17 @@ public abstract class TLibForgeMod {
         clientMod = getClientMod();
         modid = modAnnotation.value();
         TenzinLibForge.getInstance().register(modid, this);
-
-        // Setup stages
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        bus.addListener(this::onCommonSetup);
-        bus.addListener(this::onClientSetup);
         // Create deferred registers
         ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, modid);
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
         PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, modid);
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modid);
-        // Pre-init
-        if (commonMod != null) {
-            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.entities());
-            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.items());
-            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.particles());
-            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.sounds());
-        }
+        // Common init
+        onCommonSetup();
+        // Client init
+        onClientSetup();
         // Register into deferred registers
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ENTITIES.register(bus);
         ITEMS.register(bus);
         PARTICLES.register(bus);
@@ -71,15 +70,20 @@ public abstract class TLibForgeMod {
     protected void registerEvents() {
     }
 
-    private void onCommonSetup(FMLCommonSetupEvent event) {
+    private void onCommonSetup() {
         if (commonMod != null) {
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.particles());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.entities());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.items());
+            CommonRegistrar.INSTANCE.registerFromClass(modid, commonMod.sounds());
             CommonRegistrar.INSTANCE.registerPackets(modid, commonMod.packets());
             CommonRegistrar.INSTANCE.registerCapabilities(modid, commonMod.capabilities());
             ConfigRegistrar.INSTANCE.register(modid, commonMod::config);
         }
     }
 
-    private void onClientSetup(FMLClientSetupEvent event) {
+    @OnlyIn(Dist.CLIENT)
+    private void onClientSetup() {
         if (clientMod != null) {
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityModels());
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityRenderers());

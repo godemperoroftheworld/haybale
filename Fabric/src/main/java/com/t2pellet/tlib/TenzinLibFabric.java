@@ -1,6 +1,7 @@
 package com.t2pellet.tlib;
 
 import com.t2pellet.tlib.client.TLibModClient;
+import com.t2pellet.tlib.client.TenzinLibClient;
 import com.t2pellet.tlib.services.FabricSidedExecutor;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -22,7 +23,7 @@ public class TenzinLibFabric extends TLibFabricMod {
 
     @Override
     protected TLibModClient getClientMod() {
-        return null;
+        return TenzinLibClient.INSTANCE;
     }
 
     @Override

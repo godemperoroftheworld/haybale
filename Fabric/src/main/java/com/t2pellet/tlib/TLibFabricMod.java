@@ -23,9 +23,9 @@ public abstract class TLibFabricMod implements ModInitializer, ClientModInitiali
 
     @Override
     public void onInitializeClient() {
+        ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.particleFactories());
         ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityModels());
         ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityRenderers());
-        ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.particleFactories());
     }
 
     @Override

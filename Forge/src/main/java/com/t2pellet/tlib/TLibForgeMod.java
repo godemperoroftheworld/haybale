@@ -89,9 +89,14 @@ public abstract class TLibForgeMod {
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityRenderers());
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.particleFactories());
         }
-        if (Services.PLATFORM.isModLoaded("cloth-config")) {
+        if (Services.PLATFORM.isModLoaded("cloth_config")) {
+            System.out.println("CLOTH LOADED");
             ConfigMenu configMenu = new ConfigMenu(modid);
-            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
+            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> {
+                        System.out.println("REGISTERED CONFIG FACTORY");
+                        return new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen());
+                    });
         }
     }
 

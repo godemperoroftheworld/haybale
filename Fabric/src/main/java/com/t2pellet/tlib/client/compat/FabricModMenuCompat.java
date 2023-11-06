@@ -26,7 +26,6 @@ public class FabricModMenuCompat implements ModMenuApi {
         }
     }
 
-    // If we don't return null it will ignore the provided config screen factories
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> self.buildConfigScreen();

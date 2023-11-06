@@ -18,6 +18,9 @@
     "main": [
       "com.t2pellet.tlib.TenzinLibFabric"
     ],
+    "client": [
+      "com.t2pellet.tlib.TenzinLibFabric"
+    ],
     "modmenu": [ "com.t2pellet.tlib.client.compat.FabricModMenuCompat"]
   },
   "mixins": [

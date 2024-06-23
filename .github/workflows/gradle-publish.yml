@@ -5,90 +5,223 @@
 # This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
 # For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
 
-name: Create Release
+name: release
 
 on:
   workflow_dispatch:
     inputs:
-      releaseType:
+      RELEASE_TYPE:
         description: 'Release Type'
         required: true
         default: 'alpha'
-      versionRange:
-        description: 'Game Versions'
+      MOD_VERSION:
+        description: 'Mod Version'
         required: true
-        default: '1.19:1.19.2'
+        default: '0.4.1'
 
+env:
+  MINECRAFT_VERSION: 1.19.2
+  JAVA_VERSION: 17
 jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{env.MINECRAFT_VERSION}}-${{inputs.MOD_VERSION}}"
+          release_name: "${{env.MINECRAFT_VERSION}}-${{inputs.MOD_VERSION}}"
+          body: |
+            See CHANGELOG.md for history of changes
+          draft: false
+          prerelease: false
+      - name: Get previous tag
+        id: previousTag
+        run: |
+          name=$(git --no-pager tag --sort=creatordate --merged v${{env.MINECRAFT_VERSION}}-${{inputs.MOD_VERSION}} | tail -2 | head -1)
+          echo "previousTag: $name"
+          echo "previousTag=$name" >> $GITHUB_ENV
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: "v${{env.MINECRAFT_VERSION}}-${{inputs.MOD_VERSION}}"
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update changelog"
+      - run: echo "${{ steps.changelog.outputs.changes }}" >> CHANGES.md
+      - name: Upload Changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: "changes"
+          path: |
+            CHANGES.md
+          retention-days: 1
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with: { fetch-depth: 0 }
-      - name: "Setup JDK 17"
+      - name: Check Environment Variables
+        run: env
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Setup Java
         uses: actions/setup-java@v2
-        with: { distribution: "adopt", java-version: "17" }
-      - name: "Build with Gradle"
-        id: build
-        run: "chmod +x gradlew && ./gradlew build"
-      - name: "Create Tag"
-        uses: rickstaa/action-create-tag@v1
         with:
-          tag: "v${{steps.build.outputs.version}}-${{steps.build.outputs.gameVersion}}"
-      - name: Get changelog
-        uses: Bullrich/generate-release-changelog@master
-        id: changelog
-        env:
-          REPO: ${{ github.repository }}
-      - name: "Create Release"
-        uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          distribution: "temurin"
+          java-version: "${{ env.JAVA_VERSION }}"
+      - name: Build with Gradle
+        run: "chmod +x gradlew && ./gradlew clean build"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: "v${{ steps.build.outputs.version }}-${{steps.build.outputs.gameVersion}}"
-          release_name: "tlib-${{steps.build.outputs.gameVersion}}-${{ steps.build.outputs.version }}"
-          body: |
-            ${{ steps.changelog.outputs.changelog }}
-          draft: false
-          prerelease: "${{ inputs.releaseType != 'release' }}"
-      - name: "Upload Fabric Release Assets"
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          name: "build"
+          path: |
+            Fabric/build/libs/*.jar
+            Forge/build/libs/*.jar
+            Common/build/libs/*.jar
+          retention-days: 1
+  github:
+    needs: [build, changelog]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
-          release_id: "${{ steps.create_release.outputs.id }}"
-          assets_path: "Fabric/build/libs"
-      - name: "Upload Forge Release Assets"
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          submodules: true
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          release_id: "${{ steps.create_release.outputs.id }}"
-          assets_path: "Forge/build/libs"
-      - name: "Upload Fabric to CurseForge"
-        uses: itsmeow/curseforge-upload@v3
+          name: "build"
+          path: build/
+      - name: Download changelog
+        uses: actions/download-artifact@v4
         with:
-          file_path: "Fabric/build/libs/tlib-fabric-${{ steps.build.outputs.gameVersion }}-${{ steps.build.outputs.version }}.jar"
-          game_endpoint: "minecraft"
-          display_name: "tlib-${{steps.build.outputs.gameVersion}}-${{steps.build.outputs.version}}"
-          changelog: |
-            ${{ steps.changelog.outputs.changelog }}
-          relations: "fabric-api:requiredDependency"
-          game_versions: "Minecraft ${{inputs.versionRange}},Java 17,Fabric"
-          release_type: "${{ inputs.releaseType }}"
-          project_id: "738680"
-          token: "${{ secrets.CF_API_TOKEN }}"
-      - name: "Upload Forge to CurseForge"
-        uses: itsmeow/curseforge-upload@v3
+          name: "changes"
+          path: changes/
+      - name: Set variables
+        run: |
+          CHANGES=$(cat changes/CHANGES.md)
+          echo "CHANGES=$CHANGES" >> $GITHUB_ENV
+      - name: Release the new binaries
+        uses: mini-bomba/create-github-release@v1.1.3
         with:
-          file_path: "Forge/build/libs/tlib-forge-${{ steps.build.outputs.gameVersion }}-${{ steps.build.outputs.version }}.jar"
-          game_endpoint: "minecraft"
-          display_name: "tlib-${{steps.build.outputs.gameVersion}}-${{steps.build.outputs.version}}"
-          changelog: |
-            ${{ steps.changelog.outputs.changelog }}
-          game_versions: "Minecraft ${{inputs.versionRange}},Java 17,Forge"
-          release_type: "${{ inputs.releaseType }}"
-          project_id: "738680"
-          token: "${{ secrets.CF_API_TOKEN }}"
+          token: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
+          tag: "latest"
+          name: "Latest Commit, that compiles"
+          body: ${{ env.CHANGES }}
+          files: |
+            build/Fabric/build/libs/*.jar
+            build/Forge/build/libs/*.jar
+            build/Common/build/libs/*.jar
+          clear_attachments: true
+  modrinth:
+    needs: [build, changelog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: "build"
+          path: build/
+      - name: Download changelog
+        uses: actions/download-artifact@v4
+        with:
+          name: "changes"
+          path: changes/
+      - name: Publish Fabric
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          name: "haybale-${{inputs.MOD_VERSION}}-${{env.MINECRAFT_VERSION}}-${{inputs.RELEASE_TYPE}}"
+          modrinth-id: ZrllRmem
+          modrinth-token: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
+          changelog-file: changes/CHANGES.md
+          version: "${{inputs.MOD_VERSION}}"
+          version-type: "${{inputs.RELEASE_TYPE}}"
+          loaders: |
+            fabric
+            quilt
+          game-versions: "${{env.MINECRAFT_VERSION}}"
+          java: "${{env.JAVA_VERSION}}"
+          files: |
+            build/Fabric/build/libs/!(*-@(dev|sources)).jar
+            build/Fabric/build/libs/*-@(dev|sources).jar
+            build/Common/build/libs/*-@(dev|sources).jar
+      - name: Publish Forge
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          name: "haybale-${{inputs.MOD_VERSION}}-${{env.MINECRAFT_VERSION}}-${{inputs.RELEASE_TYPE}}"
+          modrinth-id: ZrllRmem
+          modrinth-token: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
+          changelog-file: changes/CHANGES.md
+          version: "${{inputs.MOD_VERSION}}"
+          version-type: "${{inputs.RELEASE_TYPE}}"
+          loaders: forge
+          game-versions: "${{env.MINECRAFT_VERSION}}"
+          java: "${{env.JAVA_VERSION}}"
+          files: |
+            build/Forge/build/libs/!(*-@(dev|sources|javadoc)).jar
+            build/Forge/build/libs/*-@(dev|sources|javadoc).jar
+  curseforge:
+    needs: [build, changelog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: "build"
+          path: build/
+      - name: Download changelog
+        uses: actions/download-artifact@v4
+        with:
+          name: "changes"
+          path: changes/
+      - name: Publish Fabric
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          name: "haybale-${{inputs.MOD_VERSION}}-${{env.MINECRAFT_VERSION}}-${{inputs.RELEASE_TYPE}}"
+          curseforge-id: 919468
+          curseforge-token: ${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}
+          changelog-file: changes/CHANGES.md
+          version: "${{inputs.MOD_VERSION}}"
+          version-type: "${{inputs.RELEASE_TYPE}}"
+          loaders: |
+            fabric
+            quilt
+          game-versions: "${{env.MINECRAFT_VERSION}}"
+          java: "${{env.JAVA_VERSION}}"
+          files: |
+            build/Fabric/build/libs/!(*-@(dev|sources|)).jar
+            build/Fabric/build/libs/*-@(dev|sources).jar
+            build/Common/build/libs/*-@(dev|sources).jar
+      - name: Publish Forge
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          name: "haybale-${{inputs.MOD_VERSION}}-${{env.MINECRAFT_VERSION}}-${{inputs.RELEASE_TYPE}}"
+          curseforge-id: 919468
+          curseforge-token: ${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}
+          changelog-file: changes/CHANGES.md
+          version: "${{inputs.MOD_VERSION}}"
+          version-type: "${{inputs.RELEASE_TYPE}}"
+          loaders: forge
+          game-versions: "${{env.MINECRAFT_VERSION}}"
+          java: "${{env.JAVA_VERSION}}"
+          files: |
+            build/Forge/build/libs/!(*-@(dev|sources)).jar
+            build/Forge/build/libs/*-@(dev|sources).jar

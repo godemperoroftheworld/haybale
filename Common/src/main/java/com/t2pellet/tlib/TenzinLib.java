@@ -15,7 +15,7 @@ import java.io.IOException;
 @TLibMod.IMod(TenzinLib.MODID)
 public class TenzinLib extends TLibMod {
 
-    public static final String MODID = "tlib";
+    public static final String MODID = "haybale";
     public static final Logger LOG = LogManager.getLogger(MODID);
     public static final TenzinLib INSTANCE = new TenzinLib();
 

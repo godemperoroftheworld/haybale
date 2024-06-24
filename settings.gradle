@@ -12,5 +12,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'tlib'
+rootProject.name = 'haybale'
 include("Common", "Fabric", "Forge")

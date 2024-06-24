@@ -27,3 +27,9 @@ mandatory = true
 versionRange = "[1.19,1.19.2]"
 ordering = "NONE"
 side = "BOTH"
+[[dependencies.tlib]]
+modId = "cloth_config"
+mandatory = false
+versionRange = "8.0"
+ordering="NONE"
+side="BOTH"

@@ -116,9 +116,7 @@ jobs:
           name: "changes"
           path: changes/
       - name: Set variables
-        run: |
-          CHANGES=$(cat changes/CHANGES.md)
-          echo "CHANGES=$CHANGES" >> $GITHUB_ENV
+        run: echo "CHANGES=$(cat changes/CHANGES.md)" >> $GITHUB_ENV
       - name: Release the new binaries
         uses: mini-bomba/create-github-release@v1.1.3
         with:

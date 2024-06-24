@@ -16,20 +16,24 @@ A library mod for Tenzin's mods!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.haybale]] #optional
-modId = "forge" #mandatory
-mandatory = true #mandatory
-versionRange = "[43,)" #mandatory
-ordering = "NONE"
-side = "BOTH"
+    modId = "forge" #mandatory
+    mandatory = true #mandatory
+    versionRange = "[43,)" #mandatory
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.haybale]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.19,1.19.2]"
-ordering = "NONE"
-side = "BOTH"
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.19,1.19.2]"
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.haybale]]
-modId = "cloth_config"
-mandatory = false
-versionRange = "[8.0,)"
-ordering="NONE"
-side="BOTH"
+    modId = "cloth_config"
+    mandatory = false
+    versionRange = "[8.0,)"
+    ordering="NONE"
+    side="BOTH"
+    [dependencies.haybale.mc-publish]
+        ignore=false
+        modrinth="9s6osm5g"
+        curseforge="348521"

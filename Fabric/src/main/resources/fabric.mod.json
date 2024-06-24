@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "tlib",
+  "id": "haybale",
   "version": "${version}",
   "name": "Tenzin Lib",
   "description": "Library mod for Tenzin's mods!",

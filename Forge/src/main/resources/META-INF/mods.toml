@@ -30,7 +30,7 @@ A library mod for Tenzin's mods!
 [[dependencies.haybale]]
     modId = "cloth_config"
     mandatory = false
-    versionRange = "[8.0,)"
+    versionRange = "[9.0,)"
     ordering="NONE"
     side="BOTH"
     [dependencies.haybale.mc-publish]

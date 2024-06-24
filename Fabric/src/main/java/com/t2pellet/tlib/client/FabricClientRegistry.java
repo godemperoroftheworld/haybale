@@ -7,7 +7,6 @@ import com.t2pellet.tlib.client.registry.api.ParticleFactoryEntryType;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleType;
@@ -22,9 +21,6 @@ public class FabricClientRegistry implements IClientRegistry {
     @Override
     @SuppressWarnings("unchecked")
     public Supplier<ParticleType<SimpleParticleType>> register(String modid, ParticleFactoryEntryType particleFactoryEntry) {
-        ClientSpriteRegistryCallback.registerBlockAtlas((atlasTexture, registry) -> {
-            registry.register(new ResourceLocation(modid, "particle/" + particleFactoryEntry.getName()));
-        });
         ParticleFactoryRegistry.getInstance().register(particleFactoryEntry.get(), particleFactoryEntry.getProviderFunction()::apply);
         return particleFactoryEntry::get;
     }

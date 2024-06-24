@@ -44,7 +44,7 @@ public class ForgeCommonRegistry implements ICommonRegistry {
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
         ResourceLocation location = new ResourceLocation(modid, soundEntryType.getName());
         TLibForgeMod forgeMod = TenzinLibForge.getInstance().get(modid);
-        return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> new SoundEvent(location));
+        return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> SoundEvent.createVariableRangeEvent(location));
     }
 
     @Override

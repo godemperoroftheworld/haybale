@@ -150,9 +150,9 @@ jobs:
           game-versions: "${{env.MINECRAFT_VERSION}}"
           java: "${{env.JAVA_VERSION}}"
           files: |
-            build/Fabric/build/libs/!(*-@(dev|sources)).jar
-            build/Fabric/build/libs/*-@(dev|sources).jar
-            build/Common/build/libs/*-@(dev|sources).jar
+            build/Fabric/build/libs/!(*-@(sources)).jar
+            build/Fabric/build/libs/*-@(sources).jar
+            build/Common/build/libs/*-@(sources).jar
       - name: Publish Forge
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
@@ -166,8 +166,8 @@ jobs:
           game-versions: "${{env.MINECRAFT_VERSION}}"
           java: "${{env.JAVA_VERSION}}"
           files: |
-            build/Forge/build/libs/!(*-@(dev|sources|slim)).jar
-            build/Forge/build/libs/*-@(dev|sources).jar
+            build/Forge/build/libs/!(*-@(sources|slim)).jar
+            build/Forge/build/libs/*-@(sources).jar
   curseforge:
     needs: [build, changelog]
     runs-on: ubuntu-latest
@@ -197,9 +197,9 @@ jobs:
           game-versions: "${{env.MINECRAFT_VERSION}}"
           java: "${{env.JAVA_VERSION}}"
           files: |
-            build/Fabric/build/libs/!(*-@(dev|sources|)).jar
-            build/Fabric/build/libs/*-@(dev|sources).jar
-            build/Common/build/libs/*-@(dev|sources).jar
+            build/Fabric/build/libs/!(*-@(sources)).jar
+            build/Fabric/build/libs/*-@(sources).jar
+            build/Common/build/libs/*-@(sources).jar
       - name: Publish Forge
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
@@ -213,5 +213,5 @@ jobs:
           game-versions: "${{env.MINECRAFT_VERSION}}"
           java: "${{env.JAVA_VERSION}}"
           files: |
-            build/Forge/build/libs/!(*-@(dev|sources|slim)).jar
-            build/Forge/build/libs/*-@(dev|sources).jar
+            build/Forge/build/libs/!(*-@(sources|slim)).jar
+            build/Forge/build/libs/*-@(sources).jar

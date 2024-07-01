@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.19.3-0.4.2] - 2024-07-01
+### :sparkles: New Features
+- [`216854f`](https://github.com/t2pellet/haybale/commit/216854f2b849c55dd1f0ff3eec2a4b60b5bbaaa7) - update to 1.19.3 *(commit by [@t2pellet](https://github.com/t2pellet))*
+
+### :wrench: Chores
+- [`0136636`](https://github.com/t2pellet/haybale/commit/0136636d4e79ebe7f5b3963bf1c8acc59710fe5d) - update changelog *(commit by [@t2pellet](https://github.com/t2pellet))*
+- [`96ffed5`](https://github.com/t2pellet/haybale/commit/96ffed510356de395709d0cccb112c14851cd6a7) - no dev jar in release *(commit by [@t2pellet](https://github.com/t2pellet))*
+- [`24e581e`](https://github.com/t2pellet/haybale/commit/24e581eaf8251d8ba89696b26c5ce9939763a9a8) - add compiled common jar in sources *(commit by [@t2pellet](https://github.com/t2pellet))*
+- [`4d1ec36`](https://github.com/t2pellet/haybale/commit/4d1ec36bcd934cadf06a30f2194da5ad7b7d2f00) - gradle / action update to 1.19.3 *(commit by [@t2pellet](https://github.com/t2pellet))*
+
+
 ## [v1.19.2-0.4.2] - 2024-06-24
 ### :sparkles: New Features
 - [`858561f`](https://github.com/t2pellet/haybale/commit/858561f42b1ef2c90b7dafd7ee5d31d46f33cb4b) - value range for float config property *(commit by [@t2pellet](https://github.com/t2pellet))*
@@ -34,3 +45,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [v1.19.2-0.4.1]: https://github.com/t2pellet/haybale/compare/v1.19.2-0.4.0...v1.19.2-0.4.1
 [v1.19.2-0.4.2]: https://github.com/t2pellet/haybale/compare/v1.19.2-0.4.1...v1.19.2-0.4.2
+[v1.19.3-0.4.2]: https://github.com/t2pellet/haybale/compare/v1.19.2-0.4.2...v1.19.3-0.4.2

@@ -8,20 +8,20 @@
     "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/tlib",
-    "sources": "https://github.com/t2pellet/tlib"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/haybale",
+    "sources": "https://github.com/t2pellet/haybale"
   },
   "license": "AGPLv3",
   "icon": "assets/haybale/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.t2pellet.tlib.TenzinLibFabric"
+      "com.t2pellet.haybale.TenzinLibFabric"
     ],
     "client": [
-      "com.t2pellet.tlib.TenzinLibFabric"
+      "com.t2pellet.haybale.TenzinLibFabric"
     ],
-    "modmenu": [ "com.t2pellet.tlib.client.compat.FabricModMenuCompat"]
+    "modmenu": [ "com.t2pellet.haybale.client.compat.FabricModMenuCompat"]
   },
   "mixins": [
     "haybale.mixins.json",

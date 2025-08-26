@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "haybale",
   "version": "${version}",
-  "name": "Tenzin Lib",
+  "name": "${mod_name}",
   "description": "Library mod for Tenzin's mods!",
   "authors": [
     "${mod_author}"
@@ -12,7 +12,7 @@
     "sources": "https://github.com/t2pellet/tlib"
   },
   "license": "AGPLv3",
-  "icon": "assets/tlib/icon.png",
+  "icon": "assets/haybale/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -24,8 +24,8 @@
     "modmenu": [ "com.t2pellet.tlib.client.compat.FabricModMenuCompat"]
   },
   "mixins": [
-    "tlib.mixins.json",
-    "tlib.fabric.mixins.json"
+    "haybale.mixins.json",
+    "haybale.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.13",

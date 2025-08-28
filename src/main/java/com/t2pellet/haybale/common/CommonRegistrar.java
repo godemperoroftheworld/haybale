@@ -1,7 +1,6 @@
 package com.t2pellet.haybale.common;
 
 import com.t2pellet.haybale.Haybale;
-import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.common.capability.api.Capability;
 import com.t2pellet.haybale.common.capability.api.registry.IModCapabilities;
 import com.t2pellet.haybale.common.capability.registry.CapabilityRegistrar;
@@ -59,9 +58,9 @@ public class CommonRegistrar extends BaseRegistrar {
         Haybale.LOG.debug("Registering packets for modid: " + modid);
         for (Field field : packets.getClass().getDeclaredFields()) {
             IModPackets.IPacket packetInfo = field.getAnnotation(IModPackets.IPacket.class);
-            if (packetInfo != null && field.getType().equals(IModPackets.haybalePacket.class)) {
+            if (packetInfo != null && field.getType().equals(IModPackets.HaybalePacket.class)) {
                 try {
-                    IModPackets.haybalePacket packet = (IModPackets.haybalePacket) field.get(null);
+                    IModPackets.HaybalePacket packet = (IModPackets.HaybalePacket) field.get(null);
                     if (packetInfo.client()) {
                         COMMON_REGISTRY.registerClientPacket(modid, packetInfo.name(), packet.getPacketClass());
                     } else {

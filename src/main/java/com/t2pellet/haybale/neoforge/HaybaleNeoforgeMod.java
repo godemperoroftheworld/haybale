@@ -1,5 +1,5 @@
-package com.t2pellet.haybale.neoforge;//? if neoforge {
-/*package com.t2pellet.haybale.neoforge;
+//? if neoforge {
+package com.t2pellet.haybale.neoforge;
 
 import com.t2pellet.haybale.common.ClientRegistrar;
 import com.t2pellet.haybale.common.CommonRegistrar;
@@ -9,6 +9,7 @@ import com.t2pellet.haybale.client.HaybaleModClient;
 import com.t2pellet.haybale.client.compat.ConfigMenu;
 import com.t2pellet.haybale.common.config.ConfigRegistrar;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -19,7 +20,6 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public abstract class HaybaleNeoforgeMod {
 
@@ -42,10 +42,10 @@ public abstract class HaybaleNeoforgeMod {
         modid = modAnnotation.value();
         HaybaleNeoforge.getInstance().register(modid, this);
         // Create deferred registers
-        ENTITIES = DeferredRegister.create(NeoForgeRegistries.ENTITY_TYPES, modid);
-        ITEMS = DeferredRegister.create(NeoForgeRegistries.ITEMS, modid);
-        PARTICLES = DeferredRegister.create(NeoForgeRegistries.PARTICLE_TYPES, modid);
-        SOUNDS = DeferredRegister.create(NeoForgeRegistries.SOUND_EVENTS, modid);
+        ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, modid);
+        ITEMS = DeferredRegister.create(Registries.ITEM, modid);
+        PARTICLES = DeferredRegister.create(Registries.PARTICLE_TYPE, modid);
+        SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, modid);
         // Common init
         onCommonSetup();
         // Client init
@@ -57,7 +57,7 @@ public abstract class HaybaleNeoforgeMod {
         PARTICLES.register(bus);
         SOUNDS.register(bus);
         // Events
-        registerEvents();
+        registerEvents(bus);
     }
 
     // If you want to call any custom logic in your mod BEFORE any haybale stuff
@@ -66,7 +66,7 @@ public abstract class HaybaleNeoforgeMod {
     protected abstract HaybaleMod getCommonMod();
     protected abstract HaybaleModClient getClientMod();
 
-    protected void registerEvents() {
+    protected void registerEvents(IEventBus bus) {
     }
 
     private void onCommonSetup() {
@@ -95,4 +95,4 @@ public abstract class HaybaleNeoforgeMod {
         }
     }
 }
-*///?}
+//?}

@@ -1,9 +1,9 @@
-package com.t2pellet.haybale.neoforge.services;//? if neoforge {
-/*package com.t2pellet.haybale.neoforge.services;
+//? if neoforge {
+package com.t2pellet.haybale.neoforge.services;
 
 import com.t2pellet.haybale.services.IPlatformHelper;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLPaths;
 
 public class PlatformHelper implements IPlatformHelper {
 
@@ -17,4 +17,4 @@ public class PlatformHelper implements IPlatformHelper {
         return ModList.get().isLoaded(modId);
     }
 }
-*///?}
+//?}

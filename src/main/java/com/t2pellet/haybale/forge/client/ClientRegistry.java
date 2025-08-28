@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge.client;
+/*package com.t2pellet.haybale.forge.client;
 
 import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
@@ -16,8 +16,8 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 //? if <= 1.18.2 {
-/*import net.minecraft.client.Minecraft;
-*///?}
+/^import net.minecraft.client.Minecraft;
+^///?}
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -32,12 +32,12 @@ public class ClientRegistry implements IClientRegistry {
             //? if >= 1.19.4 {
             particleFactoryRegisterEvent.registerSpriteSet(
             //?} else {
-                /*//? if > 1.18.2 {
+                /^//? if > 1.18.2 {
             particleFactoryRegisterEvent
                 //?} else
-            /^Minecraft.getInstance().particleEngine^/
+            /^¹Minecraft.getInstance().particleEngine¹^/
                     .register(
-            *///?}
+            ^///?}
                     particleFactoryEntry.get(),
                     spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet)
             );
@@ -62,4 +62,4 @@ public class ClientRegistry implements IClientRegistry {
         return rendererEntry::getRendererProvider;
     }
 }
-//?}
+*///?}

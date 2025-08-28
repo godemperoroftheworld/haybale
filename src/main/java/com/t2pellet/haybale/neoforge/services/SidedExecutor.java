@@ -1,11 +1,11 @@
-package com.t2pellet.haybale.neoforge.services;//? if neoforge {
-/*package com.t2pellet.haybale.neoforge.services;
+//? if neoforge {
+package com.t2pellet.haybale.neoforge.services;
 
 import com.t2pellet.haybale.services.ISidedExecutor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PriorityQueue;
@@ -56,4 +56,4 @@ public class SidedExecutor implements ISidedExecutor {
         }
     }
 }
-*///?}
+//?}

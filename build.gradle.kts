@@ -17,7 +17,7 @@ repositories {
     maven("https://maven.architectury.dev/")
     maven("https://maven.shedaniel.me/")
     maven( "https://maven.terraformersmc.com/releases/")
-}
+    maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }}
 
 /* Helpers */
 
@@ -145,7 +145,6 @@ class ModFabric {
 class ModForge {
     val loaderVersion = versionProperty("deps.core.forge.loader.version_range").min;
     val version = versionProperty("deps.core.forge.version_range").min;
-    val neoVersion = versionProperty("deps.core.neo.version_range").min;
 }
 val mod = ModProperties()
 val modFabric = ModFabric()
@@ -195,7 +194,7 @@ dependencies {
         "forge"("net.minecraftforge:forge:${modForge.version}")
     }
     if(env.isNeo) {
-        "neoForge"("net.neoforged:neoforge:${modForge.neoVersion}")
+        "neoForge"("net.neoforged:neoforge:${modForge.version}")
     }
 
     // Extra Dependencies
@@ -209,7 +208,7 @@ dependencies {
     }
     implementation("org.ini4j:ini4j:0.5.4")
     include("org.ini4j:ini4j:0.5.4")
-    if (env.isForge) {
+    if (env.isForge || env.isNeo) {
         "forgeRuntimeLibrary"("org.ini4j:ini4j:0.5.4")
     }
 

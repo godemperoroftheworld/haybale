@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge;
+/*package com.t2pellet.haybale.forge;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.HaybaleMod;
@@ -53,4 +53,4 @@ public class HaybaleForge extends HaybaleForgeMod {
         return modMap.get(modid);
     }
 }
-//?}
+*///?}

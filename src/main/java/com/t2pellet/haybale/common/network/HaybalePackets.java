@@ -6,6 +6,6 @@ import com.t2pellet.haybale.common.network.capability.CapabilityPacket;
 public class HaybalePackets implements IModPackets {
 
     @IPacket(name = "capability", client = true)
-    public static final haybalePacket capabilityPacket = new haybalePacket(CapabilityPacket.class);
+    public static final HaybalePacket capabilityPacket = new HaybalePacket(CapabilityPacket.class);
 
 }

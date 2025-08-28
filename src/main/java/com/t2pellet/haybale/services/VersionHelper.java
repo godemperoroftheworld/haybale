@@ -12,9 +12,9 @@ public class VersionHelper {
 
     public Level getLevel(Entity entity) {
         //? if <=1.19.4 {
-        return entity.getLevel();
-        //?} else
-        /*return entity.level();*/
+        /*return entity.getLevel();
+        *///?} else
+        return entity.level();
     }
 
     public Component translatableComponent(String key) {

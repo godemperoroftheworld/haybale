@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge.services;
+/*package com.t2pellet.haybale.forge.services;
 
 import com.t2pellet.haybale.services.ISidedExecutor;
 import net.minecraft.server.MinecraftServer;
@@ -55,11 +55,11 @@ public class SidedExecutor implements ISidedExecutor {
         if (top != null && top.tick >= tick) {
             pq.poll();
             //? if <= 1.18.2 {
-            /*MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-            *///?} else
+            /^MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            ^///?} else
             MinecraftServer server = event.getServer();
             server.execute(top.runnable);
         }
     }
 }
-//?}
+*///?}

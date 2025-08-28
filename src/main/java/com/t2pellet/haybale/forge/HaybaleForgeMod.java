@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge;
+/*package com.t2pellet.haybale.forge;
 
 import com.t2pellet.haybale.common.ClientRegistrar;
 import com.t2pellet.haybale.common.CommonRegistrar;
@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 //? if > 1.18.2 {
 import net.minecraftforge.client.ConfigScreenHandler;
 //?} else
-/*import net.minecraftforge.client.ConfigGuiHandler;*/
+/^import net.minecraftforge.client.ConfigGuiHandler;^/
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -49,7 +49,7 @@ public abstract class HaybaleForgeMod {
                 //? if > 1.18.2 {
                 ForgeRegistries.ENTITY_TYPES,
                 //?} else
-                /*ForgeRegistries.ENTITIES,*/
+                /^ForgeRegistries.ENTITIES,^/
                 modid
         );
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
@@ -104,11 +104,11 @@ public abstract class HaybaleForgeMod {
                     ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen())
                     //?} else {
-                    /*ConfigGuiHandler.ConfigGuiFactory.class,
+                    /^ConfigGuiHandler.ConfigGuiFactory.class,
                     () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> configMenu.buildConfigScreen())
-                    *///?}
+                    ^///?}
             );
         }
     }
 }
-//?}
+*///?}

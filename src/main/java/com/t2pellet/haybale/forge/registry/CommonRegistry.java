@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge.registry;
+/*package com.t2pellet.haybale.forge.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
@@ -50,7 +50,7 @@ public class CommonRegistry implements ICommonRegistry {
             //? if >= 1.19.4 {
             return SoundEvent.createVariableRangeEvent(location);
             //?} else
-            /*return new SoundEvent(location);*/
+            /^return new SoundEvent(location);^/
         });
     }
 
@@ -72,4 +72,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-//?}
+*///?}

@@ -1,5 +1,5 @@
 //? if forge {
-package com.t2pellet.haybale.forge.network;
+/*package com.t2pellet.haybale.forge.network;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -91,4 +91,4 @@ public class PacketHandler implements IPacketHandler {
         sendTo(packet, players);
     }
 }
-//?}
+*///?}

@@ -1,9 +1,9 @@
-package com.t2pellet.haybale.neoforge.registry;//? if neoforge {
-/*package com.t2pellet.haybale.neoforge.registry;
+//? if neoforge {
+package com.t2pellet.haybale.neoforge.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
-import com.t2pellet.haybale.common.registry.ICommonRegistry;
+import com.t2pellet.haybale.registry.ICommonRegistry;
 import com.t2pellet.haybale.common.registry.api.EntityEntryType;
 import com.t2pellet.haybale.common.registry.api.ItemEntryType;
 import com.t2pellet.haybale.common.registry.api.ParticleEntryType;
@@ -17,9 +17,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -35,10 +35,10 @@ public class CommonRegistry implements ICommonRegistry {
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
-        RegistryObject<EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
+        DeferredHolder<EntityType<?>, EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                 .build(entityEntryType.getName()));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes()));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
     }
 
@@ -67,4 +67,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-*///?}
+//?}

@@ -1,5 +1,5 @@
 //? if fabric {
-package com.t2pellet.haybale.fabric.network;
+/*package com.t2pellet.haybale.fabric.network;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -103,4 +103,4 @@ public class PacketHandler implements IPacketHandler {
     }
 
 }
-//?}
+*///?}

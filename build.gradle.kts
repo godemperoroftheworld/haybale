@@ -197,6 +197,7 @@ dependencies {
     }
     api("org.ini4j:ini4j:0.5.4")
     include("org.ini4j:ini4j:0.5.4")
+    minecraftRuntimeLibraries("org.ini4j:ini4j:0.5.4")
 
 
     vineflowerDecompilerClasspath("org.vineflower:vineflower:1.10.1")

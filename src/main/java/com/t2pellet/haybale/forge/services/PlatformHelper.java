@@ -1,5 +1,5 @@
-package com.t2pellet.haybale.forge.services;//? if forge {
-/*package com.t2pellet.haybale.forge.services;
+//? if forge {
+package com.t2pellet.haybale.forge.services;
 
 import com.t2pellet.haybale.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
@@ -17,4 +17,4 @@ public class PlatformHelper implements IPlatformHelper {
         return ModList.get().isLoaded(modId);
     }
 }
-*///?}
+//?}

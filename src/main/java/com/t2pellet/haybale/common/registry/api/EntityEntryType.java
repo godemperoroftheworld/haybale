@@ -40,8 +40,8 @@ public class EntityEntryType<T extends LivingEntity> extends EntryType<EntityTyp
         return factory;
     }
 
-    public AttributeSupplier buildAttributes() {
-        return builder.get().build();
+    public AttributeSupplier.Builder buildAttributes() {
+        return builder.get();
     }
 
     public MobCategory getMobCategory() {

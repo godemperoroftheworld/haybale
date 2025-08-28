@@ -1,5 +1,5 @@
 //? if fabric {
-package com.t2pellet.haybale.fabric.registry;
+/*package com.t2pellet.haybale.fabric.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
@@ -13,7 +13,9 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
+//? if >= 1.19.4 {
+/^import net.minecraft.core.registries.BuiltInRegistries;
+^///?}
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -29,33 +31,65 @@ public class CommonRegistry implements ICommonRegistry {
     @Override
     public Supplier<SimpleParticleType> register(String modid, ParticleEntryType particleEntryType) {
         ResourceLocation id = new ResourceLocation(modid, particleEntryType.getName());
-        SimpleParticleType type = Registry.register(BuiltInRegistries.PARTICLE_TYPE, id, FabricParticleTypes.simple());
+        SimpleParticleType type = Registry.register(
+                //? if >= 1.19.4 {
+                /^BuiltInRegistries.PARTICLE_TYPE,
+                ^///?} else
+                Registry.PARTICLE_TYPE,
+                id,
+                FabricParticleTypes.simple()
+        );
         return () -> type;
     }
 
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         EntityType<T> type = Registry.register(
-                BuiltInRegistries.ENTITY_TYPE,
+                //? if >= 1.19.4 {
+                /^BuiltInRegistries.ENTITY_TYPE,
+                ^///?} else
+                Registry.ENTITY_TYPE,
                 new ResourceLocation(modid, entityEntryType.getName()),
                 EntityType.Builder.of(entityEntryType.getFactory(), MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                         .build(entityEntryType.getName()));
-        FabricDefaultAttributeRegistry.register(type, entityEntryType.buildAttributes());
+        FabricDefaultAttributeRegistry.register(
+                type,
+                //? if >= 1.19.4 {
+                /^entityEntryType.buildAttributes().build(),
+                ^///?} else
+                entityEntryType.buildAttributes()
+        );
         return () -> type;
     }
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
         ResourceLocation location = new ResourceLocation(modid, soundEntryType.getName());
-        SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
-        Registry.register(BuiltInRegistries.SOUND_EVENT, location, soundEvent);
+        //? if >= 1.19.4 {
+        /^SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
+        ^///?} else
+        SoundEvent soundEvent = new SoundEvent(location);
+        Registry.register(
+                //? if >= 1.19.4 {
+                /^BuiltInRegistries.SOUND_EVENT,
+                ^///?} else
+                Registry.SOUND_EVENT,
+                location,
+                soundEvent
+        );
         return () -> soundEvent;
     }
 
     @Override
     public Supplier<Item> register(String modid, ItemEntryType itemEntryType) {
-        Item item = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties()));
+        Item item = Registry.register(
+                //? if >= 1.19.4 {
+                /^BuiltInRegistries.ITEM,
+                ^///?} else
+                Registry.ITEM,
+                new ResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
+        );
         return () -> item;
     }
 
@@ -71,4 +105,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-//?}
+*///?}

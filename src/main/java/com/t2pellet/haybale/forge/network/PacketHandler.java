@@ -1,5 +1,5 @@
-package com.t2pellet.haybale.forge.network;//? if forge {
-/*package com.t2pellet.haybale.forge.network;
+//? if forge {
+package com.t2pellet.haybale.forge.network;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -81,7 +81,8 @@ public class PacketHandler implements IPacketHandler {
     @Override
     public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
         AABB box = new AABB(e.blockPosition()).inflate(range);
-        sendInArea(packet, e.level(), box);
+        Level level = Services.VERSION_HELPER.getLevel(e);
+        sendInArea(packet, level, box);
     }
 
     @Override
@@ -90,4 +91,4 @@ public class PacketHandler implements IPacketHandler {
         sendTo(packet, players);
     }
 }
-*///?}
+//?}

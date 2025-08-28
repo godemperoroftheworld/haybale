@@ -1,9 +1,9 @@
-package com.t2pellet.haybale.forge.registry;//? if forge {
-/*package com.t2pellet.haybale.forge.registry;
+//? if forge {
+package com.t2pellet.haybale.forge.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
-import com.t2pellet.haybale.common.registry.ICommonRegistry;
+import com.t2pellet.haybale.registry.ICommonRegistry;
 import com.t2pellet.haybale.common.registry.api.EntityEntryType;
 import com.t2pellet.haybale.common.registry.api.ItemEntryType;
 import com.t2pellet.haybale.common.registry.api.ParticleEntryType;
@@ -38,7 +38,7 @@ public class CommonRegistry implements ICommonRegistry {
         RegistryObject<EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                 .build(entityEntryType.getName()));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes()));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
     }
 
@@ -46,7 +46,12 @@ public class CommonRegistry implements ICommonRegistry {
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
         ResourceLocation location = new ResourceLocation(modid, soundEntryType.getName());
         HaybaleForgeMod forgeMod = HaybaleForge.getInstance().get(modid);
-        return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> SoundEvent.createVariableRangeEvent(location));
+        return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> {
+            //? if >= 1.19.4 {
+            /*return SoundEvent.createVariableRangeEvent(location);
+            *///?} else
+            return new SoundEvent(location);
+        });
     }
 
     @Override
@@ -67,4 +72,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-*///?}
+//?}

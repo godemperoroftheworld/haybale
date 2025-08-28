@@ -26,12 +26,10 @@ stonecutter {
     centralScript = "build.gradle.kts"
 
     shared {
-//        vers("1.16.5-fabric","1.16.5")
-//        vers("1.16.5-forge","1.16.5")
 //        vers("1.18.2-fabric","1.18.2")
 //        vers("1.18.2-forge","1.18.2")
-//        vers("1.19.2-fabric","1.19.2")
-//        vers("1.19.2-forge","1.19.2")
+        vers("1.19.2-fabric","1.19.2")
+        vers("1.19.2-forge","1.19.2")
         vers("1.19.4-fabric","1.19.4")
         vers("1.19.4-forge","1.19.4")
 //        vers("1.20.1-fabric","1.20.1")

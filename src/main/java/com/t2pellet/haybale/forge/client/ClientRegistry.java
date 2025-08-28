@@ -1,5 +1,5 @@
-package com.t2pellet.haybale.forge.client;//? if forge {
-/*package com.t2pellet.haybale.forge.client;
+//? if forge {
+package com.t2pellet.haybale.forge.client;
 
 import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
@@ -25,7 +25,14 @@ public class ClientRegistry implements IClientRegistry {
     @SuppressWarnings("unchecked")
     public Supplier<ParticleType<SimpleParticleType>> register(String modid, ParticleFactoryEntryType particleFactoryEntry) {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
-            particleFactoryRegisterEvent.registerSpriteSet(particleFactoryEntry.get(), spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet));
+
+            //? if >= 1.19.4 {
+            /*particleFactoryRegisterEvent.registerSpriteSet(
+            *///?} else
+            particleFactoryRegisterEvent.register(
+                    particleFactoryEntry.get(),
+                    spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet)
+            );
         });
         return particleFactoryEntry::get;
     }
@@ -47,4 +54,4 @@ public class ClientRegistry implements IClientRegistry {
         return rendererEntry::getRendererProvider;
     }
 }
-*///?}
+//?}

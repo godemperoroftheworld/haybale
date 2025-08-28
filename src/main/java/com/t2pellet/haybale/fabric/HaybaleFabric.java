@@ -1,5 +1,5 @@
 //? if fabric {
-package com.t2pellet.haybale.fabric;
+/*package com.t2pellet.haybale.fabric;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.HaybaleMod;
@@ -38,4 +38,4 @@ public class HaybaleFabric extends HaybaleFabricMod {
         });
     }
 }
-//?}
+*///?}

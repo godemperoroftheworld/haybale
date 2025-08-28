@@ -1,5 +1,5 @@
-package com.t2pellet.haybale.forge;//? if forge {
-/*package com.t2pellet.haybale.forge;
+//? if forge {
+package com.t2pellet.haybale.forge;
 
 import com.t2pellet.haybale.common.ClientRegistrar;
 import com.t2pellet.haybale.common.CommonRegistrar;
@@ -95,4 +95,4 @@ public abstract class HaybaleForgeMod {
         }
     }
 }
-*///?}
+//?}

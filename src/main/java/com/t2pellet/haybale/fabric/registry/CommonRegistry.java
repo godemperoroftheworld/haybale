@@ -56,7 +56,7 @@ public class CommonRegistry implements ICommonRegistry {
         FabricDefaultAttributeRegistry.register(
                 type,
                 //? if >= 1.19.4 {
-                /^entityEntryType.buildAttributes().build(),
+                /^entityEntryType.buildAttributes().build()
                 ^///?} else
                 entityEntryType.buildAttributes()
         );

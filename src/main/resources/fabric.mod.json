@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "contact": {
+    "sources": "${source_url}",
+    "issues": "${issue_tracker}"
+  },
+  "license": "${license}",
+  "icon": "${icon}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.t2pellet.haybale.fabric.HaybaleFabric"
+    ],
+    "client": [
+      "com.t2pellet.haybale.fabric.HaybaleFabric"
+    ],
+    "modmenu": [
+      "com.t2pellet.haybale.fabric.client.compat.FabricModMenuCompat"
+    ]
+  },
+  "mixins": [],
+  "depends": {
+  }
+}

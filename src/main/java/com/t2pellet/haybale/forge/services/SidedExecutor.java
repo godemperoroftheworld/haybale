@@ -55,9 +55,9 @@ public class SidedExecutor implements ISidedExecutor {
         if (top != null && top.tick >= tick) {
             pq.poll();
             //? if <= 1.18.2 {
-            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-            //?} else
-            /*MinecraftServer server = event.getServer();*/
+            /*MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            *///?} else
+            MinecraftServer server = event.getServer();
             server.execute(top.runnable);
         }
     }

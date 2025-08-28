@@ -2,9 +2,9 @@ package com.t2pellet.haybale.services;
 
 import net.minecraft.network.chat.Component;
 //? if <= 1.18.2 {
-import net.minecraft.network.chat.TextComponent;
+/*import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-//?}
+*///?}
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
@@ -19,15 +19,15 @@ public class VersionHelper {
 
     public Component translatableComponent(String key) {
         //? if <= 1.18.2 {
-        return new TranslatableComponent(key);
-        //?} else
-        /*return Component.translatable(key);*/
+        /*return new TranslatableComponent(key);
+        *///?} else
+        return Component.translatable(key);
     }
 
     public Component literalComponent(String key) {
         //? if <= 1.18.2 {
-        return new TextComponent(key);
-        //?} else
-        /*return Component.literal(key);*/
+        /*return new TextComponent(key);
+        *///?} else
+        return Component.literal(key);
     }
 }

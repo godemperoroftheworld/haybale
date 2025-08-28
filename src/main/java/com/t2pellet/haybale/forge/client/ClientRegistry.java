@@ -27,9 +27,9 @@ public class ClientRegistry implements IClientRegistry {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
 
             //? if >= 1.19.4 {
-            /*particleFactoryRegisterEvent.registerSpriteSet(
-            *///?} else
-            particleFactoryRegisterEvent.register(
+            particleFactoryRegisterEvent.registerSpriteSet(
+            //?} else
+            /*particleFactoryRegisterEvent.register(*/
                     particleFactoryEntry.get(),
                     spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet)
             );

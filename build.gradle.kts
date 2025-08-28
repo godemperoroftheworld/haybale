@@ -2,8 +2,9 @@ import java.util.Optional
 
 // Plugins
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.2.10"
     id("dev.architectury.loom")
+    id("architectury-plugin")
     id("dev.kikugie.stonecutter")
     id("me.modmuss50.mod-publish-plugin")
 }
@@ -11,6 +12,7 @@ plugins {
 // Repositories
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     maven("https://maven.neoforged.net/releases/")
     maven("https://maven.architectury.dev/")
     maven("https://maven.shedaniel.me/")
@@ -177,6 +179,7 @@ dependencies {
     minecraft("com.mojang:minecraft:${env.mcVersion.min}")
     mappings(loom.officialMojangMappings())
 
+    // Base Dependencies
     if(env.isFabric) {
         modImplementation("net.fabricmc:fabric-loader:${modFabric.loaderVersion}")
         modApi("net.fabricmc.fabric-api:fabric-api:${modFabric.version}")
@@ -187,6 +190,8 @@ dependencies {
     if(env.isNeo) {
         "neoForge"("net.neoforged:neoforge:${modForge.neoVersion}")
     }
+
+    // Extra Dependencies
     if (env.isFabric) {
         modApi("com.terraformersmc:modmenu:${property("deps.api.mod_menu")}") {
             exclude(group = "net.fabricmc")
@@ -195,10 +200,11 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-${env.loader}:${property("deps.api.cloth_config")}") {
         exclude(group = "net.fabricmc")
     }
-    api("org.ini4j:ini4j:0.5.4")
+    implementation("org.ini4j:ini4j:0.5.4")
     include("org.ini4j:ini4j:0.5.4")
-    minecraftRuntimeLibraries("org.ini4j:ini4j:0.5.4")
-
+    if (env.isForge) {
+        "forgeRuntimeLibrary"("org.ini4j:ini4j:0.5.4")
+    }
 
     vineflowerDecompilerClasspath("org.vineflower:vineflower:1.10.1")
 }

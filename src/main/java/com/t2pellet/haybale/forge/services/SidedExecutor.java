@@ -2,8 +2,10 @@
 package com.t2pellet.haybale.forge.services;
 
 import com.t2pellet.haybale.services.ISidedExecutor;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +54,11 @@ public class SidedExecutor implements ISidedExecutor {
         PQEntry top = pq.peek();
         if (top != null && top.tick >= tick) {
             pq.poll();
-            event.getServer().execute(top.runnable);
+            //? if <= 1.18.2 {
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            //?} else
+            /*MinecraftServer server = event.getServer();*/
+            server.execute(top.runnable);
         }
     }
 }

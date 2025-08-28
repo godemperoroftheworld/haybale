@@ -48,9 +48,9 @@ public class CommonRegistry implements ICommonRegistry {
         HaybaleForgeMod forgeMod = HaybaleForge.getInstance().get(modid);
         return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> {
             //? if >= 1.19.4 {
-            return SoundEvent.createVariableRangeEvent(location);
-            //?} else
-            /*return new SoundEvent(location);*/
+            /*return SoundEvent.createVariableRangeEvent(location);
+            *///?} else
+            return new SoundEvent(location);
         });
     }
 

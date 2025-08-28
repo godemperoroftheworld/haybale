@@ -13,7 +13,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
+//? if > 1.18.2 {
+/*import net.minecraftforge.client.ConfigScreenHandler;
+*///?} else
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -42,7 +45,13 @@ public abstract class HaybaleForgeMod {
         modid = modAnnotation.value();
         HaybaleForge.getInstance().register(modid, this);
         // Create deferred registers
-        ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, modid);
+        ENTITIES = DeferredRegister.create(
+                //? if > 1.18.2 {
+                /*ForgeRegistries.ENTITY_TYPES,
+                *///?} else
+                ForgeRegistries.ENTITIES,
+                modid
+        );
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
         PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, modid);
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, modid);
@@ -90,8 +99,15 @@ public abstract class HaybaleForgeMod {
         // I have no idea why their modid is different in forge
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
             ConfigMenu configMenu = new ConfigMenu(modid);
-            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
+            ModLoadingContext.get().registerExtensionPoint(
+                    //? if > 1.18.2 {
+                    /*ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen())
+                    *///?} else {
+                    ConfigGuiHandler.ConfigGuiFactory.class,
+                    () -> new ConfigGuiHandler.ConfigGuiFactory((minecraft, screen) -> configMenu.buildConfigScreen())
+                    //?}
+            );
         }
     }
 }

@@ -6,6 +6,6 @@ plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
 }
 
-stonecutter active "1.19.4-forge" /* You may have to edit this. Make sure it matches one of the versions present in settings.gradle.kts */
+stonecutter active "1.18.2-forge" /* You may have to edit this. Make sure it matches one of the versions present in settings.gradle.kts */
 
 

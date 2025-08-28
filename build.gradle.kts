@@ -158,6 +158,13 @@ stonecutter.const("fabric",env.isFabric)
 stonecutter.const("forge",env.isForge)
 stonecutter.const("neoforge",env.isNeo)
 
+stonecutter {
+    replacements.string {
+        direction = eval(current.version, "<=1.18.2")
+        replace("RegisterParticleProvidersEvent", "ParticleFactoryRegisterEvent")
+    }
+}
+
 loom {
     silentMojangMappingsLicense()
 

@@ -8,20 +8,29 @@ import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.HaybaleModClient;
 import com.t2pellet.haybale.client.compat.ConfigMenu;
 import com.t2pellet.haybale.common.config.ConfigRegistrar;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.fml.loading.FMLEnvironment;
+//? if >= 1.20.5 {
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+//?} else {
+/*import net.neoforged.neoforge.client.ConfigScreenHandler;
+*///?}
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public abstract class HaybaleNeoforgeMod {
+
+    // Mod Event Bus
+    public final IEventBus modBus;
 
     // Mod references
     private final String modid;
@@ -34,13 +43,14 @@ public abstract class HaybaleNeoforgeMod {
     public final DeferredRegister<SoundEvent> SOUNDS;
     public final DeferredRegister<Item> ITEMS;
 
-    public HaybaleNeoforgeMod() {
+    public HaybaleNeoforgeMod(IEventBus modBus) {
         initialSetup();
         HaybaleMod.IMod modAnnotation = getClass().getAnnotation(HaybaleMod.IMod.class);
-        commonMod = getCommonMod();
-        clientMod = getClientMod();
-        modid = modAnnotation.value();
-        HaybaleNeoforge.getInstance().register(modid, this);
+        this.modBus = modBus;
+        this.commonMod = getCommonMod();
+        this.clientMod = getClientMod();
+        this.modid = modAnnotation.value();
+        HaybaleNeoforge.getInstance().register(this.modid, this);
         // Create deferred registers
         ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, modid);
         ITEMS = DeferredRegister.create(Registries.ITEM, modid);
@@ -49,15 +59,16 @@ public abstract class HaybaleNeoforgeMod {
         // Common init
         onCommonSetup();
         // Client init
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::onClientSetup);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            this.onClientSetup();
+        }
         // Register into deferred registers
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        ENTITIES.register(bus);
-        ITEMS.register(bus);
-        PARTICLES.register(bus);
-        SOUNDS.register(bus);
+        ENTITIES.register(modBus);
+        ITEMS.register(modBus);
+        PARTICLES.register(modBus);
+        SOUNDS.register(modBus);
         // Events
-        registerEvents(bus);
+        registerEvents(modBus);
     }
 
     // If you want to call any custom logic in your mod BEFORE any haybale stuff
@@ -66,7 +77,7 @@ public abstract class HaybaleNeoforgeMod {
     protected abstract HaybaleMod getCommonMod();
     protected abstract HaybaleModClient getClientMod();
 
-    protected void registerEvents(IEventBus bus) {
+    protected void registerEvents(IEventBus modBus) {
     }
 
     private void onCommonSetup() {
@@ -81,6 +92,7 @@ public abstract class HaybaleNeoforgeMod {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void onClientSetup() {
         if (clientMod != null) {
             ClientRegistrar.INSTANCE.registerFromClass(modid, clientMod.entityModels());
@@ -90,8 +102,13 @@ public abstract class HaybaleNeoforgeMod {
         // I have no idea why their modid is different in forge
         if (Services.PLATFORM.isModLoaded("cloth_config")) {
             ConfigMenu configMenu = new ConfigMenu(modid);
-            ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+            //? if < 1.20.5 {
+            /*ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
+            *///?} else {
+            ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
+                    () -> (minecraft, screen) -> configMenu.buildConfigScreen());
+            //?}
         }
     }
 }

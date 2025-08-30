@@ -4,7 +4,10 @@ package com.t2pellet.haybale.neoforge.services;
 import com.t2pellet.haybale.services.ISidedExecutor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.TickEvent;
+//? if < 1.20.5 {
+/*import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
+*///?} else
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +50,10 @@ public class SidedExecutor implements ISidedExecutor {
         pq.add(new PQEntry(runnable, tick + ticks));
     }
 
-    public void onServerTick(TickEvent.ServerTickEvent event) {
+    //? if >= 1.20.5 {
+    public void onServerTick(ServerTickEvent.Post event) {
+    //?} else
+    /*public void onServerTick(ServerTickEvent event) {*/
         ++tick;
         PQEntry top = pq.peek();
         if (top != null && top.tick >= tick) {

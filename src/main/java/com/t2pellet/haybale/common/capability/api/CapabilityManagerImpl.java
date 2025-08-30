@@ -62,7 +62,8 @@ class CapabilityManagerImpl<E extends Entity & ICapabilityHaver> implements Capa
         listTag.forEach(tagInList -> {
             CompoundTag compoundTag = (CompoundTag) tagInList;
             try {
-                Class<? extends Capability> aClass = (Class<? extends Capability>) Class.forName(compoundTag.getString("className"));
+                String className = compoundTag.getString("className")/*? if >= 1.21.5 {*/.orElseThrow()/*?}*/;
+                Class<? extends Capability> aClass = (Class<? extends Capability>) Class.forName(className);
                 if (!map.containsKey(aClass)) instantiateCapability(aClass);
                 map.get(aClass).readTag(compoundTag.get("capability"));
             } catch (ClassNotFoundException e) {

@@ -116,7 +116,6 @@ class Env {
     val isForge = loader == "forge"
     val isNeo = loader == "neoforge"
 
-    // TODO: if MC requires higher JVMs in future updates change this controller.
     val javaVer = if(atMost("1.16.5")) 8 else if(atMost("1.20.4")) 17 else 21
 
     fun atLeast(version: String) = stonecutter.compare(mcVersion.min, version) >= 0
@@ -225,9 +224,7 @@ java {
 /**
  * Replaces the normal copy task and post-processes the files.
  * Effectively renames datapack directories due to depluralization past 1.20.4.
- * TODO: acknowledge that you should not pluralize the directories listed in targets.
  */
-
 abstract class ProcessResourcesExtension : ProcessResources() {
     @get:Input
     val autoPluralize = arrayListOf(
@@ -301,7 +298,6 @@ class ModPublish {
     val mcTargets = arrayListOf<String>()
     val modrinthProjectToken = property("publish.token.modrinth").toString()
     val curseforgeProjectToken = property("publish.token.curseforge").toString()
-    val mavenURL = findProperty("publish.maven.url")
     val dryRunMode = findProperty("publish.dry_run")
 
     init {

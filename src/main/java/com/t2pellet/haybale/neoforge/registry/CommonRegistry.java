@@ -12,6 +12,8 @@ import com.t2pellet.haybale.neoforge.HaybaleNeoforge;
 import com.t2pellet.haybale.neoforge.HaybaleNeoforgeMod;
 import com.t2pellet.haybale.neoforge.network.PacketHandler;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -34,9 +36,16 @@ public class CommonRegistry implements ICommonRegistry {
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
+        //? if >= 1.21.2 {
+        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, entityEntryType.getName());
+        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
+        //?}
         DeferredHolder<EntityType<?>, EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
-                .build(entityEntryType.getName()));
+                //? if < 1.21.2 {
+                /*.build(entityEntryType.getName()));
+                *///?} else
+                .build(key));
         forgeMod.modBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
     }

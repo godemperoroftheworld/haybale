@@ -47,7 +47,7 @@ public class ClientRegistry implements IClientRegistry {
 
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
-        Lazy<ModelLayerLocation> locSupplier = () -> new ModelLayerLocation(new ResourceLocation(modid, modelEntry.getName()), "main");
+        Lazy<ModelLayerLocation> locSupplier = () -> new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main");
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
             event.registerLayerDefinition(locSupplier.get(), modelEntry::getLayerDefinition);
         });

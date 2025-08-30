@@ -1,6 +1,7 @@
 //? if fabric {
 /*package com.t2pellet.haybale.fabric.client;
 
+import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
@@ -21,7 +22,7 @@ public class ClientRegistry implements IClientRegistry {
 
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
-        ModelLayerLocation loc = new ModelLayerLocation(new ResourceLocation(modid, modelEntry.getName()), "main");
+        ModelLayerLocation loc = new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main");
         EntityModelLayerRegistry.registerModelLayer(loc, modelEntry::getLayerDefinition);
         return () -> loc;
     }

@@ -86,7 +86,7 @@ public class PacketHandler implements IPacketHandler {
     }
 
     public <T extends Packet> void registerServerPacket(String modid, String name, Class<T> packetClass) {
-        ResourceLocation loc = new ResourceLocation(modid, name);
+        ResourceLocation loc = Services.VERSION_HELPER.getResourceLocation(modid, name);
         idMap.put(packetClass, loc);
         //? if < 1.20.5 {
         /^ServerPlayNetworking.registerGlobalReceiver(loc, (minecraftServer, serverPlayer, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
@@ -108,7 +108,7 @@ public class PacketHandler implements IPacketHandler {
     }
 
     public <T extends Packet> void registerClientPacket(String modid, String name, Class<T> packetClass) {
-        ResourceLocation loc = new ResourceLocation(modid, name);
+        ResourceLocation loc = Services.VERSION_HELPER.getResourceLocation(modid, name);
         idMap.put(packetClass, loc);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             _registerClientPacket(loc, packetClass);

@@ -30,7 +30,7 @@ public class CommonRegistry implements ICommonRegistry {
 
     @Override
     public Supplier<SimpleParticleType> register(String modid, ParticleEntryType particleEntryType) {
-        ResourceLocation id = new ResourceLocation(modid, particleEntryType.getName());
+        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, particleEntryType.getName());
         SimpleParticleType type = Registry.register(
                 //? if >= 1.19.4 {
                 BuiltInRegistries.PARTICLE_TYPE,
@@ -49,7 +49,7 @@ public class CommonRegistry implements ICommonRegistry {
                 BuiltInRegistries.ENTITY_TYPE,
                 //?} else
                 /^Registry.ENTITY_TYPE,^/
-                new ResourceLocation(modid, entityEntryType.getName()),
+                Services.VERSION_HELPER.getResourceLocation(modid, entityEntryType.getName()),
                 EntityType.Builder.of(entityEntryType.getFactory(), MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                         .build(entityEntryType.getName()));
@@ -65,7 +65,7 @@ public class CommonRegistry implements ICommonRegistry {
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
-        ResourceLocation location = new ResourceLocation(modid, soundEntryType.getName());
+        ResourceLocation location = Services.VERSION_HELPER.getResourceLocation(modid, soundEntryType.getName());
         //? if >= 1.19.4 {
         SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
         //?} else
@@ -88,7 +88,7 @@ public class CommonRegistry implements ICommonRegistry {
                 BuiltInRegistries.ITEM,
                 //?} else
                 /^Registry.ITEM,^/
-                new ResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
+                Services.VERSION_HELPER.getResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
         );
         return () -> item;
     }

@@ -2,6 +2,7 @@
 package com.t2pellet.haybale.neoforge.network;
 
 import com.t2pellet.haybale.Haybale;
+import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.services.IPacketHandler;
 import com.t2pellet.haybale.common.network.api.Packet;
 import net.minecraft.network.FriendlyByteBuf;
@@ -161,7 +162,7 @@ public class PacketHandler implements IPacketHandler {
 
     public void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass) {
         Map<Class<? extends Packet>, ResourceLocation> packetClasses = packetMap.getOrDefault(modid, new HashMap<>());
-        ResourceLocation id = new ResourceLocation(modid, name);
+        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, name);
         packetClasses.put(packetClass, id);
         packetFlatMap.put(packetClass, id);
 
@@ -169,7 +170,7 @@ public class PacketHandler implements IPacketHandler {
 
     public void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass) {
         Map<Class<? extends Packet>, ResourceLocation> packetClasses = packetMap.getOrDefault(modid, new HashMap<>());
-        ResourceLocation id = new ResourceLocation(modid, name);
+        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, name);
         packetClasses.put(packetClass, id);
         packetFlatMap.put(packetClass, id);
     }

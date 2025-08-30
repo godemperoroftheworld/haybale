@@ -1,6 +1,7 @@
 //? if neoforge {
 package com.t2pellet.haybale.neoforge.client;
 
+import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
@@ -35,7 +36,7 @@ public class ClientRegistry implements IClientRegistry {
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
-        Lazy<ModelLayerLocation> locSupplier = () -> new ModelLayerLocation(new ResourceLocation(modid, modelEntry.getName()), "main");
+        Lazy<ModelLayerLocation> locSupplier = Lazy.of(() -> new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main"));
         forgeMod.modBus.addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
             event.registerLayerDefinition(locSupplier.get(), modelEntry::getLayerDefinition);
         });

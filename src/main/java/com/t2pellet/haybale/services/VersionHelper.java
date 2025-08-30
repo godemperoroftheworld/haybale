@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 /*import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 *///?}
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
@@ -29,5 +30,12 @@ public class VersionHelper {
         /*return new TextComponent(key);
         *///?} else
         return Component.literal(key);
+    }
+
+    public ResourceLocation getResourceLocation(String modid, String name) {
+        //? if < 1.21 {
+        /*return new ResourceLocation(modid, name);
+        *///?} else
+        return ResourceLocation.fromNamespaceAndPath(modid, name);
     }
 }

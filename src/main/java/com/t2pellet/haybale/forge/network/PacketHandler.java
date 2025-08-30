@@ -25,24 +25,24 @@ public class PacketHandler implements IPacketHandler {
     private final String PROTOCOL_VERSION = "4";
     private final Map<ResourceLocation, Integer> idMap = new HashMap<>();
     private final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Haybale.MODID, "main"),
+            Services.VERSION_HELPER.getResourceLocation(Haybale.MODID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
     );
 
     public void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass) {
-        idMap.put(new ResourceLocation(modid, name), idMap.size());
+        idMap.put(Services.VERSION_HELPER.getResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
     public void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass) {
-        idMap.put(new ResourceLocation(modid, name), idMap.size());
+        idMap.put(Services.VERSION_HELPER.getResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
     private <T extends Packet> void registerPacket(String modid, String name, Class<T> packetClass) {
-        ResourceLocation id = new ResourceLocation(modid, name);
+        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, name);
         INSTANCE.registerMessage(idMap.get(id), packetClass, Packet::encode, friendlyByteBuf -> {
             try {
                 return packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(friendlyByteBuf);

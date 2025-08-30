@@ -43,7 +43,7 @@ public class CommonRegistry implements ICommonRegistry {
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
-        ResourceLocation location = new ResourceLocation(modid, soundEntryType.getName());
+        ResourceLocation location = Services.VERSION_HELPER.getResourceLocation(modid, soundEntryType.getName());
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
         return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> SoundEvent.createVariableRangeEvent(location));
     }

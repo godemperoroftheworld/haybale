@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric.services;
+package com.t2pellet.haybale.fabric.services;
 
 import com.t2pellet.haybale.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -16,4 +16,4 @@ public class PlatformHelper implements IPlatformHelper {
         return FabricLoader.getInstance().isModLoaded(modId);
     }
 }
-*///?}
+//?}

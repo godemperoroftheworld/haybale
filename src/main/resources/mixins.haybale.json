@@ -1,11 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "your.group.haybale.neoforge.mixin",
+  "package": "com.t2pellet.haybale.mixin",
   "compatibilityLevel": "JAVA_${java_ver}",
   "mixins": [
-  ],
-  "client": [
+    "EntityMixin",
+    "ServerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

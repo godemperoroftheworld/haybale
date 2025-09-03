@@ -1,5 +1,5 @@
 //? if neoforge {
-package com.t2pellet.haybale.neoforge.registry;
+/*package com.t2pellet.haybale.neoforge.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
@@ -43,8 +43,8 @@ public class CommonRegistry implements ICommonRegistry {
         DeferredHolder<EntityType<?>, EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                 //? if < 1.21.2 {
-                /*.build(entityEntryType.getName()));
-                *///?} else
+                /^.build(entityEntryType.getName()));
+                ^///?} else
                 .build(key));
         forgeMod.modBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
@@ -75,4 +75,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-//?}
+*///?}

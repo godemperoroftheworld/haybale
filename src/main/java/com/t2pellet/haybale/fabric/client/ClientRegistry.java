@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric.client;
+package com.t2pellet.haybale.fabric.client;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.registry.IClientRegistry;
@@ -40,4 +40,4 @@ public class ClientRegistry implements IClientRegistry {
         return particleFactoryEntry::get;
     }
 }
-*///?}
+//?}

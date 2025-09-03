@@ -17,146 +17,23 @@ repositories {
     maven("https://maven.architectury.dev/")
     maven("https://maven.shedaniel.me/")
     maven( "https://maven.terraformersmc.com/releases/")
-    maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }}
-
-/* Helpers */
-
-fun bool(str: String) : Boolean {
-    return str.lowercase().startsWith("t")
+    maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
 }
 
-fun boolProperty(key: String) : Boolean {
-    if(!hasProperty(key)){
-        return false
-    }
-    return bool(property(key).toString())
-}
-
-fun listProperty(key: String) : ArrayList<String> {
-    if(!hasProperty(key)){
-        return arrayListOf()
-    }
-    val str = property(key).toString()
-    if(str == "UNSET"){
-        return arrayListOf()
-    }
-    return ArrayList(str.split(" "))
-}
-
-fun optionalStrProperty(key: String) : Optional<String> {
-    if(!hasProperty(key)){
-        return Optional.empty()
-    }
-    val str = property(key).toString()
-    if(str =="UNSET"){
-        return Optional.empty()
-    }
-    return Optional.of(str)
-}
-
-class VersionRange(val min: String, val max: String){
-    fun asForgelike() : String{
-        return "${if(min.isEmpty()) "(" else "["}${min},${max}${if(max.isEmpty()) ")" else "]"}"
-    }
-    fun asFabric() : String{
-        var out = ""
-        if(min.isNotEmpty()){
-            out += ">=$min"
-        }
-        if(max.isNotEmpty()){
-            if(out.isNotEmpty()){
-                out += " "
-            }
-            out += "<=$max"
-        }
-        return out
-    }
-}
-fun versionProperty(key: String) : VersionRange {
-    if(!hasProperty(key)){
-        return VersionRange("","")
-    }
-    val list = listProperty(key)
-    for (i in 0 until list.size) {
-        if(list[i] == "UNSET"){
-            list[i] = ""
-        }
-    }
-    return if(list.isEmpty()){
-        VersionRange("","")
-    }
-    else if(list.size == 1) {
-        VersionRange(list[0],"")
-    }
-    else{
-        VersionRange(list[0], list[1])
-    }
-}
-fun optionalVersionProperty(key: String) : Optional<VersionRange>{
-    val str = optionalStrProperty(key)
-    if(!hasProperty(key)){
-        return Optional.empty()
-    }
-    if(!str.isPresent){
-        return Optional.empty()
-    }
-    return Optional.of(versionProperty(key))
-}
-
-/**
- * Stores core dependency and environment information.
- */
-class Env {
-    val archivesBaseName = property("archives_base_name").toString()
-
-    val mcVersion = versionProperty("deps.core.mc.version_range")
-
-    val loader = property("loom.platform").toString()
-    val isFabric = loader == "fabric"
-    val isForge = loader == "forge"
-    val isNeo = loader == "neoforge"
-
-    val javaVer = if(atMost("1.16.5")) 8 else if(atMost("1.20.4")) 17 else 21
-
-    fun atLeast(version: String) = stonecutter.compare(mcVersion.min, version) >= 0
-    fun atMost(version: String) = stonecutter.compare(mcVersion.min, version) <= 0
-    fun isNot(version: String) = stonecutter.compare(mcVersion.min, version) != 0
-    fun isExact(version: String) = stonecutter.compare(mcVersion.min, version) == 0
-}
-val env = Env()
-
-// Stores information about the mod itself.
-class ModProperties {
-    val id = property("mod.id").toString()
-    val displayName = property("mod.display_name").toString()
-    val version = property("version").toString()
-    val description = property("mod.description").toString()
-    val authors = property("mod.authors").toString()
-    val icon = property("mod.icon").toString()
-    val issueTracker = property("mod.issue_tracker").toString()
-    val license = property("mod.license").toString()
-    val sourceUrl = property("mod.source_url").toString()
-}
-class ModFabric {
-    val loaderVersion = versionProperty("deps.core.fabric.loader.version_range").min;
-    val version = versionProperty("deps.core.fabric.version_range").min;
-}
-class ModForge {
-    val loaderVersion = versionProperty("deps.core.forge.loader.version_range").min;
-    val version = versionProperty("deps.core.forge.version_range").min;
-}
-val mod = ModProperties()
-val modFabric = ModFabric()
-val modForge = ModForge()
+val env = Env(project)
+val mod = ModProperties(project)
+val modFabric = ModFabric(project)
+val modForge = ModForge(project)
 
 version = "${mod.version}+${env.mcVersion.min}+${env.loader}"
 group = property("group").toString()
 
-stonecutter.const("fabric",env.isFabric)
-stonecutter.const("forge",env.isForge)
-stonecutter.const("neoforge",env.isNeo)
-
 stonecutter {
+    constants {
+        set("fabric", env.isFabric)
+        set("forge", env.isForge)
+        set("neoforge", env.isNeo)
+    }
     replacements.string {
         direction = eval(current.version, "<=1.18.2")
         replace("RegisterParticleProvidersEvent", "ParticleFactoryRegisterEvent")
@@ -180,10 +57,22 @@ loom {
 }
 base { archivesName.set(env.archivesBaseName) }
 
+/** Dependencies **/
+class API(
+    val group: String,
+    val module: String,
+    val version: VersionRange,
+    val exclude: String = "",
+    val loader: String = ""
+)
+val apis: Array<API> = arrayOf(
+    API("com.terraformersmc", "modmenu", versionProperty("deps.api.mod_menu"), "net.fabricmc", "fabric"),
+    API("me.shedaniel.cloth", "cloth-config-${env.loader}", versionProperty("deps.api.cloth_config"), "net.fabricmc")
+)
+
 dependencies {
     minecraft("com.mojang:minecraft:${env.mcVersion.min}")
     mappings(loom.officialMojangMappings())
-
     // Base Dependencies
     if(env.isFabric) {
         modImplementation("net.fabricmc:fabric-loader:${modFabric.loaderVersion}")
@@ -195,23 +84,26 @@ dependencies {
     if(env.isNeo) {
         "neoForge"("net.neoforged:neoforge:${modForge.version}")
     }
-
-    // Extra Dependencies
-    if (env.isFabric) {
-        modApi("com.terraformersmc:modmenu:${property("deps.api.mod_menu")}") {
-            exclude(group = "net.fabricmc")
-        }
-    }
-    modApi("me.shedaniel.cloth:cloth-config-${env.loader}:${property("deps.api.cloth_config")}") {
-        exclude(group = "net.fabricmc")
-    }
+    // Shadow ini4j
     implementation("org.ini4j:ini4j:0.5.4")
     include("org.ini4j:ini4j:0.5.4")
     if (env.isForge || env.isNeo) {
         "forgeRuntimeLibrary"("org.ini4j:ini4j:0.5.4")
     }
-
+    // Decompiler
     vineflowerDecompilerClasspath("org.vineflower:vineflower:1.10.1")
+    // APIs
+    apis.map {
+        if (it.loader.isBlank() || it.loader === env.loader) {
+            if (it.exclude.isBlank()) {
+                modApi("${it.group}:${it.module}:${it.version.min}")
+            } else {
+                modApi("${it.group}:${it.module}:${it.version.min}") {
+                    exclude(group = it.exclude)
+                }
+            }
+        }
+    }
 }
 
 java {
@@ -254,7 +146,7 @@ if(env.atMost("1.20.6")){
 tasks.processResources {
     dependsOn("stonecutterGenerate")
 
-    val map = mapOf<String,String>(
+    val map = mapOf(
         "modid" to mod.id,
         "id" to mod.id,
         "name" to mod.displayName,
@@ -295,21 +187,12 @@ tasks.processResources {
  * The curseforge API token should be stored in the CURSEFORGE_TOKEN environment variable.
  */
 class ModPublish {
-    val mcTargets = arrayListOf<String>()
+    val mcTargets = listProperty("publish_acceptable_mc_versions")
     val modrinthProjectToken = property("publish.token.modrinth").toString()
     val curseforgeProjectToken = property("publish.token.curseforge").toString()
     val dryRunMode = findProperty("publish.dry_run")
-
-    init {
-        val tempmcTargets = listProperty("publish_acceptable_mc_versions")
-        if(tempmcTargets.isEmpty()){
-            mcTargets.add(env.mcVersion.min)
-        }
-        else{
-            mcTargets.addAll(tempmcTargets)
-        }
-    }
 }
+
 val modPublish = ModPublish()
 /*publishMods {
     file = tasks.remapJar.get().archiveFile

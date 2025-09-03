@@ -1,4 +1,4 @@
-package com.t2pellet.haybale.common.mixin;
+package com.t2pellet.haybale.mixin;
 
 import com.t2pellet.haybale.common.capability.api.ICapabilityHaver;
 import net.minecraft.nbt.CompoundTag;

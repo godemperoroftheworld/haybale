@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric.services;
+package com.t2pellet.haybale.fabric.services;
 
 import com.t2pellet.haybale.services.IServerHelper;
 import com.t2pellet.haybale.fabric.HaybaleFabric;
@@ -12,4 +12,4 @@ public class ServerHelper implements IServerHelper {
         return HaybaleFabric.getServer();
     }
 }
-*///?}
+//?}

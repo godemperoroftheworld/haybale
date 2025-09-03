@@ -1,5 +1,5 @@
 //? if neoforge {
-package com.t2pellet.haybale.neoforge.client;
+/*package com.t2pellet.haybale.neoforge.client;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.registry.IClientRegistry;
@@ -52,4 +52,4 @@ public class ClientRegistry implements IClientRegistry {
         return rendererEntry::getRendererProvider;
     }
 }
-//?}
+*///?}

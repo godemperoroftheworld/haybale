@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric.client.compat;
+package com.t2pellet.haybale.fabric.client.compat;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -38,4 +38,4 @@ public class FabricModMenuCompat implements ModMenuApi {
         return map;
     }
 }
-*///?}
+//?}

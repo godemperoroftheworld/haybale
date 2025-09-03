@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric;
+package com.t2pellet.haybale.fabric;
 
 import com.t2pellet.haybale.common.ClientRegistrar;
 import com.t2pellet.haybale.common.CommonRegistrar;
@@ -46,4 +46,4 @@ public abstract class HaybaleFabricMod implements ModInitializer, ClientModIniti
 
     protected void registerEvents() {}
 }
-*///?}
+//?}

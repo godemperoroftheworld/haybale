@@ -1,5 +1,5 @@
 //? if neoforge {
-package com.t2pellet.haybale.neoforge.network;
+/*package com.t2pellet.haybale.neoforge.network;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 //? if < 1.20.5 {
-/*import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+/^import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
-*///?} else {
+^///?} else {
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.jetbrains.annotations.NotNull;
@@ -78,10 +78,10 @@ public class PacketHandler implements IPacketHandler {
         }
     }
     //?} else {
-    /*private interface PacketPayloadWithExecutor extends CustomPacketPayload {
+    /^private interface PacketPayloadWithExecutor extends CustomPacketPayload {
         Runnable getExecutor();
     }
-    *///?}
+    ^///?}
 
 
     private final String PROTOCOL_VERSION = "4";
@@ -90,15 +90,15 @@ public class PacketHandler implements IPacketHandler {
 
     public void registerPackets(
             //? if < 1.20.5 {
-            /*RegisterPayloadHandlerEvent event
-            *///?} else
+            /^RegisterPayloadHandlerEvent event
+            ^///?} else
             RegisterPayloadHandlersEvent event
     ) {
         Set<String> modIDs = packetMap.keySet();
         modIDs.forEach(modID -> {
             //? if < 1.20.5 {
-            /*final IPayloadRegistrar registrar = event.registrar(modID)
-                    *///?} else
+            /^final IPayloadRegistrar registrar = event.registrar(modID)
+                    ^///?} else
                     final PayloadRegistrar registrar = event.registrar(modID)
                     .versioned(PROTOCOL_VERSION)
                     .optional();
@@ -106,7 +106,7 @@ public class PacketHandler implements IPacketHandler {
 
             packetClasses.forEach((packetClass, packetID) -> {
                 //? if < 1.20.5 {
-                /*registrar.<PacketPayloadWithExecutor>play(packetID, friendlyByteBuf -> {
+                /^registrar.<PacketPayloadWithExecutor>play(packetID, friendlyByteBuf -> {
                     try {
                         Packet packet = packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(friendlyByteBuf);
                         return new PacketPayloadWithExecutor() {
@@ -133,7 +133,7 @@ public class PacketHandler implements IPacketHandler {
                 }, (t, contextSupplier) -> {
                     contextSupplier.workHandler().submitAsync(t.getExecutor());
                 });
-                *///?} else {
+                ^///?} else {
                 CustomPacketPayload.Type<NeoforgePacket<Packet>> type = new CustomPacketPayload.Type<>(packetID);
                 registrar.playBidirectional(type, StreamCodec.of(
                         (packetByteBuf, packet) -> {
@@ -181,7 +181,7 @@ public class PacketHandler implements IPacketHandler {
         ResourceLocation id = packetFlatMap.get(packet.getClass());
         PacketDistributor.sendToServer(new NeoforgePacket<>(packet, id));
         //?} else {
-        /*PacketDistributor.SERVER.noArg().send(new CustomPacketPayload() {
+        /^PacketDistributor.SERVER.noArg().send(new CustomPacketPayload() {
             @Override
             public void write(FriendlyByteBuf arg) {
                 packet.encode(arg);
@@ -192,7 +192,7 @@ public class PacketHandler implements IPacketHandler {
                 return packetFlatMap.get(packet.getClass());
             }
         });
-        *///?}
+        ^///?}
     }
 
     @Override
@@ -201,7 +201,7 @@ public class PacketHandler implements IPacketHandler {
         ResourceLocation id = packetFlatMap.get(packet.getClass());
         PacketDistributor.sendToPlayer(player, new NeoforgePacket<>(packet, id));
         //?} else {
-        /*PacketDistributor.PLAYER.with(player).send(new CustomPacketPayload() {
+        /^PacketDistributor.PLAYER.with(player).send(new CustomPacketPayload() {
             @Override
             public void write(FriendlyByteBuf arg) {
                 packet.encode(arg);
@@ -212,7 +212,7 @@ public class PacketHandler implements IPacketHandler {
                 return packetFlatMap.get(packet.getClass());
             }
         });
-        *///?}
+        ^///?}
     }
 
     @Override
@@ -234,4 +234,4 @@ public class PacketHandler implements IPacketHandler {
         sendTo(packet, players);
     }
 }
-//?}
+*///?}

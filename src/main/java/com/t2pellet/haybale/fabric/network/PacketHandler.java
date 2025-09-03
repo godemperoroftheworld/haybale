@@ -1,5 +1,5 @@
 //? if fabric {
-/*package com.t2pellet.haybale.fabric.network;
+package com.t2pellet.haybale.fabric.network;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
@@ -89,7 +89,7 @@ public class PacketHandler implements IPacketHandler {
         ResourceLocation loc = Services.VERSION_HELPER.getResourceLocation(modid, name);
         idMap.put(packetClass, loc);
         //? if < 1.20.5 {
-        /^ServerPlayNetworking.registerGlobalReceiver(loc, (minecraftServer, serverPlayer, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
+        /*ServerPlayNetworking.registerGlobalReceiver(loc, (minecraftServer, serverPlayer, serverPlayNetworkHandler, packetByteBuf, packetSender) -> {
             try {
                 T packet = packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(packetByteBuf);
                 Services.SIDE.scheduleServer(packet.getExecutor());
@@ -98,7 +98,7 @@ public class PacketHandler implements IPacketHandler {
                 Haybale.LOG.error("Error: Failed to instantiate packet - " + loc);
             }
         });
-        ^///?} else {
+        *///?} else {
         CustomPacketPayload.Type<FabricPacket<T>> type = new CustomPacketPayload.Type<>(loc);
         PayloadTypeRegistry.playC2S().register(type, PacketHandler.getCodec(packetClass, loc));
         ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
@@ -118,7 +118,7 @@ public class PacketHandler implements IPacketHandler {
     @Environment(EnvType.CLIENT)
     private <T extends Packet> void _registerClientPacket(ResourceLocation id, Class<T> packetClass) {
         //? if < 1.20.5 {
-        /^ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, responseSender) -> {
+        /*ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, responseSender) -> {
             try {
                 T packet = packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(buf);
                 Services.SIDE.scheduleClient(packet.getExecutor());
@@ -127,7 +127,7 @@ public class PacketHandler implements IPacketHandler {
                 Haybale.LOG.error("Error: Failed to instantiate packet - " + id);
             }
         });
-        ^///?} else {
+        *///?} else {
         CustomPacketPayload.Type<FabricPacket<T>> type = new CustomPacketPayload.Type<>(id);
         PayloadTypeRegistry.playS2C().register(type, PacketHandler.getCodec(packetClass, id));
         ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
@@ -141,8 +141,8 @@ public class PacketHandler implements IPacketHandler {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         packet.encode(data);
         //? if < 1.20.5 {
-        /^ClientPlayNetworking.send(idMap.get(packet.getClass()), data);
-        ^///?} else {
+        /*ClientPlayNetworking.send(idMap.get(packet.getClass()), data);
+        *///?} else {
         ResourceLocation id = idMap.get(packet.getClass());
         FabricPacket<T> fabricPacket = new FabricPacket<>(packet, id);
         ClientPlayNetworking.send(fabricPacket);
@@ -154,8 +154,8 @@ public class PacketHandler implements IPacketHandler {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         packet.encode(data);
         //? if < 1.20.5 {
-        /^ServerPlayNetworking.send(player, idMap.get(packet.getClass()), data);
-        ^///?} else {
+        /*ServerPlayNetworking.send(player, idMap.get(packet.getClass()), data);
+        *///?} else {
         ResourceLocation id = idMap.get(packet.getClass());
         FabricPacket<T> fabricPacket = new FabricPacket<>(packet, id);
         ServerPlayNetworking.send(player, fabricPacket);
@@ -167,9 +167,9 @@ public class PacketHandler implements IPacketHandler {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         ResourceLocation id = idMap.get(packet.getClass());
         //? if < 1.20.5 {
-        /^packet.encode(data);
+        /*packet.encode(data);
         for (ServerPlayer player : players) ServerPlayNetworking.send(player, id, data);
-        ^///?} else {
+        *///?} else {
         FabricPacket<T> fabricPacket = new FabricPacket<>(packet, id);
         for (ServerPlayer player : players) ServerPlayNetworking.send(player, fabricPacket);
         //?}
@@ -189,4 +189,4 @@ public class PacketHandler implements IPacketHandler {
     }
 
 }
-*///?}
+//?}

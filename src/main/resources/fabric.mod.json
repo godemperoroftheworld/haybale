@@ -25,6 +25,10 @@
       "com.t2pellet.haybale.fabric.client.compat.FabricModMenuCompat"
     ]
   },
+  "mixins": [
+    "mixins.haybale.json",
+    "mixins.haybale.fabric.json"
+  ],
   "depends": {
   }
 }

@@ -1,11 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.t2pellet.haybale.mixin",
+  "package": "com.t2pellet.haybale.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "EntityMixin",
-    "ServerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -49,6 +49,13 @@ loom {
         }
     }
 
+    // Forge Mixin
+    if (env.isForge) {
+        forge {
+            mixinConfigs("mixins.haybale.json", "mixins.haybale.forge.json")
+        }
+    }
+
     runConfigs.all {
         ideConfigGenerated(stonecutter.current.isActive)
         vmArgs("-Dmixin.debug.export=true")

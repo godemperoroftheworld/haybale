@@ -6,6 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
+//? if > 1.21.5 {
+/*import net.minecraft.world.level.storage.ValueInput;
+*///?}
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,9 @@ import java.util.Map;
 
 class CapabilityManagerImpl<E extends Entity & ICapabilityHaver> implements CapabilityManager {
 
+    //? if > 1.21.5 {
+    /*private static final Codec<> 
+    *///?}
 
     private final Map<Class<? extends Capability>, Capability> map = new HashMap<>();
     private final E entity;
@@ -57,12 +63,19 @@ class CapabilityManagerImpl<E extends Entity & ICapabilityHaver> implements Capa
 
     @Override
     @SuppressWarnings("unchecked")
+    //? if > 1.21.5 {
+    /*public void readTag(ValueInput input) {}
+    *///?} else {
     public void readTag(Tag tag) {
         ListTag listTag = (ListTag) tag;
         listTag.forEach(tagInList -> {
             CompoundTag compoundTag = (CompoundTag) tagInList;
             try {
-                String className = compoundTag.getString("className")/*? if >= 1.21.5 {*/.orElseThrow()/*?}*/;
+                String className = compoundTag.getString("className")
+                        //? if >= 1.21.5 {
+                        .orElseThrow()
+                        //?}
+                        ;
                 Class<? extends Capability> aClass = (Class<? extends Capability>) Class.forName(className);
                 if (!map.containsKey(aClass)) instantiateCapability(aClass);
                 map.get(aClass).readTag(compoundTag.get("capability"));
@@ -71,6 +84,7 @@ class CapabilityManagerImpl<E extends Entity & ICapabilityHaver> implements Capa
             }
         });
     }
+    //?}
 
     private <T extends Capability> void instantiateCapability(Class<T> aClass) {
         map.put(aClass, CapabilityRegistrar.INSTANCE.get(aClass, entity).orElseThrow(() -> new InstantiationError("Failed to instantiate capability for class: " + aClass.getSimpleName())));

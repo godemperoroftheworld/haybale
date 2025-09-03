@@ -93,8 +93,8 @@ dependencies {
     // Decompiler
     vineflowerDecompilerClasspath("org.vineflower:vineflower:1.10.1")
     // APIs
-    apis.map {
-        if (it.loader.isBlank() || it.loader === env.loader) {
+    apis.forEach {
+        if (it.loader.isBlank() || it.loader == env.loader) {
             if (it.exclude.isBlank()) {
                 modApi("${it.group}:${it.module}:${it.version.min}")
             } else {

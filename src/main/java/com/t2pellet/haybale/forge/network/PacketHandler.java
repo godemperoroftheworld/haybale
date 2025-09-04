@@ -3,6 +3,7 @@
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.Services;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.services.IPacketHandler;
 import com.t2pellet.haybale.common.network.api.Packet;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,24 +26,24 @@ public class PacketHandler implements IPacketHandler {
     private final String PROTOCOL_VERSION = "4";
     private final Map<ResourceLocation, Integer> idMap = new HashMap<>();
     private final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            Services.VERSION_HELPER.getResourceLocation(Haybale.MODID, "main"),
+            VersionHelper.getResourceLocation(Haybale.MODID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
     );
 
     public void registerServerPacket(String modid, String name, Class<? extends Packet> packetClass) {
-        idMap.put(Services.VERSION_HELPER.getResourceLocation(modid, name), idMap.size());
+        idMap.put(VersionHelper.getResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
     public void registerClientPacket(String modid, String name, Class<? extends Packet> packetClass) {
-        idMap.put(Services.VERSION_HELPER.getResourceLocation(modid, name), idMap.size());
+        idMap.put(VersionHelper.getResourceLocation(modid, name), idMap.size());
         registerPacket(modid, name, packetClass);
     }
 
     private <T extends Packet> void registerPacket(String modid, String name, Class<T> packetClass) {
-        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, name);
+        ResourceLocation id = VersionHelper.getResourceLocation(modid, name);
         INSTANCE.registerMessage(idMap.get(id), packetClass, Packet::encode, friendlyByteBuf -> {
             try {
                 return packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(friendlyByteBuf);
@@ -81,7 +82,7 @@ public class PacketHandler implements IPacketHandler {
     @Override
     public <T extends Packet> void sendInRange(T packet, Entity e, float range) {
         AABB box = new AABB(e.blockPosition()).inflate(range);
-        Level level = Services.VERSION_HELPER.getLevel(e);
+        Level level = VersionHelper.getLevel(e);
         sendInArea(packet, level, box);
     }
 

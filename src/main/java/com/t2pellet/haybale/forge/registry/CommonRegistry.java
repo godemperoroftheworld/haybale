@@ -3,6 +3,7 @@
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.registry.ICommonRegistry;
 import com.t2pellet.haybale.common.registry.api.EntityEntryType;
 import com.t2pellet.haybale.common.registry.api.ItemEntryType;
@@ -44,13 +45,13 @@ public class CommonRegistry implements ICommonRegistry {
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
-        ResourceLocation location = Services.VERSION_HELPER.getResourceLocation(modid, soundEntryType.getName());
+        ResourceLocation location = VersionHelper.getResourceLocation(modid, soundEntryType.getName());
         HaybaleForgeMod forgeMod = HaybaleForge.getInstance().get(modid);
         return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> {
             //? if >= 1.19.4 {
-            /^return SoundEvent.createVariableRangeEvent(location);
-            ^///?} else
-            return new SoundEvent(location);
+            return SoundEvent.createVariableRangeEvent(location);
+            //?} else
+            /^return new SoundEvent(location);^/
         });
     }
 

@@ -5,6 +5,7 @@ import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.config.ConfigRegistrar;
 import com.t2pellet.haybale.common.config.api.Config;
 import com.t2pellet.haybale.common.config.api.property.*;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -44,7 +45,7 @@ public class ConfigMenu {
     }
 
     private ConfigBuilder configBuilder() throws IllegalAccessException {
-        Component component = Services.VERSION_HELPER.translatableComponent("title." + modid + ".config");
+        Component component = VersionHelper.translatableComponent("title." + modid + ".config");
         ConfigBuilder builder = ConfigBuilder.create().setTitle(component);
         for (Class<?> clazz : config.getClass().getDeclaredClasses()) {
             Config.Section section = clazz.getAnnotation(Config.Section.class);
@@ -56,7 +57,7 @@ public class ConfigMenu {
     }
 
     private void addSection(ConfigBuilder configBuilder, Class<?> clazz, Config.Section section) throws IllegalAccessException {
-        Component component = Services.VERSION_HELPER.literalComponent(section.name());
+        Component component = VersionHelper.literalComponent(section.name());
         ConfigCategory category = configBuilder.getOrCreateCategory(component);
         category.setDescription(new FormattedText[]{FormattedText.of(section.description())});
         ConfigEntryBuilder builder = configBuilder.entryBuilder();
@@ -87,12 +88,12 @@ public class ConfigMenu {
         ConfigProperty<T> property = (ConfigProperty<T>) field.get(null);
         T value = property.get();
         Config.Entry comment = field.getAnnotation(Config.Entry.class);
-        Component component = Services.VERSION_HELPER.literalComponent(field.getName());
+        Component component = VersionHelper.literalComponent(field.getName());
         FieldBuilder<T, R, S> fieldBuilder = builderFactory.create(component, value);
         if (fieldBuilder instanceof AbstractFieldBuilder<T,R,S> betterFieldBuilder) {
             betterFieldBuilder.setDefaultValue(property.getDefault());
             betterFieldBuilder.setSaveConsumer(s -> updateProperty(property, s));
-            Component tooltip = Services.VERSION_HELPER.literalComponent(comment.comment());
+            Component tooltip = VersionHelper.literalComponent(comment.comment());
             if (comment != null) betterFieldBuilder.setTooltip(tooltip);
         }
         return fieldBuilder.build();

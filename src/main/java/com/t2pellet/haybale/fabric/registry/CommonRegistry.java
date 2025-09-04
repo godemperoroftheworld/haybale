@@ -3,6 +3,7 @@ package com.t2pellet.haybale.fabric.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.registry.ICommonRegistry;
 import com.t2pellet.haybale.common.registry.api.EntityEntryType;
 import com.t2pellet.haybale.common.registry.api.ItemEntryType;
@@ -14,10 +15,10 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 //? if >= 1.19.4 {
-/*import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-*///?}
+//?}
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -32,12 +33,12 @@ public class CommonRegistry implements ICommonRegistry {
 
     @Override
     public Supplier<SimpleParticleType> register(String modid, ParticleEntryType particleEntryType) {
-        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, particleEntryType.getName());
+        ResourceLocation id = VersionHelper.getResourceLocation(modid, particleEntryType.getName());
         SimpleParticleType type = Registry.register(
                 //? if >= 1.19.4 {
-                /*BuiltInRegistries.PARTICLE_TYPE,
-                *///?} else
-                Registry.PARTICLE_TYPE,
+                BuiltInRegistries.PARTICLE_TYPE,
+                //?} else
+                /*Registry.PARTICLE_TYPE,*/
                 id,
                 FabricParticleTypes.simple()
         );
@@ -47,15 +48,15 @@ public class CommonRegistry implements ICommonRegistry {
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         //? if >= 1.21.2 {
-        /*ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, entityEntryType.getName());
+        /*ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
         *///?}
         EntityType<T> type = Registry.register(
                 //? if >= 1.19.4 {
-                /*BuiltInRegistries.ENTITY_TYPE,
-                *///?} else
-                Registry.ENTITY_TYPE,
-                Services.VERSION_HELPER.getResourceLocation(modid, entityEntryType.getName()),
+                BuiltInRegistries.ENTITY_TYPE,
+                //?} else
+                /*Registry.ENTITY_TYPE,*/
+                VersionHelper.getResourceLocation(modid, entityEntryType.getName()),
                 EntityType.Builder.of(entityEntryType.getFactory(), MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                         //? if < 1.21.2 {
@@ -65,25 +66,25 @@ public class CommonRegistry implements ICommonRegistry {
         FabricDefaultAttributeRegistry.register(
                 type,
                 //? if >= 1.19.4 {
-                /*entityEntryType.buildAttributes().build()
-                *///?} else
-                entityEntryType.buildAttributes()
+                entityEntryType.buildAttributes().build()
+                //?} else
+                /*entityEntryType.buildAttributes()*/
         );
         return () -> type;
     }
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
-        ResourceLocation location = Services.VERSION_HELPER.getResourceLocation(modid, soundEntryType.getName());
+        ResourceLocation location = VersionHelper.getResourceLocation(modid, soundEntryType.getName());
         //? if >= 1.19.4 {
-        /*SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
-        *///?} else
-        SoundEvent soundEvent = new SoundEvent(location);
+        SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
+        //?} else
+        /*SoundEvent soundEvent = new SoundEvent(location);*/
         Registry.register(
                 //? if >= 1.19.4 {
-                /*BuiltInRegistries.SOUND_EVENT,
-                *///?} else
-                Registry.SOUND_EVENT,
+                BuiltInRegistries.SOUND_EVENT,
+                //?} else
+                /*Registry.SOUND_EVENT,*/
                 location,
                 soundEvent
         );
@@ -94,10 +95,10 @@ public class CommonRegistry implements ICommonRegistry {
     public Supplier<Item> register(String modid, ItemEntryType itemEntryType) {
         Item item = Registry.register(
                 //? if >= 1.19.4 {
-                /*BuiltInRegistries.ITEM,
-                *///?} else
-                Registry.ITEM,
-                Services.VERSION_HELPER.getResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
+                BuiltInRegistries.ITEM,
+                //?} else
+                /*Registry.ITEM,*/
+                VersionHelper.getResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
         );
         return () -> item;
     }

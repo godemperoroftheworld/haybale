@@ -6,6 +6,7 @@ import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
 import com.t2pellet.haybale.client.registry.api.ParticleFactoryEntryType;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -22,7 +23,7 @@ public class ClientRegistry implements IClientRegistry {
 
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
-        ModelLayerLocation loc = new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main");
+        ModelLayerLocation loc = new ModelLayerLocation(VersionHelper.getResourceLocation(modid, modelEntry.getName()), "main");
         EntityModelLayerRegistry.registerModelLayer(loc, modelEntry::getLayerDefinition);
         return () -> loc;
     }

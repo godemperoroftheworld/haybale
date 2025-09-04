@@ -6,6 +6,7 @@ import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
 import com.t2pellet.haybale.client.registry.api.ParticleFactoryEntryType;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleType;
@@ -31,14 +32,14 @@ public class ClientRegistry implements IClientRegistry {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
 
             //? if >= 1.19.4 {
-            /^particleFactoryRegisterEvent.registerSpriteSet(
-            ^///?} else {
-                //? if > 1.18.2 {
+            particleFactoryRegisterEvent.registerSpriteSet(
+            //?} else {
+                /^//? if > 1.18.2 {
             particleFactoryRegisterEvent
                 //?} else
-            /^Minecraft.getInstance().particleEngine^/
+            /^¹Minecraft.getInstance().particleEngine¹^/
                     .register(
-            //?}
+            ^///?}
                     particleFactoryEntry.get(),
                     spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet)
             );
@@ -48,7 +49,7 @@ public class ClientRegistry implements IClientRegistry {
 
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
-        Lazy<ModelLayerLocation> locSupplier = () -> new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main");
+        Lazy<ModelLayerLocation> locSupplier = () -> new ModelLayerLocation(VersionHelper.getResourceLocation(modid, modelEntry.getName()), "main");
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
             event.registerLayerDefinition(locSupplier.get(), modelEntry::getLayerDefinition);
         });

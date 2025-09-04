@@ -6,6 +6,7 @@ import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
 import com.t2pellet.haybale.client.registry.api.ParticleFactoryEntryType;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.neoforge.HaybaleNeoforge;
 import com.t2pellet.haybale.neoforge.HaybaleNeoforgeMod;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -36,7 +37,7 @@ public class ClientRegistry implements IClientRegistry {
     @Override
     public Supplier<ModelLayerLocation> register(String modid, EntityModelEntryType modelEntry) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
-        Lazy<ModelLayerLocation> locSupplier = Lazy.of(() -> new ModelLayerLocation(Services.VERSION_HELPER.getResourceLocation(modid, modelEntry.getName()), "main"));
+        Lazy<ModelLayerLocation> locSupplier = Lazy.of(() -> new ModelLayerLocation(VersionHelper.getResourceLocation(modid, modelEntry.getName()), "main"));
         forgeMod.modBus.addListener((Consumer<EntityRenderersEvent.RegisterLayerDefinitions>) event -> {
             event.registerLayerDefinition(locSupplier.get(), modelEntry::getLayerDefinition);
         });

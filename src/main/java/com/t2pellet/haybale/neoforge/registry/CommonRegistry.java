@@ -3,6 +3,7 @@
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.registry.ICommonRegistry;
 import com.t2pellet.haybale.common.registry.api.EntityEntryType;
 import com.t2pellet.haybale.common.registry.api.ItemEntryType;
@@ -37,22 +38,22 @@ public class CommonRegistry implements ICommonRegistry {
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
         //? if >= 1.21.2 {
-        ResourceLocation id = Services.VERSION_HELPER.getResourceLocation(modid, entityEntryType.getName());
+        /^ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
-        //?}
+        ^///?}
         DeferredHolder<EntityType<?>, EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                 //? if < 1.21.2 {
-                /^.build(entityEntryType.getName()));
-                ^///?} else
-                .build(key));
+                .build(entityEntryType.getName()));
+                //?} else
+                /^.build(key));^/
         forgeMod.modBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
     }
 
     @Override
     public Supplier<SoundEvent> register(String modid, SoundEntryType soundEntryType) {
-        ResourceLocation location = Services.VERSION_HELPER.getResourceLocation(modid, soundEntryType.getName());
+        ResourceLocation location = VersionHelper.getResourceLocation(modid, soundEntryType.getName());
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
         return forgeMod.SOUNDS.register(soundEntryType.getName(), () -> SoundEvent.createVariableRangeEvent(location));
     }

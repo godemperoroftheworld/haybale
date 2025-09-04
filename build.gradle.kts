@@ -70,11 +70,12 @@ class API(
     val module: String,
     val version: VersionRange,
     val exclude: String = "",
-    val loader: String = ""
+    val loader: String = "",
+    val optional: Boolean = false
 )
 val apis: Array<API> = arrayOf(
-    API("com.terraformersmc", "modmenu", versionProperty("deps.api.mod_menu"), "net.fabricmc", "fabric"),
-    API("me.shedaniel.cloth", "cloth-config-${env.loader}", versionProperty("deps.api.cloth_config"), "net.fabricmc")
+    API("com.terraformersmc", "modmenu", versionProperty("deps.api.mod_menu"), "", "fabric", true),
+    API("me.shedaniel.cloth", "cloth-config-${env.loader}", versionProperty("deps.api.cloth_config"), optional = true)
 )
 
 dependencies {
@@ -102,11 +103,20 @@ dependencies {
     // APIs
     apis.forEach {
         if (it.loader.isBlank() || it.loader == env.loader) {
-            if (it.exclude.isBlank()) {
-                modApi("${it.group}:${it.module}:${it.version.min}")
+            val string = "${it.group}:${it.module}:${it.version.min}"
+            if (it.optional) {
+                modApi(string) {
+                    exclude(group = "net.fabricmc")
+                    if (it.exclude.isNotBlank()) {
+                        exclude(group = it.exclude)
+                    }
+                }
             } else {
-                modApi("${it.group}:${it.module}:${it.version.min}") {
-                    exclude(group = it.exclude)
+                modImplementation(string) {
+                    exclude(group = "net.fabricmc")
+                    if (it.exclude.isNotBlank()) {
+                        exclude(group = it.exclude)
+                    }
                 }
             }
         }

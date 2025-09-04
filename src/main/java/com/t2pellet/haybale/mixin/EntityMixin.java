@@ -10,23 +10,23 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //? if > 1.21.5 {
-import net.minecraft.world.level.storage.ValueInput;
+/*import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import java.util.Optional;
 import com.google.gson.JsonElement;
 import com.t2pellet.haybale.common.utils.compound.JsonToNbt;
 import com.t2pellet.haybale.common.utils.compound.NbtToJson;
 import net.minecraft.util.ExtraCodecs;
-//?} else {
-/*import net.minecraft.nbt.CompoundTag;
-*///?}
+*///?} else {
+import net.minecraft.nbt.CompoundTag;
+//?}
 
 @Mixin(LivingEntity.class)
 public class EntityMixin {
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     //? if > 1.21.5 {
-    public void readFromTag(ValueInput valueInput, CallbackInfo ci) {
+    /*public void readFromTag(ValueInput valueInput, CallbackInfo ci) {
         Entity e = (Entity) (Object) this;
         if (e instanceof ICapabilityHaver capabilityHaver) {
             Optional<JsonElement> json = valueInput.read("capabilityData", ExtraCodecs.JSON);
@@ -36,18 +36,18 @@ public class EntityMixin {
             }
         }
     }
-    //?} else {
-    /*public void readFromTag(CompoundTag tag, CallbackInfo ci) {
+    *///?} else {
+    public void readFromTag(CompoundTag tag, CallbackInfo ci) {
         Entity e = (Entity) (Object) this;
         if (e instanceof ICapabilityHaver capabilityHaver && tag.contains("capabilities")) {
             capabilityHaver.getCapabilityManager().readTag(tag.get("capabilities"));
         }
     }
-    *///?}
+    //?}
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     //? if > 1.21.5 {
-    public void writeToTag(ValueOutput valueOutput, CallbackInfo ci) {
+    /*public void writeToTag(ValueOutput valueOutput, CallbackInfo ci) {
         Entity e = (Entity) (Object) this;
         if (e instanceof ICapabilityHaver capabilityHaver) {
             Tag capabilityTag = capabilityHaver.getCapabilityManager().writeTag();
@@ -55,14 +55,14 @@ public class EntityMixin {
             valueOutput.store("capabilityData", ExtraCodecs.JSON, json);
         }
     }
-    //?} else {
-    /*public void writeToTag(CompoundTag tag, CallbackInfo ci) {
+    *///?} else {
+    public void writeToTag(CompoundTag tag, CallbackInfo ci) {
         Entity e = (Entity) (Object) this;
         if (e instanceof ICapabilityHaver capabilityHaver) {
             Tag capabilityTag = capabilityHaver.getCapabilityManager().writeTag();
             tag.put("capabilities", capabilityTag);
         }
     }
-    *///?}
+    //?}
 
 }

@@ -21,7 +21,6 @@ public class NbtToJson {
      * @param mode The conversion mode.
      * @return The JSON element equivalent. (imperfect in certain cases)
      */
-    @SuppressWarnings("unchecked")
     public static JsonElement toJson(Tag nbtElement, ConversionMode mode) {
 
         // Numbers
@@ -29,7 +28,10 @@ public class NbtToJson {
             switch (mode) {
                 case JSON: {
                     if (nbtNumber instanceof ByteTag nbtByte) {
-                        byte value = nbtByte.asByte().orElseThrow();
+                        //? if >= 1.21.5 {
+                        /*byte value = nbtByte.asByte().orElseThrow();
+                        *///?} else
+                        byte value = nbtByte.getAsByte();
                         switch (value) {
                             case 0: return new JsonPrimitive(false);
                             case 1: return new JsonPrimitive(true);
@@ -39,12 +41,20 @@ public class NbtToJson {
                     // Else, continue
                 }
                 case RAW: {
-                    return new JsonPrimitive(nbtNumber.asNumber().orElseThrow());
+                    //? if >= 1.21.5 {
+                    /*Number number = nbtNumber.asNumber().orElseThrow();
+                    *///?} else
+                    Number number = nbtNumber.getAsNumber();
+                    return new JsonPrimitive(number);
                 }
             }
         } else if (nbtElement instanceof StringTag nbtString) {
             // String
-            return new JsonPrimitive(nbtString.asString().orElseThrow());
+            //? if >= 1.21.5 {
+            /*String string = nbtString.asString().orElseThrow();
+            *///?} else
+            String string = nbtString.getAsString();
+            return new JsonPrimitive(string);
         } else if (nbtElement instanceof ListTag nbtList) {
             // Lists
             JsonArray jsonArray = new JsonArray();
@@ -58,9 +68,16 @@ public class NbtToJson {
             // Compound tag
             JsonObject jsonObject = new JsonObject();
 
-            for (Map.Entry<String, Tag> nbtEntry : nbtCompound.entrySet()) {
+            //? if >= 1.21.5 {
+            /*for (Map.Entry<String, Tag> nbtEntry : nbtCompound.entrySet()) {
                 jsonObject.add(nbtEntry.getKey(), toJson(nbtEntry.getValue(), mode));
             }
+            *///?} else {
+            for (String key : nbtCompound.getAllKeys()) {
+                Tag entry = nbtCompound.get(key);
+                jsonObject.add(key, toJson(entry, mode));
+            }
+            //?}
 
             return jsonObject;
 

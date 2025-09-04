@@ -21,7 +21,7 @@ public class CapabilityPacket<E extends Entity & ICapabilityHaver> extends Packe
 
     public CapabilityPacket(FriendlyByteBuf byteBuf) throws ClassNotFoundException {
         super(byteBuf);
-        String classStr = tag.getString("class")/*? if >= 1.21.5 {*/.orElseThrow()/*?}*/;
+        String classStr = tag.getString("class")/*? if >= 1.21.5 {*//*.orElseThrow()*//*?}*/;
         this.clazz = (Class<? extends Capability>) Class.forName(classStr);
     }
 
@@ -29,7 +29,7 @@ public class CapabilityPacket<E extends Entity & ICapabilityHaver> extends Packe
     public Runnable getExecutor() {
         return () -> {
             Tag data = tag.get("data");
-            int id = tag.getInt("entity")/*? if >= 1.21.5 {*/.orElseThrow()/*?}*/;
+            int id = tag.getInt("entity")/*? if >= 1.21.5 {*//*.orElseThrow()*//*?}*/;
             this.capabilityHaver = (E) Minecraft.getInstance().level.getEntity(id);
             capabilityHaver.getCapabilityManager().getCapability(clazz).readTag(data);
         };

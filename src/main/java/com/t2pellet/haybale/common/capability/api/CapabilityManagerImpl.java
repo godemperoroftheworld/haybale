@@ -63,8 +63,8 @@ class CapabilityManagerImpl<E extends Entity & ICapabilityHaver> implements Capa
             try {
                 String className = compoundTag.getString("className")
                         //? if >= 1.21.5 {
-                        .orElseThrow()
-                        //?}
+                        /*.orElseThrow()
+                        *///?}
                         ;
                 Class<? extends Capability> aClass = (Class<? extends Capability>) Class.forName(className);
                 if (!map.containsKey(aClass)) instantiateCapability(aClass);

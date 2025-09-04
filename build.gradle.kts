@@ -241,7 +241,6 @@ tasks.processResources {
     )) }
 }
 
-//TODO: Enable auto-publishing.
 /**
  * Controls publishing. For publishing to work dryRunMode must be false.
  * Modrinth and Curseforge project tokens are publicly accessible, so it is safe to include them in files.
@@ -251,23 +250,21 @@ tasks.processResources {
  * The curseforge API token should be stored in the CURSEFORGE_TOKEN environment variable.
  */
 class ModPublish {
-    val mcTargets = listProperty("publish_acceptable_mc_versions")
+    val mcTargets = listProperty("publish.mc_targets")
     val modrinthProjectToken = property("publish.token.modrinth").toString()
     val curseforgeProjectToken = property("publish.token.curseforge").toString()
-    val dryRunMode = findProperty("publish.dry_run")
+    val dryRunMode = boolProperty("publish.dry_run")
 }
-
 val modPublish = ModPublish()
-/*publishMods {
+publishMods {
     file = tasks.remapJar.get().archiveFile
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
-    displayName = "${mod.displayName} ${mod.version} for ${env.mcVersion.min}"
-    version = mod.version
+    displayName = "${mod.displayName} ${mod.version} for ${env.mcVersion.min}${if (env.mcVersion.max.isBlank()) "" else "-${env.mcVersion.max}" }"
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = STABLE
+    type = if (mod.version.contains("alpha")) ALPHA else if (mod.version.contains("beta")) BETA else STABLE
     modLoaders.add(env.loader)
-
     dryRun = modPublish.dryRunMode
+    version = mod.version
 
     modrinth {
         projectId = modPublish.modrinthProjectToken
@@ -275,23 +272,15 @@ val modPublish = ModPublish()
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         minecraftVersions.addAll(modPublish.mcTargets)
         apis.forEach{ src ->
-            if(src.enabled) src.versionRange.ifPresent{ ver ->
-                if(src.type.isOptional()){
-                    src.modInfo.rinthSlug?.let {
-                        optional {
-                            slug = it
-                            version = ver.min
-
-                        }
-                    }
+            if (src.optional) {
+                optional {
+                    slug = src.modID
+                    version = src.version.min
                 }
-                else{
-                    src.modInfo.rinthSlug?.let {
-                        requires {
-                            slug = it
-                            version = ver.min
-                        }
-                    }
+            } else {
+                requires {
+                    slug = src.modID
+                    version = src.version.min
                 }
             }
         }
@@ -302,26 +291,14 @@ val modPublish = ModPublish()
         // Get one here: https://legacy.curseforge.com/account/api-tokens
         accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
         minecraftVersions.addAll(modPublish.mcTargets)
-        apis.forEach{ src ->
-            if(src.enabled) src.versionRange.ifPresent{ ver ->
-                if(src.type.isOptional()){
-                    src.modInfo.curseSlug?.let {
-                        optional {
-                            slug = it
-                            version = ver.min
 
-                        }
-                    }
-                }
-                else{
-                    src.modInfo.curseSlug?.let {
-                        requires {
-                            slug = it
-                            version = ver.min
-                        }
-                    }
-                }
+        apis.forEach { src ->
+            if (src.optional) {
+                optional(src.modID)
+            } else {
+                requires(src.modID)
             }
         }
+
     }
 }

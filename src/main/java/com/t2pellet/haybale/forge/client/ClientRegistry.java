@@ -1,6 +1,7 @@
 //? if forge {
 /*package com.t2pellet.haybale.forge.client;
 
+import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.client.registry.IClientRegistry;
 import com.t2pellet.haybale.client.registry.api.EntityModelEntryType;
 import com.t2pellet.haybale.client.registry.api.EntityRendererEntryType;
@@ -30,14 +31,14 @@ public class ClientRegistry implements IClientRegistry {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterParticleProvidersEvent>) particleFactoryRegisterEvent -> {
 
             //? if >= 1.19.4 {
-            particleFactoryRegisterEvent.registerSpriteSet(
-            //?} else {
-                /^//? if > 1.18.2 {
+            /^particleFactoryRegisterEvent.registerSpriteSet(
+            ^///?} else {
+                //? if > 1.18.2 {
             particleFactoryRegisterEvent
                 //?} else
-            /^¹Minecraft.getInstance().particleEngine¹^/
+            /^Minecraft.getInstance().particleEngine^/
                     .register(
-            ^///?}
+            //?}
                     particleFactoryEntry.get(),
                     spriteSet -> particleFactoryEntry.getProviderFunction().apply(spriteSet)
             );

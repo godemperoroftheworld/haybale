@@ -29,6 +29,6 @@
     "mixins.haybale.json",
     "mixins.haybale.fabric.json"
   ],
-  "depends": {
-  }
+  "depends": ${depends},
+  "recommends": ${recommends}
 }

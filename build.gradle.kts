@@ -1,5 +1,3 @@
-import java.util.Optional
-
 // Plugins
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -71,11 +69,38 @@ class API(
     val version: VersionRange,
     val exclude: String = "",
     val loader: String = "",
+    val modID: String = "",
     val optional: Boolean = false
-)
+) {
+
+    val modIDDefaulted: String
+        get() = modID.ifBlank { module }
+
+    fun fabric(): String {
+        return "\"${modIDDefaulted}\": \">=${version.min}\""
+    }
+
+    fun forge(): String {
+        return "[[dependencies.${mod.id}]]\n" +
+        "modId=\"${modIDDefaulted}\"\n" +
+        "mandatory=${!optional}\n" +
+        "versionRange=\"[${version.min},)\"\n" +
+        "ordering=\"NONE\"\n" +
+        "side=\"BOTH\"\n"
+    }
+}
 val apis: Array<API> = arrayOf(
-    API("com.terraformersmc", "modmenu", versionProperty("deps.api.mod_menu"), "", "fabric", true),
-    API("me.shedaniel.cloth", "cloth-config-${env.loader}", versionProperty("deps.api.cloth_config"), optional = true)
+    API("com.terraformersmc",
+        "modmenu",
+        versionProperty("deps.api.mod_menu"),
+        "",
+        "fabric",
+        optional = true),
+    API("me.shedaniel.cloth",
+        "cloth-config-${env.loader}",
+        versionProperty("deps.api.cloth_config"),
+        optional = true,
+        modID = if (env.isFabric) "cloth-config" else "cloth_config")
 )
 
 dependencies {
@@ -185,10 +210,32 @@ tasks.processResources {
     map.forEach{ (key, value) ->
         inputs.property(key,value)
     }
+
+    // Dependencies
+    val apisForLoader = apis.filter { it.loader.isBlank() || env.loader == it.loader }
+    val required = apisForLoader.filter { !it.optional }
+    val optional = apisForLoader.filter { it.optional }
+    fun fabricDependencies(apis: List<API>): String {
+        var result = apis.joinToString(separator = ",\n    ") { it.fabric() }
+        return "{\n    $result\n  }"
+    }
+    fun forgeDependencies(apis: List<API>): String {
+        return apis.joinToString(separator = "\n") { it.forge() }
+    }
+
     filesMatching("pack.mcmeta") { expand(map) }
-    filesMatching("fabric.mod.json") { expand(map) }
-    filesMatching("META-INF/mods.toml") { expand(map) }
-    filesMatching("META-INF/neoforge.mods.toml") { expand(map) }
+    filesMatching("fabric.mod.json") {
+        expand(map + mapOf(
+            "depends" to fabricDependencies(required),
+            "recommends" to fabricDependencies(optional)
+        ))
+    }
+    filesMatching("META-INF/mods.toml") { expand(map + mapOf(
+        "depends" to forgeDependencies(apisForLoader)
+    )) }
+    filesMatching("META-INF/neoforge.mods.toml") { expand(map + mapOf(
+        "depends" to forgeDependencies(apisForLoader)
+    )) }
     filesMatching("META-INF/services/**") { expand(mapOf(
         "loader" to env.loader
     )) }

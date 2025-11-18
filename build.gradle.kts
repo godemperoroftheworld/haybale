@@ -261,7 +261,7 @@ publishMods {
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
     displayName = "${mod.displayName} ${mod.version} for ${env.mcVersion.min}${if (env.mcVersion.max.isBlank()) "" else "-${env.mcVersion.max}" }"
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = if (mod.version.contains("alpha")) ALPHA else if (mod.version.contains("beta")) BETA else STABLE
+    type = if (mod.versionType == "alpha") ALPHA else if (mod.versionType == "beta") BETA else STABLE
     modLoaders.add(env.loader)
     dryRun = modPublish.dryRunMode
     version = mod.version

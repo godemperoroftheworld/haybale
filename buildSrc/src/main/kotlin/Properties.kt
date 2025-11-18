@@ -26,6 +26,7 @@ class ModProperties(project: Project) {
     val id = project.property("mod.id").toString()
     val displayName = project.property("mod.display_name").toString()
     val version = project.property("version").toString()
+    val versionType = project.property("version_type").toString()
     val description = project.property("mod.description").toString()
     val authors = project.property("mod.authors").toString()
     val icon = project.property("mod.icon").toString()

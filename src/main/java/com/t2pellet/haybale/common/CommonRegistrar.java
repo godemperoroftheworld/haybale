@@ -80,9 +80,9 @@ public class CommonRegistrar extends BaseRegistrar {
         Haybale.LOG.debug("Registering capabilities for modid: " + modid);
         for (Field field : capabilities.getClass().getDeclaredFields()) {
             IModCapabilities.ICapability capabilityInfo = field.getAnnotation(IModCapabilities.ICapability.class);
-            if (capabilityInfo != null && field.getType().equals(IModCapabilities.haybaleCapability.class)) {
+            if (capabilityInfo != null && field.getType().equals(IModCapabilities.HaybaleCapability.class)) {
                 try {
-                    IModCapabilities.haybaleCapability<?> capability = (IModCapabilities.haybaleCapability<?>) field.get(null);
+                    IModCapabilities.HaybaleCapability<?> capability = (IModCapabilities.HaybaleCapability<?>) field.get(null);
                     registerCapability(capabilityInfo.value(), capability::get);
                 } catch (Exception e) {
                     Haybale.LOG.error("Failed to register capabilities for " + modid);

@@ -67,22 +67,22 @@ class API(
     val group: String,
     val module: String,
     val version: VersionRange,
+    val friendlyVersion: VersionRange = version,
     val exclude: String = "",
     val loader: String = "",
-    val modID: String = "",
-    val optional: Boolean = false
+    val modID: String = module,
+    val optional: Boolean = false,
+    val modrinth: String = modID,
+    val curseforge: String = modID,
 ) {
 
-    val modIDDefaulted: String
-        get() = modID.ifBlank { module }
-
     fun fabric(): String {
-        return "\"${modIDDefaulted}\": \">=${version.min}\""
+        return "\"${modID}\": \">=${friendlyVersion.min}\""
     }
 
     fun forge(): String {
         return "[[dependencies.${mod.id}]]\n" +
-        "modId=\"${modIDDefaulted}\"\n" +
+        "modId=\"${modID}\"\n" +
         "mandatory=${!optional}\n" +
         "versionRange=\"[${version.min},)\"\n" +
         "ordering=\"NONE\"\n" +
@@ -93,14 +93,16 @@ val apis: Array<API> = arrayOf(
     API("com.terraformersmc",
         "modmenu",
         versionProperty("deps.api.mod_menu"),
-        "",
-        "fabric",
+        loader = "fabric",
+        modrinth = "mOgUt4GM",
         optional = true),
     API("me.shedaniel.cloth",
         "cloth-config-${env.loader}",
         versionProperty("deps.api.cloth_config"),
         optional = true,
-        modID = if (env.isFabric) "cloth-config" else "cloth_config")
+        modID = if (env.isFabric) "cloth-config" else "cloth_config",
+        modrinth = "9s6osm5g",
+        curseforge = "cloth-config")
 )
 
 dependencies {
@@ -261,7 +263,7 @@ publishMods {
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
     displayName = "${mod.displayName} ${mod.version} for ${env.mcVersion.min}${if (env.mcVersion.max.isBlank()) "" else "-${env.mcVersion.max}" }"
     changelog = rootProject.file("CHANGELOG.md").readText()
-    type = if (mod.versionType == "alpha") ALPHA else if (mod.versionType == "beta") BETA else STABLE
+    type = if (mod.versionType.contains("alpha")) ALPHA else if (mod.versionType.contains("beta")) BETA else STABLE
     modLoaders.add(env.loader)
     dryRun = modPublish.dryRunMode
     version = mod.version
@@ -273,15 +275,9 @@ publishMods {
         minecraftVersions.addAll(modPublish.mcTargets)
         apis.forEach{ src ->
             if (src.optional) {
-                optional {
-                    slug = src.modID
-                    version = src.version.min
-                }
+                optional(src.modrinth)
             } else {
-                requires {
-                    slug = src.modID
-                    version = src.version.min
-                }
+                requires(src.modrinth)
             }
         }
     }
@@ -294,9 +290,9 @@ publishMods {
 
         apis.forEach { src ->
             if (src.optional) {
-                optional(src.modID)
+                optional(src.curseforge)
             } else {
-                requires(src.modID)
+                requires(src.curseforge)
             }
         }
 

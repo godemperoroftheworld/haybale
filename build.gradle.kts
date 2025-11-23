@@ -88,6 +88,14 @@ class API(
         "ordering=\"NONE\"\n" +
         "side=\"BOTH\"\n"
     }
+
+    fun neoforge(): String {
+        return "[[dependencies.${mod.id}]]\n" +
+                "modId=\"${modID}\"\n" +
+                "type=\"${if (optional) "optional" else "required" }\"\n" +
+                "versionRange=\"[${version.min},)\"\n" +
+                "ordering=\"NONE\"\n" +
+                "side=\"BOTH\"\n"    }
 }
 val apis: Array<API> = arrayOf(
     API("com.terraformersmc",
@@ -224,6 +232,9 @@ tasks.processResources {
     fun forgeDependencies(apis: List<API>): String {
         return apis.joinToString(separator = "\n") { it.forge() }
     }
+    fun neoForgeDependencies(apis: List<API>): String {
+        return apis.joinToString(separator = "\n") { it.neoforge() }
+    }
 
     filesMatching("pack.mcmeta") { expand(map) }
     filesMatching("fabric.mod.json") {
@@ -236,7 +247,7 @@ tasks.processResources {
         "depends" to forgeDependencies(apisForLoader)
     )) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map + mapOf(
-        "depends" to forgeDependencies(apisForLoader)
+        "depends" to neoForgeDependencies(apisForLoader)
     )) }
     filesMatching("META-INF/services/**") { expand(mapOf(
         "loader" to env.loader

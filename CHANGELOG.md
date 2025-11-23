@@ -1,3 +1,8 @@
+# 0.5.2
+
+- Fix crash in neoforge
+- Add getLevel method in AbstractCapability
+
 # 0.5.1
 
 - Fix capitalization for some classes

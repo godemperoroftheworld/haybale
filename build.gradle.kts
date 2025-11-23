@@ -230,10 +230,10 @@ tasks.processResources {
         return "{\n    $result\n  }"
     }
     fun forgeDependencies(apis: List<API>): String {
+        if (env.isNeo) {
+            return apis.joinToString(separator = "\n") { it.neoforge() }
+        }
         return apis.joinToString(separator = "\n") { it.forge() }
-    }
-    fun neoForgeDependencies(apis: List<API>): String {
-        return apis.joinToString(separator = "\n") { it.neoforge() }
     }
 
     filesMatching("pack.mcmeta") { expand(map) }
@@ -247,7 +247,7 @@ tasks.processResources {
         "depends" to forgeDependencies(apisForLoader)
     )) }
     filesMatching("META-INF/neoforge.mods.toml") { expand(map + mapOf(
-        "depends" to neoForgeDependencies(apisForLoader)
+        "depends" to forgeDependencies(apisForLoader)
     )) }
     filesMatching("META-INF/services/**") { expand(mapOf(
         "loader" to env.loader

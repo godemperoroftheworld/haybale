@@ -1,3 +1,8 @@
+# 0.5.3
+
+- Fix neoforge 1.20.4 packets
+- Fix neoforge mixins
+
 # 0.5.2
 
 - Fix crash in neoforge

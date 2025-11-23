@@ -34,8 +34,8 @@ public class VersionHelper {
 
     public static ResourceLocation getResourceLocation(String modid, String name) {
         //? if < 1.21 {
-        /*return new ResourceLocation(modid, name);
-        *///?} else
-        return ResourceLocation.fromNamespaceAndPath(modid, name);
+        return new ResourceLocation(modid, name);
+        //?} else
+        /*return ResourceLocation.fromNamespaceAndPath(modid, name);*/
     }
 }

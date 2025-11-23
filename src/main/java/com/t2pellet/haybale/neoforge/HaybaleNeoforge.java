@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge;
+package com.t2pellet.haybale.neoforge;
 
 import com.t2pellet.haybale.Haybale;
 import com.t2pellet.haybale.HaybaleMod;
@@ -63,4 +63,4 @@ public class HaybaleNeoforge extends HaybaleNeoforgeMod {
         return modMap.get(modid);
     }
 }
-*///?}
+//?}

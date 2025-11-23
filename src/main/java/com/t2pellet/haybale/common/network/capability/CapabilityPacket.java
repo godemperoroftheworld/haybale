@@ -31,7 +31,9 @@ public class CapabilityPacket<E extends Entity & ICapabilityHaver> extends Packe
             Tag data = tag.get("data");
             int id = tag.getInt("entity")/*? if >= 1.21.5 {*//*.orElseThrow()*//*?}*/;
             this.capabilityHaver = (E) Minecraft.getInstance().level.getEntity(id);
-            capabilityHaver.getCapabilityManager().getCapability(clazz).readTag(data);
+            if (this.capabilityHaver != null) {
+                capabilityHaver.getCapabilityManager().getCapability(clazz).readTag(data);
+            }
         };
     }
 

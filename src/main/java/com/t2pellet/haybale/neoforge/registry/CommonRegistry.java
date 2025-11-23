@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge.registry;
+package com.t2pellet.haybale.neoforge.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
@@ -38,15 +38,15 @@ public class CommonRegistry implements ICommonRegistry {
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         HaybaleNeoforgeMod forgeMod = HaybaleNeoforge.getInstance().get(modid);
         //? if >= 1.21.2 {
-        /^ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
+        /*ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
-        ^///?}
+        *///?}
         DeferredHolder<EntityType<?>, EntityType<T>> result = forgeMod.ENTITIES.register(entityEntryType.getName(), () -> EntityType.Builder.of(entityEntryType.getFactory(), entityEntryType.getMobCategory())
                 .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                 //? if < 1.21.2 {
                 .build(entityEntryType.getName()));
                 //?} else
-                /^.build(key));^/
+                /*.build(key));*/
         forgeMod.modBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> event.put(result.get(), entityEntryType.buildAttributes().build()));
         return result;
     }
@@ -76,4 +76,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-*///?}
+//?}

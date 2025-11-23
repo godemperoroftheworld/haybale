@@ -1,5 +1,5 @@
 //? if fabric {
-package com.t2pellet.haybale.fabric.registry;
+/*package com.t2pellet.haybale.fabric.registry;
 
 import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.network.api.Packet;
@@ -38,7 +38,7 @@ public class CommonRegistry implements ICommonRegistry {
                 //? if >= 1.19.4 {
                 BuiltInRegistries.PARTICLE_TYPE,
                 //?} else
-                /*Registry.PARTICLE_TYPE,*/
+                /^Registry.PARTICLE_TYPE,^/
                 id,
                 FabricParticleTypes.simple()
         );
@@ -48,27 +48,27 @@ public class CommonRegistry implements ICommonRegistry {
     @Override
     public <T extends LivingEntity> Supplier<EntityType<T>> register(String modid, EntityEntryType<T> entityEntryType) {
         //? if >= 1.21.2 {
-        /*ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
+        /^ResourceLocation id = VersionHelper.getResourceLocation(modid, entityEntryType.getName());
         ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
-        *///?}
+        ^///?}
         EntityType<T> type = Registry.register(
                 //? if >= 1.19.4 {
                 BuiltInRegistries.ENTITY_TYPE,
                 //?} else
-                /*Registry.ENTITY_TYPE,*/
+                /^Registry.ENTITY_TYPE,^/
                 VersionHelper.getResourceLocation(modid, entityEntryType.getName()),
                 EntityType.Builder.of(entityEntryType.getFactory(), MobCategory.CREATURE)
                         .clientTrackingRange(48).updateInterval(3).sized(entityEntryType.getWidth(), entityEntryType.getHeight())
                         //? if < 1.21.2 {
                         .build(entityEntryType.getName()));
                         //?} else
-                        /*.build(key));*/
+                        /^.build(key));^/
         FabricDefaultAttributeRegistry.register(
                 type,
                 //? if >= 1.19.4 {
                 entityEntryType.buildAttributes().build()
                 //?} else
-                /*entityEntryType.buildAttributes()*/
+                /^entityEntryType.buildAttributes()^/
         );
         return () -> type;
     }
@@ -79,12 +79,12 @@ public class CommonRegistry implements ICommonRegistry {
         //? if >= 1.19.4 {
         SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(location);
         //?} else
-        /*SoundEvent soundEvent = new SoundEvent(location);*/
+        /^SoundEvent soundEvent = new SoundEvent(location);^/
         Registry.register(
                 //? if >= 1.19.4 {
                 BuiltInRegistries.SOUND_EVENT,
                 //?} else
-                /*Registry.SOUND_EVENT,*/
+                /^Registry.SOUND_EVENT,^/
                 location,
                 soundEvent
         );
@@ -97,7 +97,7 @@ public class CommonRegistry implements ICommonRegistry {
                 //? if >= 1.19.4 {
                 BuiltInRegistries.ITEM,
                 //?} else
-                /*Registry.ITEM,*/
+                /^Registry.ITEM,^/
                 VersionHelper.getResourceLocation(modid, itemEntryType.getName()), new Item(itemEntryType.getProperties())
         );
         return () -> item;
@@ -115,4 +115,4 @@ public class CommonRegistry implements ICommonRegistry {
         packetHandler.registerClientPacket(modid, name, packetClass);
     }
 }
-//?}
+*///?}

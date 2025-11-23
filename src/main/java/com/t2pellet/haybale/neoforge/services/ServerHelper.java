@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge.services;
+package com.t2pellet.haybale.neoforge.services;
 
 import com.t2pellet.haybale.services.IServerHelper;
 import net.minecraft.server.MinecraftServer;
@@ -11,4 +11,4 @@ public class ServerHelper implements IServerHelper {
         return ServerLifecycleHooks.getCurrentServer();
     }
 }
-*///?}
+//?}

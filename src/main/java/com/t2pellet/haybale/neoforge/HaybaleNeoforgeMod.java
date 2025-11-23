@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge;
+package com.t2pellet.haybale.neoforge;
 
 import com.t2pellet.haybale.common.ClientRegistrar;
 import com.t2pellet.haybale.common.CommonRegistrar;
@@ -21,8 +21,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 //? if >= 1.20.5 {
-/^import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-^///?} else {
+/*import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+*///?} else {
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 //?}
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -106,10 +106,10 @@ public abstract class HaybaleNeoforgeMod {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> configMenu.buildConfigScreen()));
             //?} else {
-            /^ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
+            /*ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
                     () -> (minecraft, screen) -> configMenu.buildConfigScreen());
-            ^///?}
+            *///?}
         }
     }
 }
-*///?}
+//?}

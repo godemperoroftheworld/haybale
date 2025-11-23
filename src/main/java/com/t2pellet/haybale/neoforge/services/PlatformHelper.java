@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge.services;
+package com.t2pellet.haybale.neoforge.services;
 
 import com.t2pellet.haybale.services.IPlatformHelper;
 import net.neoforged.fml.ModList;
@@ -17,4 +17,4 @@ public class PlatformHelper implements IPlatformHelper {
         return ModList.get().isLoaded(modId);
     }
 }
-*///?}
+//?}

@@ -1,5 +1,7 @@
 package com.t2pellet.haybale;
 
+import com.t2pellet.haybale.common.capability.api.registry.IModCapabilities;
+import com.t2pellet.haybale.common.capability.registry.HaybaleCapabilities;
 import com.t2pellet.haybale.common.config.ExampleConfig;
 import com.t2pellet.haybale.common.config.api.Config;
 import com.t2pellet.haybale.common.network.HaybalePackets;
@@ -40,5 +42,10 @@ public class Haybale extends HaybaleMod {
     @Override
     public Class<? extends RegistryClass> entities() {
         return HaybaleEntities.class;
+    }
+
+    @Override
+    public IModCapabilities capabilities() {
+        return new HaybaleCapabilities();
     }
 }

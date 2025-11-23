@@ -1,5 +1,5 @@
 //? if neoforge {
-/*package com.t2pellet.haybale.neoforge.services;
+package com.t2pellet.haybale.neoforge.services;
 
 import com.t2pellet.haybale.services.ISidedExecutor;
 import net.neoforged.api.distmarker.Dist;
@@ -7,7 +7,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 //? if < 1.20.5 {
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 //?} else
-/^import net.neoforged.neoforge.event.tick.ServerTickEvent;^/
+/*import net.neoforged.neoforge.event.tick.ServerTickEvent;*/
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,8 +51,8 @@ public class SidedExecutor implements ISidedExecutor {
     }
 
     //? if >= 1.20.5 {
-    /^public void onServerTick(ServerTickEvent.Post event) {
-    ^///?} else
+    /*public void onServerTick(ServerTickEvent.Post event) {
+    *///?} else
     public void onServerTick(ServerTickEvent event) {
         ++tick;
         PQEntry top = pq.peek();
@@ -62,4 +62,4 @@ public class SidedExecutor implements ISidedExecutor {
         }
     }
 }
-*///?}
+//?}

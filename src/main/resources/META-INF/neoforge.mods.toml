@@ -1,11 +1,12 @@
-#[[accessTransformers]]
-#file="META-INF/accesstransformer.cfg"
-# The coremods config file path is not configurable and is always loaded from META-INF/coremods.json
-
 modLoader="javafml"
 loaderVersion="${forgelike_loader_ver}"
 license="${license}"
 issueTrackerURL="${issue_tracker}"
+
+[[mixins]]
+config = "mixins.${id}.json"
+[[mixins]]
+config = "mixins.${id}.neo.json"
 
 [[mods]]
 modId="${id}"

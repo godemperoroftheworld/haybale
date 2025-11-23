@@ -3,6 +3,8 @@ package com.t2pellet.haybale.common.entity;
 import com.t2pellet.haybale.common.capability.api.CapabilityManager;
 import com.t2pellet.haybale.common.capability.api.ICapabilityHaver;
 import com.t2pellet.haybale.common.capability.registry.ExampleCapability;
+import com.t2pellet.haybale.common.utils.VersionHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
@@ -29,7 +31,14 @@ public class ExampleEntity extends Cow implements ICapabilityHaver {
             example.decrement();
         }
         if (example.count() == 0) {
+            //? if < 1.21.2 {
             kill();
+            //?} else {
+            /*Level level = VersionHelper.getLevel(this);
+            if (level instanceof ServerLevel serverLevel) {
+                kill(serverLevel);
+            }
+            *///?}
         }
     }
 

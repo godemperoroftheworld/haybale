@@ -2,6 +2,7 @@ package com.t2pellet.haybale.common.capability.registry;
 
 import com.t2pellet.haybale.common.capability.api.AbstractCapability;
 import com.t2pellet.haybale.common.capability.api.ICapabilityHaver;
+import com.t2pellet.haybale.common.utils.VersionHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -34,6 +35,10 @@ public class ExampleCapabilityImpl<E extends Entity & ICapabilityHaver> extends 
     @Override
     public void readTag(Tag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
+        //? if <= 1.21.4 {
         lifeTicks = compoundTag.getInt("lifeTicks");
+        //?} else {
+        /*lifeTicks = compoundTag.getInt("lifeTicks").orElseThrow();
+        *///?}
     }
 }

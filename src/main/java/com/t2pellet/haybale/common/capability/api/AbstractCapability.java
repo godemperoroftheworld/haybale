@@ -5,6 +5,7 @@ import com.t2pellet.haybale.common.network.capability.CapabilityPacket;
 import com.t2pellet.haybale.common.utils.VersionHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 public abstract class AbstractCapability<E extends Entity & ICapabilityHaver> implements Capability {
 
@@ -27,6 +28,10 @@ public abstract class AbstractCapability<E extends Entity & ICapabilityHaver> im
             CapabilityPacket<E> packet = new CapabilityPacket<>(entity, getClass());
             Services.PACKET_HANDLER.sendTo(packet, player);
         }
+    }
+
+    private Level getLevel() {
+        return VersionHelper.getLevel(entity);
     }
 
 }

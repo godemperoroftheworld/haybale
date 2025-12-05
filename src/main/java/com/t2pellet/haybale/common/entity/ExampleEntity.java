@@ -10,6 +10,10 @@ import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+//? if >= 1.21.2 {
+/*import net.minecraft.server.level.ServerLevel;
+*///?}
+
 public class ExampleEntity extends Cow implements ICapabilityHaver {
 
     CapabilityManager capabilities = CapabilityManager.newInstance(this);
@@ -28,7 +32,7 @@ public class ExampleEntity extends Cow implements ICapabilityHaver {
     @Override
     public void baseTick() {
         super.baseTick();
-        if (level().isClientSide) return;
+        if (VersionHelper.getLevel(this).isClientSide) return;
         if (random.nextInt(10) == 0) {
             example.decrement();
         }

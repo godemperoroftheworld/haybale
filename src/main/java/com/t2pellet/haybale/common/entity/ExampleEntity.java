@@ -4,10 +4,11 @@ import com.t2pellet.haybale.common.capability.api.CapabilityManager;
 import com.t2pellet.haybale.common.capability.api.ICapabilityHaver;
 import com.t2pellet.haybale.common.capability.registry.ExampleCapability;
 import com.t2pellet.haybale.common.utils.VersionHelper;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ExampleEntity extends Cow implements ICapabilityHaver {
 
@@ -27,6 +28,7 @@ public class ExampleEntity extends Cow implements ICapabilityHaver {
     @Override
     public void baseTick() {
         super.baseTick();
+        if (level().isClientSide) return;
         if (random.nextInt(10) == 0) {
             example.decrement();
         }
@@ -42,5 +44,14 @@ public class ExampleEntity extends Cow implements ICapabilityHaver {
         }
     }
 
+    @Override
+    public @NotNull Component getName() {
+        String literal = String.valueOf(example.count());
+        return VersionHelper.literalComponent(literal);
+    }
 
+    @Override
+    public boolean shouldShowName() {
+        return true;
+    }
 }

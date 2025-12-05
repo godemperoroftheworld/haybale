@@ -1,3 +1,8 @@
+# 0.5.4
+
+- Fix neoforge 1.20.4 serialisation on an integrated server
+- The example entity now shows its life ticks, to give an example of packets and serialisation
+
 # 0.5.3
 
 - Fix neoforge 1.20.4 packets

@@ -2,9 +2,11 @@
 package com.t2pellet.haybale.neoforge.network;
 
 import com.t2pellet.haybale.Haybale;
+import com.t2pellet.haybale.Services;
 import com.t2pellet.haybale.common.utils.VersionHelper;
 import com.t2pellet.haybale.services.IPacketHandler;
 import com.t2pellet.haybale.common.network.api.Packet;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.network.codec.StreamCodec;
 *///?}
 
-import javax.management.ReflectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
@@ -54,23 +55,43 @@ public class PacketHandler implements IPacketHandler {
                 }
         );
     }
-
+    *///?}
     private static class NeoforgePacket<T extends Packet> implements CustomPacketPayload {
 
         private final T packet;
-        private final Type<NeoforgePacket<T>> type;
+        //? if >= 1.20.5 {
+        /*private final Type<NeoforgePacket<T>> type;
+        *///?} else {
+        private final ResourceLocation id;
+        //?}
 
         public NeoforgePacket(T packet, ResourceLocation id) {
             this.packet = packet;
-            this.type = new CustomPacketPayload.Type<>(id);
+            //? if >= 1.20.5 {
+            /*this.type = new CustomPacketPayload.Type<>(id);
+            *///?} else {
+            this.id = id;
+            //?}
         }
 
-        @Override
+        //? if >= 1.20.5 {
+        /*@Override
         public @NotNull Type<NeoforgePacket<T>> type() {
             return this.type;
         }
+        *///?} else {
+        @Override
+        public @NotNull ResourceLocation id() {
+            return this.id;
+        }
+        //?}
 
-        public void encode(FriendlyByteBuf packetByteBuf) {
+        //? if < 1.20.5 {
+        @Override
+        public void write(@NotNull FriendlyByteBuf packetByteBuf) {
+        //?} else {
+        /*public void encode(FriendlyByteBuf packetByteBuf) {
+        *///?}
             this.packet.encode(packetByteBuf);
         }
 
@@ -78,11 +99,6 @@ public class PacketHandler implements IPacketHandler {
             return this.packet.getExecutor();
         }
     }
-    *///?} else {
-    private interface PacketPayloadWithExecutor extends CustomPacketPayload {
-        Runnable getExecutor();
-    }
-    //?}
 
 
     private final String PROTOCOL_VERSION = "4";
@@ -98,41 +114,25 @@ public class PacketHandler implements IPacketHandler {
         Set<String> modIDs = packetMap.keySet();
         modIDs.forEach(modID -> {
             //? if < 1.20.5 {
-            final IPayloadRegistrar registrar = event.registrar(modID)
+            final IPayloadRegistrar registrar = event.registrar(modID).versioned(PROTOCOL_VERSION)
             //?} else
             /*final PayloadRegistrar registrar = event.registrar(modID)*/
-                    .versioned(PROTOCOL_VERSION)
-                    .optional();
+                    .versioned(PROTOCOL_VERSION);
             final Map<Class<? extends Packet>, ResourceLocation> packetClasses = packetMap.get(modID);
 
             packetClasses.forEach((packetClass, packetID) -> {
                 //? if < 1.20.5 {
-                registrar.<PacketPayloadWithExecutor>play(packetID, friendlyByteBuf -> {
+                registrar.play(packetID, friendlyByteBuf -> {
                     try {
                         Packet packet = packetClass.getDeclaredConstructor(FriendlyByteBuf.class).newInstance(friendlyByteBuf);
-                        return new PacketPayloadWithExecutor() {
-                            @Override
-                            public Runnable getExecutor() {
-                                return packet.getExecutor();
-                            }
-
-                            @Override
-                            public void write(@NotNull FriendlyByteBuf arg) {
-                                packet.encode(arg);
-                            }
-
-                            @Override
-                            public @NotNull ResourceLocation id() {
-                                return packetID;
-                            }
-                        };
+                        return new NeoforgePacket<>(packet, packetID);
                     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                              InvocationTargetException ex) {
-                        Haybale.LOG.error("Error: Failed to instantiate packet - " + packetID);
+                        Haybale.LOG.error("Error: Failed to instantiate packet - {}", packetID);
                     }
                     return null;
                 }, (t, contextSupplier) -> {
-                    contextSupplier.workHandler().submitAsync(t.getExecutor());
+                    contextSupplier.workHandler().submitAsync(t.executor());
                 });
                 //?} else {
                 /*CustomPacketPayload.Type<NeoforgePacket<Packet>> type = new CustomPacketPayload.Type<>(packetID);
@@ -185,51 +185,31 @@ public class PacketHandler implements IPacketHandler {
 
     @Override
     public <T extends Packet> void sendToServer(T packet) {
+        ResourceLocation id = packetFlatMap.get(packet.getClass());
         //? if >= 1.20.5 {
-        /*ResourceLocation id = packetFlatMap.get(packet.getClass());
-        PacketDistributor.sendToServer(new NeoforgePacket<>(packet, id));
+        /*PacketDistributor.sendToServer(new NeoforgePacket<>(packet, id));
         *///?} else {
-        PacketDistributor.SERVER.noArg().send(new PacketPayloadWithExecutor() {
-            @Override
-            public Runnable getExecutor() {
-                return packet.getExecutor();
-            }
-
-            @Override
-            public void write(FriendlyByteBuf arg) {
-                packet.encode(arg);
-            }
-
-            @Override
-            public @NotNull ResourceLocation id() {
-                return packetFlatMap.get(packet.getClass());
-            }
-        });
+        NeoforgePacket<T> neoforgePacket = new NeoforgePacket<>(packet, id);
+        // Dirty hack, we need to force serialisation in 1.20.4 on an integrated server
+        if (!Services.SERVER_HELPER.getServer().isDedicatedServer()) {
+            neoforgePacket.write(new FriendlyByteBuf(Unpooled.buffer()));
+        }
+        PacketDistributor.SERVER.noArg().send(neoforgePacket);
         //?}
     }
 
     @Override
     public <T extends Packet> void sendTo(T packet, ServerPlayer player) {
+        ResourceLocation id = packetFlatMap.get(packet.getClass());
         //? if >= 1.20.5 {
-        /*ResourceLocation id = packetFlatMap.get(packet.getClass());
-        PacketDistributor.sendToPlayer(player, new NeoforgePacket<>(packet, id));
+        /*PacketDistributor.sendToPlayer(player, new NeoforgePacket<>(packet, id));
         *///?} else {
-        PacketDistributor.PLAYER.with(player).send(new PacketPayloadWithExecutor() {
-            @Override
-            public Runnable getExecutor() {
-                return packet.getExecutor();
-            }
-
-            @Override
-            public void write(FriendlyByteBuf arg) {
-                packet.encode(arg);
-            }
-
-            @Override
-            public ResourceLocation id() {
-                return packetFlatMap.get(packet.getClass());
-            }
-        });
+        NeoforgePacket<T> neoforgePacket = new NeoforgePacket<>(packet, id);
+        // Dirty hack, we need to force serialisation in 1.20.4 on an integrated server
+        if (!Services.SERVER_HELPER.getServer().isDedicatedServer()) {
+            neoforgePacket.write(new FriendlyByteBuf(Unpooled.buffer()));
+        }
+        PacketDistributor.PLAYER.with(player).send(neoforgePacket);
         //?}
     }
 

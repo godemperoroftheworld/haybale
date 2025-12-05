@@ -5,6 +5,7 @@ import com.t2pellet.haybale.services.ISidedExecutor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 //? if < 1.20.5 {
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 //?} else
 /*import net.neoforged.neoforge.event.tick.ServerTickEvent;*/
@@ -56,7 +57,10 @@ public class SidedExecutor implements ISidedExecutor {
     public void onServerTick(ServerTickEvent event) {
         ++tick;
         PQEntry top = pq.peek();
-        if (top != null && top.tick >= tick) {
+        //? if < 1.20.5 {
+        if (event.phase != TickEvent.Phase.END) return;
+        //?}
+        if (top != null && tick >= top.tick) {
             pq.poll();
             event.getServer().execute(top.runnable);
         }

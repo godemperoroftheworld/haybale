@@ -1,3 +1,7 @@
+# 0.5.5
+
+- Fix forgelike sided executor
+
 # 0.5.4
 
 - Fix neoforge 1.20.4 serialisation on an integrated server
